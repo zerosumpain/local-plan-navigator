@@ -22,8 +22,9 @@ service; no connection with MHCLG or the Planning Inspectorate.
   twelve prescribed requirements, submission, adoption; ticks persist in the browser.
 - **Search** and **Ask** — one index over all the sources; on the Ask page a language
   model writes a cited summary of the passages: the website's own model by default (a
-  small, rate-limited endpoint on strangeramblings.com), or one running in the visitor's
-  browser for a private, offline answer.
+  small, rate-limited endpoint that only answers the page on strangeramblings.com), or
+  one running in the visitor's browser for a private, offline answer — the only option
+  in a downloaded copy.
 - **Reference library** — the sources in full with an anchor on every regulation and policy.
 - **Code** — every file of this repository, rendered and commented, plus a zip.
 

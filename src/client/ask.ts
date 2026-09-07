@@ -19,11 +19,13 @@ import type { ToWorker, FromWorker } from './engines/protocol';
 
 type Engine = { send: (m: ToWorker) => void; onMessage: (fn: (m: FromWorker) => void) => void; kind: string };
 
-// The site's endpoint. Same-origin on strangeramblings.com; anywhere else (a
-// local build, the downloaded zip) it is called cross-origin, which the
-// endpoint allows.
+// The site's endpoint. It only answers same-origin requests — the site blocks
+// cross-origin state-changing requests as a matter of policy — so on a local
+// build or the downloaded zip the call fails and the page says to use a model
+// on your device instead.
 const SITE = 'https://strangeramblings.com';
 const ENDPOINT = (location.origin === SITE ? '' : SITE) + '/api/projects/local-plan-navigator/ask';
+const ON_SITE = location.origin === SITE;
 
 export function init(): void {
   const form = document.querySelector<HTMLFormElement>('form.lpn-ask');
@@ -138,7 +140,7 @@ export function init(): void {
       const res = await fetch(ENDPOINT, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ question: q, ids: hits.map((h) => h.id) }) });
       if (!res.ok || !res.body) {
         const detail = await res.text().catch(() => '');
-        throw new Error(res.status === 429 ? 'Too many questions in a short time. Wait a minute and try again.' : res.status === 503 ? (safeMessage(detail) || "The site's model is not available right now.") : `The site answered ${res.status}. ${safeMessage(detail)}`);
+        throw new Error(res.status === 429 ? 'Too many questions in a short time. Wait a minute and try again.' : res.status === 503 ? (safeMessage(detail) || "The site's model is not available right now.") : res.status === 403 && !ON_SITE ? "The website's model only answers from strangeramblings.com itself." : `The site answered ${res.status}. ${safeMessage(detail)}`);
       }
       // Server-sent events over POST: "data: {json}\n\n" frames.
       const reader = res.body.getReader();
@@ -160,7 +162,7 @@ export function init(): void {
       }
       finishAnswer(tokens, Date.now() - started, 'the website');
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = err instanceof Error ? (err.message === 'Failed to fetch' && !ON_SITE ? "The website's model only answers from strangeramblings.com itself." : err.message) : String(err);
       answerBox.querySelector('.lpn-answer')?.setAttribute('aria-busy', 'false');
       status.textContent = `${message} The passages below are still the answer, or choose "a model on my device".`;
       if (answerP && !answerText) answerP.textContent = 'No summary was written.';
