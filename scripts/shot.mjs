@@ -18,7 +18,7 @@ for (const route of routes) {
     page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
     page.on('pageerror', (e) => errors.push(String(e)));
     const res = await page.goto(base + route, { waitUntil: 'networkidle' });
-    await page.screenshot({ path: `shots/${name}-${label}.png`, fullPage: true });
+    await page.screenshot({ path: `shots/${name}-${label}.png`, fullPage: process.env.FULL !== '0' });
     console.log(`${route} ${label}: HTTP ${res?.status()} errors=${errors.length}${errors.length ? ' ' + errors.join(' | ') : ''}`);
     await page.close();
   }

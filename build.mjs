@@ -53,7 +53,7 @@ const css = sass.compile(path.join(root, 'src/styles/app.scss'), {
   quietDeps: true,
   // GOV.UK Frontend still emits a few deprecation notices of its own; they are
   // theirs to fix and only noise here.
-  silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'mixed-decls'],
+  silenceDeprecations: ['import', 'global-builtin', 'color-functions'],
 });
 await writeFile(path.join(dist, 'assets/app.css'), css.css);
 log('styles', `${(css.css.length / 1024).toFixed(0)} KB`);
@@ -69,7 +69,7 @@ const result = await esbuild.build({
   format: 'esm',
   splitting: true,
   minify: true,
-  sourcemap: true,
+  sourcemap: false, // the code page shows the source; maps would add 9 MB to the bundle
   target: ['es2022'],
   outdir: path.join(dist, 'assets'),
   chunkNames: 'chunks/[name]-[hash]',
@@ -83,11 +83,13 @@ log('scripts', outputs.map(([f, o]) => `${path.basename(f)} ${(o.bytes / 1024).t
 // 6. static
 await cp(path.join(root, 'public'), dist, { recursive: true });
 // The ONNX runtime loads its WebAssembly from wherever it is told; the
-// transformers.js worker points it at ./ort/ next to itself.
+// transformers.js worker points it at ./ort/ next to itself. Only the builds
+// the WebAssembly backend can ask for are copied (the plain and asyncify
+// ones); the jsep and jspi builds are for WebGPU, which WebLLM covers.
 const ortSrc = path.join(root, 'node_modules/onnxruntime-web/dist');
 await mkdir(path.join(dist, 'assets/ort'), { recursive: true });
 for (const f of await readdir(ortSrc)) {
-  if (/^ort-wasm-simd-threaded(\.jsep)?\.(wasm|mjs)$/.test(f)) await cp(path.join(ortSrc, f), path.join(dist, 'assets/ort', f));
+  if (/^ort-wasm-simd-threaded(\.asyncify)?\.(wasm|mjs)$/.test(f)) await cp(path.join(ortSrc, f), path.join(dist, 'assets/ort', f));
 }
 log('static');
 

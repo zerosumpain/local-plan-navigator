@@ -94,7 +94,7 @@ export function init(): void {
     if (!q) { status.textContent = 'Describe the problem first.'; return; }
     status.textContent = 'Finding the relevant guidance…';
     try { await loadIndex(base); } catch (err) { status.textContent = `The guidance index could not be loaded (${(err as Error).message}).`; return; }
-    const hits = search(q, { limit: 6 });
+    const hits = search(q, { limit: 6, uniqueAnchors: true });
     lastHits = hits; lastQuestion = q;
     answerBox.innerHTML = '';
     if (!hits.length) { status.textContent = 'Nothing in the guidance matched those words. Try describing it differently, or use the search page.'; passagesBox.innerHTML = ''; return; }
@@ -123,6 +123,12 @@ export function init(): void {
   function appendToken(t: string) { answerText += t; if (answerP) answerP.innerHTML = renderAnswer(answerText); }
   function finishAnswer(tokens: number, ms: number) {
     answerBox.querySelector('.lpn-answer')?.setAttribute('aria-busy', 'false');
+    // A small model often forgets to cite. The passages it was given are known,
+    // so say which ones rather than leave the summary looking unsourced.
+    if (!/\[\d\]/.test(answerText) && answerP) {
+      const n = Math.min(lastHits.length, 6);
+      answerP.insertAdjacentHTML('afterend', `<p class="govuk-body-s">Written from passages ${Array.from({ length: n }, (_, i) => `<a class="govuk-link" href="#passage-${i + 1}">[${i + 1}]</a>`).join(' ')} below.</p>`);
+    }
     const rate = ms ? (tokens / (ms / 1000)).toFixed(1) : '?';
     status.textContent = `Summary written on your device: ${tokens} tokens in ${(ms / 1000).toFixed(1)} seconds (${rate} tokens a second). Check it against the passages.`;
   }
