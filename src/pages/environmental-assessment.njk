@@ -1,0 +1,67 @@
+{# src/pages/environmental-assessment.njk — regulation 12 and the environmental report. #}
+{% extends "layouts/base.njk" %}
+{% from "partials/macros.njk" import cite %}
+{% set r12 = ref({ doc: "sea-regulations-2004", anchor: "reg-12", label: "regulation 12" }) %}
+{% set r5 = ref({ doc: "sea-regulations-2004", anchor: "reg-5", label: "regulation 5" }) %}
+{% set r9 = ref({ doc: "sea-regulations-2004", anchor: "reg-9", label: "regulation 9" }) %}
+{% set r13 = ref({ doc: "sea-regulations-2004", anchor: "reg-13", label: "regulation 13" }) %}
+{% set r16 = ref({ doc: "sea-regulations-2004", anchor: "reg-16", label: "regulation 16" }) %}
+{% set r17 = ref({ doc: "sea-regulations-2004", anchor: "reg-17", label: "regulation 17" }) %}
+{% set s1 = ref({ doc: "sea-regulations-2004", anchor: "schedule-1", label: "Schedule 1" }) %}
+{% set s2 = ref({ doc: "sea-regulations-2004", anchor: "schedule-2", label: "Schedule 2" }) %}
+{% set g3docs = ref({ doc: "regulations-2026", anchor: "reg-17", label: "the gateway 3 submission documents" }) %}
+{% set pm6 = ref({ doc: "nppf", anchor: "PM6", label: "NPPF policy PM6(1)(e)" }) %}
+{% block pageContent %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+<h1 class="govuk-heading-xl">Strategic Environmental Assessment and the environmental report</h1>
+<p class="govuk-body-l">Regulation 12 of the Environmental Assessment of Plans and Programmes Regulations 2004 is the rule that makes the environmental report exist. This page says what it requires, what the report must contain, when the consultation bodies must be consulted, and where all of it sits in the 30 months.</p>
+
+<h2 class="govuk-heading-l">Does the plan need an assessment?</h2>
+<p class="govuk-body">Under {{ cite(r5, base) }} a plan prepared for town and country planning or land use that sets the framework for future development consent of projects needs an environmental assessment during its preparation and before adoption. The government expects every local plan to qualify. The exceptions — a plan that determines the use of a small area at local level, or a minor modification — only apply if you determine under {{ cite(r9, base) }}, having consulted the consultation bodies and considered the {{ cite(s1, base) }} criteria, that the plan is unlikely to have significant environmental effects; you must then publish a statement of reasons, and that statement is one of {{ cite(g3docs, base) }}.</p>
+
+<h2 class="govuk-heading-l">What regulation 12 requires</h2>
+<ol class="govuk-list govuk-list--number govuk-list--spaced">
+  <li><strong>Prepare an environmental report</strong>, or secure its preparation, whenever an assessment is required.</li>
+  <li><strong>Identify, describe and evaluate the likely significant effects on the environment</strong> of implementing the plan — and of <strong>reasonable alternatives</strong>, taking into account the plan's objectives and geographical scope.</li>
+  <li><strong>Include the Schedule 2 information</strong> as may reasonably be required, taking account of current knowledge and methods of assessment, the contents and level of detail in the plan, the stage of the plan in the decision-making process, and the extent to which matters are better assessed at another level to avoid duplication.</li>
+  <li>Information may be provided <strong>by reference</strong> to relevant information from other levels of decision-making or other assimilated law.</li>
+  <li><strong>Consult the consultation bodies</strong> when deciding the scope and level of detail of the report.</li>
+  <li>A consultation body that wishes to respond must do so <strong>within 5 weeks</strong> of receiving the invitation.</li>
+</ol>
+<p class="govuk-body">Read the regulation in full: {{ cite(r12, base) }}.</p>
+
+<h2 class="govuk-heading-l">What the report must cover: Schedule 2</h2>
+<p class="govuk-body">The ten headings in {{ cite(s2, base) }}, each "as may reasonably be required":</p>
+<ol class="govuk-list govuk-list--number">
+  <li>An outline of the contents and main objectives of the plan, and its relationship with other relevant plans and programmes.</li>
+  <li>The relevant aspects of the current state of the environment and its likely evolution without the plan.</li>
+  <li>The environmental characteristics of areas likely to be significantly affected.</li>
+  <li>Existing environmental problems relevant to the plan, in particular those relating to areas of particular environmental importance such as European sites.</li>
+  <li>The environmental protection objectives, at international, Community or national level, relevant to the plan and how they and any environmental considerations have been taken into account.</li>
+  <li>The likely significant effects on the environment — short, medium and long term; permanent and temporary; positive and negative; secondary, cumulative and synergistic — on biodiversity, population, human health, fauna, flora, soil, water, air, climatic factors, material assets, cultural heritage including architectural and archaeological heritage, landscape, and the inter-relationship between them.</li>
+  <li>The measures envisaged to prevent, reduce and as fully as possible offset any significant adverse effects.</li>
+  <li>An outline of the reasons for selecting the alternatives dealt with, and how the assessment was undertaken, including any difficulties encountered.</li>
+  <li>The monitoring measures envisaged under {{ cite(r17, base) }}.</li>
+  <li>A non-technical summary of all of the above.</li>
+</ol>
+
+<h2 class="govuk-heading-l">Where SEA sits in the 30 months</h2>
+<div class="lpn-table-scroll">
+<table class="govuk-table">
+  <caption class="govuk-table__caption govuk-visually-hidden">SEA tasks by stage</caption>
+  <thead class="govuk-table__head"><tr class="govuk-table__row"><th scope="col" class="govuk-table__header">Stage</th><th scope="col" class="govuk-table__header">SEA task</th><th scope="col" class="govuk-table__header">Rule</th></tr></thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/sea-check/') }}">Getting ready</a></th><td class="govuk-table__cell">Confirm SEA applies; identify environmental protection objectives and the baseline; record the position in the Gateway 1 summary</td><td class="govuk-table__cell">{{ cite(r5, base) }}; 2026 Regulations, regulation 21(2)(e)</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/content-consultation/') }}">Content and evidence consultation</a></th><td class="govuk-table__cell">Consult the consultation bodies on the scope and level of detail of the report, alongside the consultation; they have 5 weeks</td><td class="govuk-table__cell">{{ cite(r12, base) }}(5)–(6)</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/collate/') }}">Draft plan and Gateway 2</a></th><td class="govuk-table__cell">Develop the report, evaluating reasonable alternatives and cumulative effects; show the assessor how it is informing the plan</td><td class="govuk-table__cell">Procedural guide 3.6.17</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/plan-consultation/') }}">Proposed plan consultation</a></th><td class="govuk-table__cell">Consult on the report with the plan: send it to the consultation bodies, bring it to the attention of the public consultees, publish it for free download, give an effective period for opinions</td><td class="govuk-table__cell">{{ cite(r13, base) }}</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/gateway-3/') }}">Gateway 3 and submission</a></th><td class="govuk-table__cell">The report (or the regulation 9 statement) is a submission document at both</td><td class="govuk-table__cell">2026 Regulations, regulations 17 and 34</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/examination/') }}">Examination</a></th><td class="govuk-table__cell">Main modifications may need environmental assessment before consultation</td><td class="govuk-table__cell">Procedural guide 8.5</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/adoption/') }}">Adoption</a></th><td class="govuk-table__cell">Publish the plan, the report and the statement of how environmental considerations were integrated, why the plan was chosen over the alternatives, and the monitoring measures; inform the consultation bodies and public consultees</td><td class="govuk-table__cell">{{ cite(r16, base) }}</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/monitoring/') }}">Monitoring</a></th><td class="govuk-table__cell">Monitor the significant environmental effects of implementation to catch unforeseen adverse effects early</td><td class="govuk-table__cell">{{ cite(r17, base) }}</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="govuk-body">The NPPF adds that plan-makers should use environmental assessment to inform the preparation of plans where legally required ({{ cite(pm6, base) }}).</p>
+</div></div>
+{% endblock %}

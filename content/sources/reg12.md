@@ -1,0 +1,18 @@
+# ENVIRONMENTAL REPORTS AND CONSULTATION PROCEDURES
+
+## PART 3 — ENVIRONMENTAL REPORTS AND CONSULTATION PROCEDURES
+
+### 12. Preparation of environmental report
+
+  (1) Where an environmental assessment is required by any provision of Part 2 of these Regulations, the responsible authority shall prepare, or secure the preparation of, an environmental report in accordance with paragraphs (2) and (3) of this regulation.
+  (2) The report shall identify, describe and evaluate the likely significant effects on the environment of—
+    (a) implementing the plan or programme; and
+    (b) reasonable alternatives taking into account the objectives and the geographical scope of the plan or programme.
+  (3) The report shall include such of the information referred to in Schedule 2 to these Regulations as may reasonably be required, taking account of—
+    (a) current knowledge and methods of assessment;
+    (b) the contents and level of detail in the plan or programme;
+    (c) the stage of the plan or programme in the decision-making process; and
+    (d) the extent to which certain matters are more appropriately assessed at different levels in that process in order to avoid duplication of the assessment.
+  (4) Information referred to in Schedule 2 may be provided by reference to relevant information obtained at other levels of decision-making or through other  assimilated  law.
+  (5) When deciding on the scope and level of detail of the information that must be included in the report, the responsible authority shall consult the consultation bodies.
+  (6) Where a consultation body wishes to respond to a consultation under paragraph (5), it shall do so within the period of 5 weeks beginning with the date on which it receives the responsible authority’s invitation to engage in the consultation.

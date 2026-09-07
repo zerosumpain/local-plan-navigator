@@ -1,0 +1,58 @@
+{# src/partials/macros.njk — small shared macros. #}
+
+{# A resolved reference { href, title, sourceTitle } as a link into the reference library. #}
+{% macro cite(r, base) %}
+  {%- if r -%}
+    <a class="govuk-link" href="{{ base }}{{ r.href | replace('/', '', 1) if r.href.startsWith('/') else r.href }}">{{ r.title }}</a>
+  {%- endif -%}
+{% endmacro %}
+
+{# A list of resolved references. #}
+{% macro citeList(refs, base) %}
+  {% if refs and refs.length %}
+    <ul class="govuk-list govuk-list--spaced govuk-body-s">
+      {% for r in refs %}
+        <li>{{ cite(r, base) }}{% if r.sourceTitle and r.sourceTitle != r.title %} <span class="govuk-hint govuk-!-display-inline govuk-!-font-size-16">— {{ r.sourceTitle }}</span>{% endif %}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endmacro %}
+
+{# A must / should / could block. #}
+{% macro obligations(stage) %}
+  {% if stage.must and stage.must.length %}
+    <h3 class="govuk-heading-m"><span class="lpn-obligation lpn-obligation--must">Must</span> What the Regulations require</h3>
+    <ul class="govuk-list govuk-list--bullet govuk-list--spaced">{% for m in stage.must %}<li>{{ m }}</li>{% endfor %}</ul>
+  {% endif %}
+  {% if stage.should and stage.should.length %}
+    <h3 class="govuk-heading-m"><span class="lpn-obligation lpn-obligation--should">Should</span> What the guidance expects</h3>
+    <ul class="govuk-list govuk-list--bullet govuk-list--spaced">{% for m in stage.should %}<li>{{ m }}</li>{% endfor %}</ul>
+  {% endif %}
+  {% if stage.could and stage.could.length %}
+    <h3 class="govuk-heading-m"><span class="lpn-obligation lpn-obligation--could">Could</span> Worth considering</h3>
+    <ul class="govuk-list govuk-list--bullet govuk-list--spaced">{% for m in stage.could %}<li>{{ m }}</li>{% endfor %}</ul>
+  {% endif %}
+{% endmacro %}
+
+{# A diagram with its Mermaid source underneath. #}
+{% macro diagram(svg, mermaid, caption, wide) %}
+  <figure class="lpn-figure {% if wide %}lpn-figure--wide{% endif %}">
+    <div class="lpn-figure__scroll">{{ svg | safe }}</div>
+    {% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
+  </figure>
+  {% if mermaid %}
+    <details class="govuk-details">
+      <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Mermaid source for this diagram</span></summary>
+      <div class="govuk-details__text"><pre class="lpn-code" tabindex="0" aria-label="Mermaid source"><code>{{ mermaid }}</code></pre></div>
+    </details>
+  {% endif %}
+{% endmacro %}
+
+{# A flow as an ordered list — the text equivalent of the diagram. #}
+{% macro flowText(flow) %}
+  <ol class="govuk-list govuk-list--number">
+    {% for n in flow.nodes %}
+      <li>{% if n.when %}<strong>{{ n.when }}:</strong> {% endif %}{{ n.text }}{% if n.kind == 'decision' %} (a decision point){% endif %}</li>
+    {% endfor %}
+  </ol>
+{% endmacro %}

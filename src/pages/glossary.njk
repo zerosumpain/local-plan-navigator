@@ -1,0 +1,21 @@
+{# src/pages/glossary.njk #}
+{% extends "layouts/base.njk" %}
+{% from "partials/macros.njk" import cite %}
+{% block pageContent %}
+<h1 class="govuk-heading-xl">Glossary</h1>
+<p class="govuk-body-l">The words the system uses, each linked to where it is defined.</p>
+<dl class="govuk-summary-list">
+  {% for t in terms %}
+  <div class="govuk-summary-list__row" id="{{ t.term | slug }}">
+    <dt class="govuk-summary-list__key">{{ t.term }}</dt>
+    <dd class="govuk-summary-list__value">{{ t.definition }}{% if t.ref %} <span class="lpn-cite">{{ cite(t.ref, base) }}</span>{% endif %}</dd>
+  </div>
+  {% endfor %}
+</dl>
+<h2 class="govuk-heading-l">Abbreviations</h2>
+<dl class="govuk-summary-list">
+  {% for a in abbreviations %}
+  <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">{{ a.abbr }}</dt><dd class="govuk-summary-list__value">{{ a.expansion }}</dd></div>
+  {% endfor %}
+</dl>
+{% endblock %}

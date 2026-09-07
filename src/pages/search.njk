@@ -1,0 +1,22 @@
+{# src/pages/search.njk — client-side full-text search over the corpus. #}
+{% extends "layouts/base.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% block pageContent %}
+<h1 class="govuk-heading-xl">Search the guidance</h1>
+<p class="govuk-body-l">One search across the 30-month guidance, the Planning Inspectorate's procedural guide, the ten detailed MHCLG guides, the 2026 Regulations, the SEA Regulations and the NPPF — {{ corpusMeta.chunkCount }} passages from {{ corpusMeta.sourceCount }} documents.</p>
+<form class="lpn-search" role="search" method="get" action="">
+  {{ govukInput({ id: "q", name: "q", label: { text: "What are you looking for?", classes: "govuk-label--m" }, hint: { text: "For example: prescribed requirements, main modifications, policies map, statement of common ground" }, classes: "govuk-input--width-30", type: "search" }) }}
+  {% set items = [] %}
+  {% for s in sources %}{% set items = (items.push({ value: s.id, text: s.short, checked: true }), items) %}{% endfor %}
+  <details class="govuk-details">
+    <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Choose which documents to search</span></summary>
+    <div class="govuk-details__text">{{ govukCheckboxes({ name: "docs", classes: "govuk-checkboxes--small", fieldset: { legend: { text: "Documents", classes: "govuk-visually-hidden" } }, items: items }) }}</div>
+  </details>
+  {{ govukButton({ text: "Search", type: "submit" }) }}
+</form>
+<noscript><p class="govuk-body">Search runs in your browser and needs JavaScript. The <a class="govuk-link" href="{{ rel('/reference/') }}">reference library</a> has every document in full.</p></noscript>
+<div id="search-status" class="govuk-body" aria-live="polite"></div>
+<div id="search-results"></div>
+{% endblock %}

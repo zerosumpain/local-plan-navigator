@@ -1,0 +1,14 @@
+{# src/pages/reference-home.njk — the reference library index. #}
+{% extends "layouts/base.njk" %}
+{% block pageContent %}
+<h1 class="govuk-heading-xl">Reference library</h1>
+<p class="govuk-body-l">The documents this prototype is built on, in full, with an anchor on every regulation, policy and section so that citations elsewhere on the site link straight to the words.</p>
+{% for kind, label in { legislation: "Legislation", policy: "National policy", guidance: "Guidance" } %}
+<h2 class="govuk-heading-l">{{ label }}</h2>
+<ul class="govuk-list govuk-list--spaced">
+  {% for s in sources %}{% if s.kind == kind %}
+  <li><a class="govuk-link" href="{{ rel(s.route) }}">{{ s.title }}</a><br><span class="govuk-body-s">{{ s.publisher }} · {{ s.updated }}</span></li>
+  {% endif %}{% endfor %}
+</ul>
+{% endfor %}
+{% endblock %}

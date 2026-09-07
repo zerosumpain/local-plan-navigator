@@ -1,0 +1,60 @@
+{# src/pages/planner.njk — the timeline planner. The form and the worked
+   example render without JavaScript; entering a date needs it. #}
+{% extends "layouts/base.njk" %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% block pageContent %}
+<h1 class="govuk-heading-xl">Timeline planner</h1>
+<p class="govuk-body-l">Enter the date you will publish, or published, your Gateway 1 self-assessment summary. Every milestone follows from it, each with the rule it comes from, and the statutory minimums are checked.</p>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <form class="lpn-planner" novalidate>
+      <div data-errors></div>
+      {{ govukDateInput({
+        id: "g1", namePrefix: "g1",
+        fieldset: { legend: { text: "Gateway 1 date", classes: "govuk-fieldset__legend--m" } },
+        hint: { text: "For example, 4 1 2027" },
+        items: [ { name: "day", classes: "govuk-input--width-2", value: "4" }, { name: "month", classes: "govuk-input--width-2", value: "1" }, { name: "year", classes: "govuk-input--width-4", value: "2027" } ]
+      }) }}
+      {% set adv %}
+        <div class="govuk-grid-row">
+          {% for f in [
+            { id: "noticeMonths", label: "Months of notice before Gateway 1", hint: "Minimum 4", value: 4 },
+            { id: "scopingWeeks", label: "Scoping consultation (weeks)", hint: "At least 3 recommended", value: 4 },
+            { id: "prepWeeks", label: "Weeks from Gateway 1 to the content and evidence consultation", hint: "", value: 26 },
+            { id: "contentWeeks", label: "Content and evidence consultation (weeks)", hint: "Minimum 6", value: 6 },
+            { id: "collateWeeks", label: "Weeks from that summary to Gateway 2", hint: "", value: 20 },
+            { id: "gateway2Weeks", label: "Gateway 2 (weeks)", hint: "4 to 6", value: 6 },
+            { id: "reviseWeeks", label: "Weeks to revise the plan after Gateway 2", hint: "", value: 8 },
+            { id: "planWeeks", label: "Proposed plan consultation (weeks)", hint: "Minimum 8", value: 8 },
+            { id: "finaliseWeeks", label: "Weeks from that summary to Gateway 3", hint: "", value: 4 },
+            { id: "gateway3Weeks", label: "Gateway 3 (weeks)", hint: "4, up to 6", value: 4 },
+            { id: "examinationMonths", label: "Examination (months)", hint: "Expected no more than 6", value: 6 },
+            { id: "pauseMonths", label: "Pause during examination (months)", hint: "Maximum 6", value: 0 },
+            { id: "adoptionWeeks", label: "Weeks from the report to adoption", hint: "", value: 4 }
+          ] %}
+          <div class="govuk-grid-column-one-half">
+            {{ govukInput({ id: f.id, name: f.id, label: { text: f.label }, hint: { text: f.hint } if f.hint else undefined, classes: "govuk-input--width-3", inputmode: "numeric", value: f.value | string }) }}
+          </div>
+          {% endfor %}
+        </div>
+      {% endset %}
+      {{ govukDetails({ summaryText: "Adjust the durations", html: adv }) }}
+      <div class="govuk-button-group">
+        {{ govukButton({ text: "Build the timetable", type: "submit" }) }}
+        {{ govukButton({ text: "Download as CSV", classes: "govuk-button--secondary", attributes: { "data-action": "csv" } }) }}
+        {{ govukButton({ text: "Print", classes: "govuk-button--secondary", attributes: { "data-action": "print" } }) }}
+      </div>
+    </form>
+    <noscript><p class="govuk-body">Building your own timetable needs JavaScript. The worked example below shows every rule with a Gateway 1 date of 4 January 2027.</p></noscript>
+  </div>
+</div>
+
+<script type="application/json" id="planner-ref-routes">{{ refRoutes | json | safe }}</script>
+<div id="planner-output" data-example>
+  {% include "partials/schedule.njk" %}
+</div>
+{% endblock %}

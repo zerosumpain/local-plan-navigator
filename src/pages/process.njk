@@ -1,0 +1,43 @@
+{# src/pages/process.njk — the whole process on one page. #}
+{% extends "layouts/base.njk" %}
+{% from "partials/macros.njk" import diagram, flowText %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% block pageContent %}
+<h1 class="govuk-heading-xl">The 30-month local plan process</h1>
+<p class="govuk-body-l">Getting ready has no time limit. The clock starts the day the Gateway 1 self-assessment summary is published, and the government expects adoption within 30 months of it: preparation to month 23, examination in months 24 to 29, adoption in months 30 to 31.</p>
+
+{{ diagram(timelineSvg, null, "The process from getting ready to monitoring. Diamonds are gateways, bars are the two mandatory consultations and the examination (drawn at their minimum lengths), circles are other tasks. The list below is the same sequence in words.", true) }}
+
+<h2 class="govuk-heading-l">The sequence the law fixes</h2>
+<p class="govuk-body">Most of the process is for you to arrange. Eleven things have to happen in this order, because each regulation says its step can start no earlier than the day after the one before it.</p>
+{{ diagram(sequenceSvg, sequenceMermaid, "The legally required sequence, from the timetable to adoption.", true) }}
+<details class="govuk-details">
+  <summary class="govuk-details__summary"><span class="govuk-details__summary-text">The sequence as a list</span></summary>
+  <div class="govuk-details__text">{{ flowText(sequenceFlow) }}</div>
+</details>
+
+<h2 class="govuk-heading-l">Every stage</h2>
+<ul class="lpn-key" aria-label="Key">
+  <li><span class="lpn-obligation lpn-obligation--must">Must</span> required by the Regulations</li>
+  <li><span class="lpn-obligation lpn-obligation--should">Should</span> expected by the guidance</li>
+  <li><span class="lpn-obligation lpn-obligation--could">Could</span> worth considering</li>
+</ul>
+
+{% for phase in phases %}
+  <section class="govuk-!-margin-bottom-8" aria-labelledby="phase-{{ phase.id }}">
+    <h3 class="govuk-heading-m" id="phase-{{ phase.id }}"><span class="lpn-key__swatch" style="background:{{ phase.colour }}" aria-hidden="true"></span>{{ phase.title }} <span class="govuk-hint govuk-!-display-inline govuk-!-font-size-19">— {{ phase.label }}</span></h3>
+    <p class="govuk-body">{{ phase.summary }}</p>
+    <ol class="govuk-list govuk-list--number">
+    {% for s in stages %}{% if s.phase == phase.id %}
+      <li>
+        <a class="govuk-link govuk-!-font-weight-bold" href="{{ rel('/process/' + s.id + '/') }}">{{ s.title }}</a>
+        {% if s.kind == 'gateway' %}{{ govukTag({ text: "Gateway", classes: "govuk-tag--yellow" }) }}{% elif s.kind == 'consultation' %}{{ govukTag({ text: "Consultation", classes: "govuk-tag--blue" }) }}{% endif %}
+        {% if s.sequenceRequired %}<span class="govuk-hint govuk-!-font-size-16 govuk-!-display-inline">in the fixed sequence</span>{% endif %}
+        <br><span class="govuk-body-s">{{ s.when }}</span>
+      </li>
+    {% endif %}{% endfor %}
+    </ol>
+  </section>
+{% endfor %}
+{% endblock %}

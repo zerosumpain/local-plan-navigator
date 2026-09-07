@@ -1,0 +1,83 @@
+{
+  "flows": {
+    "sequence": {
+      "title": "The tasks whose order is fixed by law",
+      "desc": "Timetable, then notice of intention to commence, then scoping consultation, then Gateway 1, then the summary of scoping consultation, then the consultation on proposed plan content and evidence and its summary, then Gateway 2, then the consultation on the proposed local plan (with the spatial development strategy conformity consultation if applicable) and its summary, then Gateway 3, then examination, then adoption.",
+      "nodes": [
+        { "id": "tt", "text": "Publish local plan timetable", "kind": "step", "col": 0, "row": 0 },
+        { "id": "no", "text": "Notice of intention to commence (4 months minimum)", "kind": "step", "col": 1, "row": 0 },
+        { "id": "sc", "text": "Scoping consultation", "kind": "step", "col": 2, "row": 0 },
+        { "id": "g1", "text": "Gateway 1: self-assessment summary", "kind": "gateway", "col": 3, "row": 0 },
+        { "id": "ss", "text": "Summary of scoping consultation", "kind": "step", "col": 3, "row": 1 },
+        { "id": "cc", "text": "Consultation on proposed content and evidence (6 weeks minimum) and summary", "kind": "step", "col": 2, "row": 1 },
+        { "id": "g2", "text": "Gateway 2: observations and advice", "kind": "gateway", "col": 1, "row": 1 },
+        { "id": "pc", "text": "Consultation on the proposed local plan (8 weeks minimum), SDS conformity, and summary", "kind": "step", "col": 0, "row": 1 },
+        { "id": "g3", "text": "Gateway 3: prescribed requirements", "kind": "gateway", "col": 0, "row": 2 },
+        { "id": "ex", "text": "Submission and independent examination", "kind": "step", "col": 1, "row": 2 },
+        { "id": "ad", "text": "Adoption and policies map", "kind": "good", "col": 2, "row": 2 }
+      ],
+      "edges": [
+        { "from": "tt", "to": "no" }, { "from": "no", "to": "sc" }, { "from": "sc", "to": "g1" }, { "from": "g1", "to": "ss" },
+        { "from": "ss", "to": "cc" }, { "from": "cc", "to": "g2" }, { "from": "g2", "to": "pc" }, { "from": "pc", "to": "g3" },
+        { "from": "g3", "to": "ex" }, { "from": "ex", "to": "ad" }
+      ]
+    },
+    "gateway-2": {
+      "title": "Gateway 2: the assessment, week by week",
+      "desc": "Three months before, the authority gives the Planning Inspectorate notice. At week 0 it submits its documentation, which starts the gateway. In weeks 1 and 2 the assessor reviews the documents and agrees a workshop agenda. In week 3 a two-day workshop is held. In weeks 4 to 6 the assessor reports. The authority then publishes the report and everything it submitted, and has regard to the advice before consulting on the proposed local plan.",
+      "nodes": [
+        { "id": "n", "text": "Give the Inspectorate notice of the intended Gateway 2 date", "when": "3 months before", "kind": "step", "col": 0, "row": 0 },
+        { "id": "s", "text": "Submit the Gateway 2 documentation with suggested workshop dates and venue", "when": "week 0 — the gateway starts", "kind": "gateway", "col": 0, "row": 1 },
+        { "id": "r", "text": "Assessor reviews the documents and drafts the workshop agenda and questions with the authority", "when": "weeks 1 to 2", "kind": "step", "col": 0, "row": 2 },
+        { "id": "w", "text": "Two-day workshop on up to five issues chosen by the authority", "when": "week 3", "kind": "step", "col": 0, "row": 3 },
+        { "id": "p", "text": "Assessor writes and quality-assures the report of observations and advice", "when": "weeks 4 to 6", "kind": "step", "col": 0, "row": 4 },
+        { "id": "u", "text": "Authority publishes the report and all submitted documents, notifies those who asked, updates the timetable", "when": "as soon as reasonably practicable", "kind": "step", "col": 1, "row": 4 },
+        { "id": "h", "text": "Authority has regard to the advice and revises the draft plan", "kind": "step", "col": 1, "row": 3 },
+        { "id": "c", "text": "Consultation on the proposed local plan can now begin", "kind": "good", "col": 1, "row": 2 }
+      ],
+      "edges": [
+        { "from": "n", "to": "s" }, { "from": "s", "to": "r" }, { "from": "r", "to": "w" }, { "from": "w", "to": "p" },
+        { "from": "p", "to": "u" }, { "from": "u", "to": "h" }, { "from": "h", "to": "c" }
+      ]
+    },
+    "gateway-3": {
+      "title": "Gateway 3: stop or go",
+      "desc": "The authority submits the gateway 3 submission documents when it considers the prescribed requirements are met, after publishing the summary of the proposed plan consultation. The assessor checks each of the twelve prescribed requirements, largely in writing, within four weeks (six at most). If every requirement is met the assessor reports so, the authority publishes the report, a completion statement and the documents, and must submit the plan for examination, normally within three weeks. If any requirement is not met the assessor gives reasons, the authority addresses them and resubmits, and the gateway is repeated as many times as needed.",
+      "nodes": [
+        { "id": "s", "text": "Submit the gateway 3 submission documents", "when": "after the proposed plan consultation summary", "kind": "gateway", "col": 0, "row": 0 },
+        { "id": "a", "text": "Assessor checks the twelve prescribed requirements, raising any early questions", "when": "4 weeks, up to 6", "kind": "step", "col": 0, "row": 1 },
+        { "id": "d", "text": "Are all twelve requirements met?", "kind": "decision", "col": 0, "row": 2 },
+        { "id": "y", "text": "Report confirms the requirements are met, with reasons", "kind": "good", "col": 0, "row": 3 },
+        { "id": "p", "text": "Publish the report, the completion statement and the submission documents; notify; update the timetable", "kind": "step", "col": 0, "row": 4 },
+        { "id": "x", "text": "Submit the plan for examination", "when": "normally within 3 weeks", "kind": "good", "col": 0, "row": 5 },
+        { "id": "n", "text": "Report sets out which requirements are not met and why", "kind": "bad", "col": 1, "row": 2 },
+        { "id": "f", "text": "Address the reasoned justification and make sure every requirement is met", "when": "as soon as reasonably practicable", "kind": "step", "col": 1, "row": 3 },
+        { "id": "r", "text": "Resubmit the updated documents and seek further observations and advice; record the date in the timetable", "kind": "step", "col": 1, "row": 4 }
+      ],
+      "edges": [
+        { "from": "s", "to": "a" }, { "from": "a", "to": "d" }, { "from": "d", "to": "y", "label": "yes" }, { "from": "y", "to": "p" }, { "from": "p", "to": "x" },
+        { "from": "d", "to": "n", "label": "no" }, { "from": "n", "to": "f" }, { "from": "f", "to": "r" }, { "from": "r", "to": "a", "label": "repeat" }
+      ]
+    },
+    "examination": {
+      "title": "The examination, from submission to report",
+      "desc": "After submission the Inspector makes an initial assessment and sets out matters, issues and questions. Hearing statements are invited, hearing sessions are held, and site visits made. The Inspector may pause the examination for up to six months for further work. Any main modifications are consulted on for up to four weeks. The report recommends adoption, adoption with main modifications, or withdrawal. The authority fact-checks the report within five days and then publishes it.",
+      "nodes": [
+        { "id": "s", "text": "Plan submitted with the prescribed documents", "kind": "step", "col": 0, "row": 0 },
+        { "id": "i", "text": "Initial assessment; matters, issues and questions; Inspector's guidance note; hearing dates confirmed", "kind": "step", "col": 0, "row": 1 },
+        { "id": "h", "text": "Hearing statements (3,000 words), hearing sessions (usually 3 days a week), site visits", "when": "hearing details published 6 weeks ahead", "kind": "step", "col": 0, "row": 2 },
+        { "id": "d", "text": "Is substantial further work needed for soundness?", "kind": "decision", "col": 0, "row": 3 },
+        { "id": "p", "text": "Examination paused: authority does the work, reports back before the pause ends", "when": "up to 6 months", "kind": "step", "col": 1, "row": 3 },
+        { "id": "m", "text": "Schedule of main modifications agreed, assessed and consulted on", "when": "consultation up to 4 weeks", "kind": "step", "col": 0, "row": 4 },
+        { "id": "r", "text": "Report: adopt, adopt with main modifications, or withdraw", "when": "fact-check within 5 days", "kind": "step", "col": 0, "row": 5 },
+        { "id": "a", "text": "Authority publishes the recommendations and reasons; council adopts", "kind": "good", "col": 0, "row": 6 },
+        { "id": "w", "text": "Withdrawal recommended if the matters were not dealt with", "kind": "bad", "col": 1, "row": 5 }
+      ],
+      "edges": [
+        { "from": "s", "to": "i" }, { "from": "i", "to": "h" }, { "from": "h", "to": "d" },
+        { "from": "d", "to": "p", "label": "yes" }, { "from": "p", "to": "m", "label": "work done" }, { "from": "p", "to": "w", "label": "not done" },
+        { "from": "d", "to": "m", "label": "no" }, { "from": "m", "to": "r" }, { "from": "r", "to": "a" }
+      ]
+    }
+  }
+}

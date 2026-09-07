@@ -1,0 +1,43 @@
+{# src/pages/ask.njk — describe a problem; retrieval first, a local model second. #}
+{% extends "layouts/base.njk" %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% block pageContent %}
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds">
+<h1 class="govuk-heading-xl">Describe a problem</h1>
+<p class="govuk-body-l">Say what is going wrong, or what you need to know, in your own words. The passages of guidance and legislation that answer it come back with citations. If you choose to, a small language model running entirely in your browser will write a plain-English summary of those passages.</p>
+<form class="lpn-ask" method="get" action="">
+  {{ govukCharacterCount({ id: "question", name: "question", maxlength: "600", rows: "4", label: { text: "Your question or problem", classes: "govuk-label--m" }, hint: { text: "For example: our Gateway 2 report says the housing requirement evidence is weak — do we have to reconsult before Gateway 3?" } }) }}
+  {{ govukButton({ text: "Find the guidance", type: "submit" }) }}
+</form>
+<noscript><p class="govuk-body">This page needs JavaScript. Without it, use the <a class="govuk-link" href="{{ rel('/reference/') }}">reference library</a>.</p></noscript>
+<div id="ask-status" class="govuk-body" aria-live="polite"></div>
+<div id="ask-answer"></div>
+<div id="ask-passages"></div>
+</div>
+<div class="govuk-grid-column-one-third">
+  <aside class="lpn-aside" aria-labelledby="model-heading">
+    <h2 class="govuk-heading-m" id="model-heading">Plain-English answers (optional)</h2>
+    <p class="govuk-body-s">A model can summarise the passages for you. It downloads once (hundreds of megabytes to a gigabyte, depending on the model), runs on your device, and sends nothing anywhere. It can be wrong: the passages are the answer, the summary is a convenience.</p>
+    <div id="model-controls" data-module="lpn-model">
+      <p class="govuk-body-s" id="model-support" aria-live="polite">Checking what this browser can run…</p>
+      {{ govukRadios({ name: "model", classes: "govuk-radios--small", fieldset: { legend: { text: "Model", classes: "govuk-fieldset__legend--s" } }, items: [
+        { value: "Qwen2.5-1.5B-Instruct-q4f16_1-MLC", text: "Qwen 2.5 1.5B (about 1 GB, recommended)", checked: true, attributes: { "data-engine": "webllm", "data-size": "about 1 GB" } },
+        { value: "Llama-3.2-1B-Instruct-q4f16_1-MLC", text: "Llama 3.2 1B (about 0.7 GB, faster)", attributes: { "data-engine": "webllm", "data-size": "about 0.7 GB" } },
+        { value: "Qwen2.5-3B-Instruct-q4f16_1-MLC", text: "Qwen 2.5 3B (about 2 GB, better)", attributes: { "data-engine": "webllm", "data-size": "about 2 GB" } },
+        { value: "HuggingFaceTB/SmolLM2-360M-Instruct", text: "SmolLM2 360M (about 0.3 GB, works without WebGPU, slow)", attributes: { "data-engine": "transformers", "data-size": "about 0.3 GB" } }
+      ] }) }}
+      {{ govukButton({ text: "Download and start the model", classes: "govuk-button--secondary", attributes: { "data-action": "load-model" } }) }}
+      <div class="lpn-progress" id="model-progress" hidden>
+        <span class="lpn-progress__bar"><span class="lpn-progress__fill" style="width:0%"></span></span>
+        <span id="model-progress-text"></span>
+      </div>
+    </div>
+    {{ govukWarningText({ text: "Not advice. This is a prototype; check the cited passages and the originals before relying on anything.", iconFallbackText: "Warning" }) }}
+  </aside>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{# src/partials/schedule.njk — a Schedule as a checks list, a table and a chart.
+   Rendered at build time for the worked example with `example`; the browser
+   re-renders the same shape with the visitor's inputs. #}
+{% set s = example %}
+<h2 class="govuk-heading-l">{{ 'Worked example: Gateway 1 on ' + (s.inputs.gateway1 | date) if isExample !== false else 'Your timetable' }}</h2>
+<h3 class="govuk-heading-m">Checks</h3>
+<ul class="govuk-list lpn-checks">
+  {% for c in s.checks %}
+  <li class="lpn-check lpn-check--{{ 'ok' if c.ok else 'fail' }}"><span class="lpn-check__mark" aria-hidden="true">{{ '✓' if c.ok else '✗' }}</span> <span class="govuk-visually-hidden">{{ 'Passes:' if c.ok else 'Fails:' }}</span> {{ c.text }}{% if c.ref %} <span class="lpn-cite"><a class="govuk-link" href="{{ rel(corpusAnchors[c.ref.doc][c.ref.anchor] if corpusAnchors else '/reference/' + c.ref.doc + '/') }}#{{ c.ref.anchor }}">{{ c.ref.label }}</a></span>{% endif %}</li>
+  {% endfor %}
+</ul>
+<p class="govuk-body">Months from Gateway 1 to adoption: <strong>{{ s.monthsToAdoption | round(1) }}</strong>.</p>
+<h3 class="govuk-heading-m">Milestones</h3>
+<div class="lpn-table-scroll">
+<table class="govuk-table">
+  <caption class="govuk-table__caption govuk-visually-hidden">Every milestone with its date and the rule behind it</caption>
+  <thead class="govuk-table__head"><tr class="govuk-table__row"><th scope="col" class="govuk-table__header">Milestone</th><th scope="col" class="govuk-table__header">Date</th><th scope="col" class="govuk-table__header">Rule</th></tr></thead>
+  <tbody class="govuk-table__body">
+  {% for m in s.milestones %}
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">{{ m.label }}</th>
+      <td class="govuk-table__cell">{{ m.start | date }}{% if m.end != m.start %} to {{ m.end | date }}{% endif %}</td>
+      <td class="govuk-table__cell">{{ m.rule }}{% if m.ref %} <span class="lpn-cite"><a class="govuk-link" href="{{ rel(corpusAnchors[m.ref.doc][m.ref.anchor] if corpusAnchors else '/reference/' + m.ref.doc + '/') }}#{{ m.ref.anchor }}">{{ m.ref.label }}</a></span>{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<h3 class="govuk-heading-m">Chart</h3>
+<figure class="lpn-figure lpn-figure--wide"><div class="lpn-figure__scroll">{{ ganttSvg | safe }}</div><figcaption>The same milestones drawn against the calendar. Bars are consultations, gateways and the examination; diamonds are single dates; red diamonds are statutory deadlines.</figcaption></figure>

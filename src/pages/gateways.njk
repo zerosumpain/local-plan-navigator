@@ -1,0 +1,32 @@
+{# src/pages/gateways.njk — the three gateways side by side. #}
+{% extends "layouts/base.njk" %}
+{% block pageContent %}
+<h1 class="govuk-heading-xl">The three gateways</h1>
+<p class="govuk-body-l">Three checkpoints stand between getting ready and examination. The first is a self-assessment; the second is advice; the third is a stop/go test against twelve prescribed requirements.</p>
+<div class="lpn-table-scroll">
+<table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">What each gateway is</caption>
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header"></th>
+      {% for g in gateways %}<th scope="col" class="govuk-table__header">{{ g.short }}</th>{% endfor %}
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">Who assesses</th><td class="govuk-table__cell">You (self-assessment)</td><td class="govuk-table__cell">A Planning Inspector as gateway assessor</td><td class="govuk-table__cell">A Planning Inspector as gateway assessor</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">What it tests</th><td class="govuk-table__cell">Readiness in five areas: timetable, governance, engagement, anticipated content, SEA</td><td class="govuk-table__cell">Progress towards a sound plan, the prescribed requirements and SDS conformity; advice on up to five issues you choose</td><td class="govuk-table__cell">Whether the twelve prescribed requirements in regulation 32 are met, including practical readiness for examination</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">When</th>{% for g in gateways %}<td class="govuk-table__cell">{{ g.when }}</td>{% endfor %}</tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">How long</th><td class="govuk-table__cell">Instant — publishing the summary is passing</td><td class="govuk-table__cell">4 to 6 weeks; the workshop takes two days</td><td class="govuk-table__cell">4 weeks, up to 6 by exception</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">Outcome</th><td class="govuk-table__cell">The 30 months start</td><td class="govuk-table__cell">A report you must have regard to and publish; done once</td><td class="govuk-table__cell">Pass and you must submit; fail and you repeat it</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">Cost</th><td class="govuk-table__cell">None</td><td class="govuk-table__cell">Standard daily amount, £993 a day</td><td class="govuk-table__cell">Standard daily amount, £993 a day</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">Read more</th>{% for g in gateways %}<td class="govuk-table__cell"><a class="govuk-link" href="{{ rel('/process/' + g.id + '/') }}">{{ g.short }} in detail</a></td>{% endfor %}</tr>
+  </tbody>
+</table>
+</div>
+<h2 class="govuk-heading-l">Checklists</h2>
+<ul class="govuk-list govuk-list--bullet">
+  <li><a class="govuk-link" href="{{ rel('/checklists/gateway-1-readiness/') }}">Gateway 1 readiness</a></li>
+  <li><a class="govuk-link" href="{{ rel('/checklists/gateway-2-pack/') }}">Gateway 2 submission pack</a></li>
+  <li><a class="govuk-link" href="{{ rel('/checklists/gateway-3-submission/') }}">Gateway 3 documents and the twelve prescribed requirements</a></li>
+</ul>
+{% endblock %}

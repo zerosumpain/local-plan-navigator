@@ -1,0 +1,61 @@
+{# src/pages/index.njk — the start page. #}
+{% extends "layouts/base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% block pageContent %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">Find your way through the local plan process</h1>
+    <p class="govuk-body-l">A local planning authority in England now has 30 months to take a local plan from Gateway&nbsp;1 to adoption. This prototype puts the process, the three gateways, the regulations and the national policy behind them in one place, and tells you what to do next.</p>
+
+    <p class="govuk-body">Use it to:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>see the whole 30-month process and what the law requires at each stage</li>
+      <li>work out which stage your plan is at and what has to happen before the next gateway</li>
+      <li>turn a Gateway 1 date into a full timetable of milestones and statutory deadlines</li>
+      <li>tick off what each gateway and the examination need from you</li>
+      <li>search the guidance, the 2026 Regulations, the SEA Regulations and the NPPF together</li>
+      <li>describe a problem in your own words and get the relevant guidance back, with an optional plain-English answer written by a model running in your own browser</li>
+    </ul>
+
+    {{ govukButton({ text: "Start with the process map", href: base + "process/", isStartButton: true }) }}
+  </div>
+  <div class="govuk-grid-column-one-third">
+    <aside class="govuk-!-margin-top-2" aria-labelledby="built-on">
+      <h2 class="govuk-heading-s" id="built-on">Built on</h2>
+      <ul class="govuk-list govuk-body-s">
+        <li><a class="govuk-link" href="{{ base }}reference/30-month-overview/">30-month local plan process: an overview</a> (MHCLG)</li>
+        <li><a class="govuk-link" href="{{ base }}reference/procedural-guide/">Procedural guide for examinations and gateways</a> (Planning Inspectorate)</li>
+        <li><a class="govuk-link" href="{{ base }}reference/regulations-2026/">The Local Planning (England) Regulations 2026</a></li>
+        <li><a class="govuk-link" href="{{ base }}reference/sea-regulations-2004/#reg-12">SEA Regulations 2004, regulation 12</a></li>
+        <li><a class="govuk-link" href="{{ base }}reference/nppf/">National Planning Policy Framework</a> (August 2026)</li>
+      </ul>
+    </aside>
+  </div>
+</div>
+
+<h2 class="govuk-heading-l govuk-!-margin-top-6">Where do you want to start?</h2>
+<ul class="lpn-cards">
+  <li class="lpn-card">
+    <h3 class="lpn-card__title"><a class="govuk-link" href="{{ base }}process/">The 30-month process</a></h3>
+    <p class="lpn-card__body">Every stage from getting ready to monitoring, with the legally required sequence marked and the timings that go with it.</p>
+  </li>
+  <li class="lpn-card">
+    <h3 class="lpn-card__title"><a class="govuk-link" href="{{ base }}where-am-i/">Where is my plan?</a></h3>
+    <p class="lpn-card__body">Answer a few questions and get a tailored list of what to do next and what the next gateway will ask for.</p>
+  </li>
+  <li class="lpn-card">
+    <h3 class="lpn-card__title"><a class="govuk-link" href="{{ base }}planner/">Timeline planner</a></h3>
+    <p class="lpn-card__body">Enter your Gateway 1 date and get every milestone, consultation window and notice period as a table and a chart.</p>
+  </li>
+  <li class="lpn-card">
+    <h3 class="lpn-card__title"><a class="govuk-link" href="{{ base }}ask/">Describe a problem</a></h3>
+    <p class="lpn-card__body">Say what is going wrong in your own words. The guidance that answers it comes back with citations – and optionally a plain-English summary from a model that runs entirely on your device.</p>
+  </li>
+</ul>
+
+{{ govukInsetText({
+  html: 'The 30-month system applies to plans prepared under the Planning and Compulsory Purchase Act 2004 as amended by the Levelling-up and Regeneration Act 2023, and the 2026 Regulations, which came into force on 25 March 2026. Plans still going through the legacy system follow the <a class="govuk-link" href="https://www.gov.uk/government/collections/create-or-update-a-local-plan-using-the-legacy-system" rel="external">legacy guidance</a> instead.'
+}) }}
+{% endblock %}

@@ -1,0 +1,25 @@
+{# src/pages/question.njk — one question per page, GDS style. Each question is
+   a real page, so the URL changes and the back button works. The Continue
+   button needs JavaScript to read the chosen radio and go to the next page;
+   without it the noscript text offers the process map instead. #}
+{% extends "layouts/base.njk" %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% set items = [] %}
+{% for o in question.options %}
+  {% set items = (items.push({ value: o.value, text: o.text, attributes: { "data-next": (rel('/where-am-i/' + o.next + '/') if o.next else rel('/where-am-i/result/' + o.result + '/')) } }), items) %}
+{% endfor %}
+{% block pageContent %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+<form class="lpn-question" data-question="{{ question.id }}" method="get" action="">
+  {{ govukRadios({
+    name: "answer",
+    fieldset: { legend: { text: question.title, isPageHeading: true, classes: "govuk-fieldset__legend--l" } },
+    hint: { text: question.hint } if question.hint else undefined,
+    items: items
+  }) }}
+  {{ govukButton({ text: "Continue", type: "submit" }) }}
+</form>
+<noscript><p class="govuk-body">This question flow needs JavaScript. Without it, use the <a class="govuk-link" href="{{ rel('/process/') }}">process map</a>, which lists every stage in order.</p></noscript>
+</div></div>
+{% endblock %}

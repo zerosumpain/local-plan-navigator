@@ -1,0 +1,30 @@
+{# src/pages/accessibility.njk #}
+{% extends "layouts/base.njk" %}
+{% block pageContent %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+<h1 class="govuk-heading-xl">Accessibility statement</h1>
+<p class="govuk-body-l">This prototype aims to meet WCAG 2.2 level AA, the standard public sector websites must meet. It is a personal prototype, so the statement is honest rather than legally required.</p>
+<h2 class="govuk-heading-m">What was done</h2>
+<ul class="govuk-list govuk-list--bullet">
+  <li>Built on GOV.UK Frontend, which provides the focus styles, colour contrast, 44 pixel targets, error patterns and form components that GOV.UK services use.</li>
+  <li>Every page has a skip link, one main landmark, a logical heading order and a page title that says where you are.</li>
+  <li>Every diagram is an SVG with a title and a description for screen readers, and the same content appears next to it as text: a list or a table.</li>
+  <li>Colour never carries meaning on its own: gateways are diamonds as well as yellow, deadlines are labelled as well as red, checks show a tick or cross plus hidden text.</li>
+  <li>Nothing needs JavaScript except the three interactive tools and search, and each says what to do without it.</li>
+  <li>Motion is limited to one progress bar, which stops animating if your system asks for reduced motion.</li>
+  <li>Text can be resized to 200% and reflows on narrow screens without horizontal scrolling of the page; wide tables and diagrams scroll inside their own box.</li>
+  <li>Every page is checked with axe-core in the automated smoke test, and the build fails on serious or critical findings.</li>
+</ul>
+<h2 class="govuk-heading-m">Known problems</h2>
+<ul class="govuk-list govuk-list--bullet">
+  <li>The NPPF text was extracted automatically from a PDF. Tables in Annexes C and E are flattened into paragraphs, and a few footnotes may sit in the wrong place. The PDF on GOV.UK is authoritative.</li>
+  <li>The Gantt chart's bar labels are short; the table above it carries the full dates.</li>
+  <li>The language model's streamed answer is announced in one live region; on some screen readers it may be read in bursts.</li>
+  <li>The GDS Transport typeface is not used (it is licensed only to services on GOV.UK), so line lengths differ slightly from GOV.UK.</li>
+</ul>
+<h2 class="govuk-heading-m">Testing</h2>
+<p class="govuk-body">Automated checks with axe-core in Chromium on every page, keyboard walkthroughs of the question flow, the planner and the checklists, and zoom to 200% and 400% on the start page, process map and a stage page. No testing with real assistive technology users has been done yet.</p>
+<h2 class="govuk-heading-m">Reporting a problem</h2>
+<p class="govuk-body">Open an issue on <a class="govuk-link" href="https://github.com/zerosumpain/local-plan-navigator/issues" rel="external">GitHub</a>.</p>
+</div></div>
+{% endblock %}

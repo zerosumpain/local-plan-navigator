@@ -1,0 +1,14 @@
+{# src/pages/checklists.njk — the checklist index. #}
+{% extends "layouts/base.njk" %}
+{% block pageContent %}
+<h1 class="govuk-heading-xl">Checklists</h1>
+<p class="govuk-body-l">What each gateway, the submission and adoption need from you, as lists you can tick off. Your ticks are saved in this browser only; nothing is sent anywhere.</p>
+<ul class="lpn-cards">
+  {% for c in checklists %}
+  <li class="lpn-card">
+    <h2 class="lpn-card__title"><a class="govuk-link" href="{{ rel('/checklists/' + c.id + '/') }}">{{ c.title }}</a></h2>
+    <p class="lpn-card__body">{{ c.intro }}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

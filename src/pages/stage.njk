@@ -1,0 +1,73 @@
+{# src/pages/stage.njk — one stage of the process. Generated once per stage. #}
+{% extends "layouts/base.njk" %}
+{% from "partials/macros.njk" import cite, citeList, obligations, diagram, flowText %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% block pageContent %}
+<span class="govuk-caption-xl">{{ stage.phaseInfo.title }} · {{ stage.phaseInfo.label }}{% if stage.kind == 'gateway' %} · Gateway{% endif %}</span>
+<h1 class="govuk-heading-xl">{{ stage.title }}</h1>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <p class="govuk-body-l">{{ stage.summary }}</p>
+    <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-6">
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">When</dt><dd class="govuk-summary-list__value">{{ stage.when }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">In the fixed sequence</dt><dd class="govuk-summary-list__value">{{ "Yes — the Regulations say when this can start relative to the step before" if stage.sequenceRequired else "No — the timing is for you to decide" }}</dd></div>
+      {% if stage.who and stage.who.length %}<div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Who</dt><dd class="govuk-summary-list__value">{{ stage.who | join(', ') }}</dd></div>{% endif %}
+    </dl>
+
+    {{ obligations(stage) }}
+
+    {% if stage.diagramSvg %}
+      <h2 class="govuk-heading-l">How it runs</h2>
+      {{ diagram(stage.diagramSvg, stage.diagramMermaid, stage.diagramFlow.title, false) }}
+      <details class="govuk-details">
+        <summary class="govuk-details__summary"><span class="govuk-details__summary-text">The steps as a list</span></summary>
+        <div class="govuk-details__text">{{ flowText(stage.diagramFlow) }}</div>
+      </details>
+    {% endif %}
+
+    {% if stage.outputs and stage.outputs.length %}
+      <h2 class="govuk-heading-m">What this stage produces</h2>
+      <ul class="govuk-list govuk-list--bullet">{% for o in stage.outputs %}<li>{{ o }}</li>{% endfor %}</ul>
+    {% endif %}
+
+    {% if stage.timings and stage.timings.length %}
+      <h2 class="govuk-heading-m">Timings and deadlines</h2>
+      <div class="lpn-table-scroll">
+      <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-visually-hidden">Timing rules for this stage</caption>
+        <thead class="govuk-table__head"><tr class="govuk-table__row"><th scope="col" class="govuk-table__header">Rule</th><th scope="col" class="govuk-table__header">Source</th></tr></thead>
+        <tbody class="govuk-table__body">
+        {% for t in stage.timings %}
+          <tr class="govuk-table__row"><td class="govuk-table__cell">{{ t.text }}</td><td class="govuk-table__cell">{{ cite(t.ref, base) }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="govuk-grid-column-one-third">
+    <aside class="lpn-aside" aria-labelledby="aside-next">
+      <h2 class="govuk-heading-s" id="aside-next">Before and after</h2>
+      {% if stage.prevStages.length %}
+        <p class="govuk-body-s govuk-!-margin-bottom-1">Comes after</p>
+        <ul class="govuk-list govuk-body-s">{% for p in stage.prevStages %}<li><a class="govuk-link" href="{{ rel('/process/' + p.id + '/') }}">{{ p.short }}</a></li>{% endfor %}</ul>
+      {% endif %}
+      {% if stage.nextStages.length %}
+        <p class="govuk-body-s govuk-!-margin-bottom-1">Leads to</p>
+        <ul class="govuk-list govuk-body-s">{% for n in stage.nextStages %}<li><a class="govuk-link" href="{{ rel('/process/' + n.id + '/') }}">{{ n.short }}</a></li>{% endfor %}</ul>
+      {% endif %}
+      <h2 class="govuk-heading-s">The law behind it</h2>
+      {{ citeList(stage.refs, base) }}
+      <h2 class="govuk-heading-s">Guidance</h2>
+      {{ citeList(stage.guidance, base) }}
+      {% if stage.kind == 'gateway' %}
+        <h2 class="govuk-heading-s">Checklist</h2>
+        <p class="govuk-body-s"><a class="govuk-link" href="{{ rel('/checklists/') }}">Tick off what this gateway needs</a></p>
+      {% endif %}
+    </aside>
+  </div>
+</div>
+{% endblock %}

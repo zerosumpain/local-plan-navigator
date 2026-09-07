@@ -1,0 +1,256 @@
+{
+  "start": "system",
+  "questions": {
+    "system": {
+      "title": "Which plan-making system is your plan under?",
+      "hint": "The new system applies to plans prepared under the 2004 Act as amended by the Levelling-up and Regeneration Act 2023 and the 2026 Regulations, in force from 25 March 2026.",
+      "options": [
+        { "value": "new", "text": "The new 30-month system (2026 Regulations)", "next": "gateway1" },
+        { "value": "legacy", "text": "The legacy system (2012 Regulations, saved by the transitional provisions)", "result": "legacy" },
+        { "value": "unsure", "text": "I'm not sure", "result": "which-system" }
+      ]
+    },
+    "gateway1": {
+      "title": "Have you published your Gateway 1 self-assessment summary?",
+      "hint": "Publishing it is what passes Gateway 1 and starts the 30 months.",
+      "options": [
+        { "value": "yes", "text": "Yes", "next": "submitted" },
+        { "value": "no", "text": "No, we are still getting ready", "next": "ready" }
+      ]
+    },
+    "ready": {
+      "title": "How far have you got with getting ready?",
+      "hint": "Three things have to happen in this order before Gateway 1: publish the timetable, give at least four months' notice, and run a scoping consultation.",
+      "options": [
+        { "value": "nothing", "text": "We have not published a timetable yet", "result": "start" },
+        { "value": "timetable", "text": "The timetable is published but we have not given notice", "result": "notice-next" },
+        { "value": "notice", "text": "We have given notice but have not run the scoping consultation", "result": "scoping-next" },
+        { "value": "scoping", "text": "The scoping consultation is running or has closed", "result": "gateway-1-next" }
+      ]
+    },
+    "submitted": {
+      "title": "Has the plan been submitted for examination?",
+      "options": [
+        { "value": "yes", "text": "Yes", "next": "exam" },
+        { "value": "no", "text": "No", "next": "consultations" }
+      ]
+    },
+    "consultations": {
+      "title": "Which mandatory consultation have you most recently completed and published a summary of?",
+      "hint": "The summary must be published before the next step can start.",
+      "options": [
+        { "value": "none", "text": "None since Gateway 1 — we have not yet consulted on proposed plan content and evidence", "result": "content-consultation-next" },
+        { "value": "content", "text": "The consultation on proposed plan content and evidence", "next": "gateway2" },
+        { "value": "plan", "text": "The consultation on the proposed local plan", "result": "gateway-3-next" }
+      ]
+    },
+    "gateway2": {
+      "title": "Have you been through Gateway 2?",
+      "options": [
+        { "value": "no", "text": "No, not yet", "result": "gateway-2-next" },
+        { "value": "in", "text": "It is under way", "result": "gateway-2-during" },
+        { "value": "yes", "text": "Yes, the report is published", "result": "plan-consultation-next" }
+      ]
+    },
+    "exam": {
+      "title": "Where has the examination got to?",
+      "options": [
+        { "value": "early", "text": "Submitted; hearings not yet held", "result": "examination-early" },
+        { "value": "hearings", "text": "Hearings held; main modifications being worked on", "result": "examination-mm" },
+        { "value": "paused", "text": "The examination is paused", "result": "examination-paused" },
+        { "value": "report", "text": "We have the Inspector's report", "result": "adoption-next" },
+        { "value": "adopted", "text": "The plan is adopted", "result": "monitoring-next" }
+      ]
+    }
+  },
+  "results": {
+    "legacy": {
+      "title": "Your plan is under the legacy system",
+      "summary": "This prototype covers the new 30-month system only. Plans being taken through the 2012 Regulations under the transitional provisions follow the legacy guidance collection on GOV.UK.",
+      "now": [],
+      "links": [
+        { "text": "Create or update a local plan using the legacy system (GOV.UK)", "href": "https://www.gov.uk/government/collections/create-or-update-a-local-plan-using-the-legacy-system", "external": true }
+      ],
+      "refs": [{ "doc": "regulations-2026", "anchor": "schedule", "label": "2026 Regulations, Schedule — transitional provisions" }]
+    },
+    "which-system": {
+      "title": "Working out which system applies",
+      "summary": "The 2026 Regulations revoked the 2012 Regulations on 25 March 2026, but their Schedule saves the old route for plans already in train and sets deadlines for when each authority must give notice under the new system. In broad terms: an authority that submitted a plan under the old system by 31 December 2026 (and the plan is then adopted) must give notice under the new system within four years and eight months of that adoption and pass Gateway 1 within five years; an authority not in that position had to give notice by 31 December 2026 at the latest and must pass Gateway 1 by the latest of five years from its last adoption and 30 April 2027; and authorities whose submitted plan proposed less than 80% of local housing need had earlier deadlines (notice by 30 June 2026, Gateway 1 by 31 October 2026).",
+      "now": [
+        { "text": "Read the transitional Schedule and identify which paragraph describes your authority", "stage": null },
+        { "text": "Check the government's rollout guidance for your authority's expected start date", "stage": null }
+      ],
+      "links": [
+        { "text": "Rollout of the new local plan-making system (GOV.UK)", "href": "https://www.gov.uk/government/publications/rollout-of-the-new-local-plan-making-system", "external": true }
+      ],
+      "refs": [{ "doc": "regulations-2026", "anchor": "schedule", "label": "2026 Regulations, Schedule — transitional provisions" }]
+    },
+    "start": {
+      "title": "You are at the very start: getting ready",
+      "summary": "Nothing on the clock yet. The first legally required act is publishing the local plan timetable, and it has to be published before or on the day of the notice of intention to commence. Everything else in the getting-ready stage can run alongside.",
+      "now": [
+        { "text": "Confirm your SEA obligations and start the environmental baseline", "stage": "sea-check" },
+        { "text": "Prepare and publish the timetable in the approved data standard, with the statement that it has effect", "stage": "timetable" },
+        { "text": "Start the project initiation document, governance and delegations", "stage": "governance" },
+        { "text": "Begin baselining, the SWOT analysis and a draft vision", "stage": "baseline" }
+      ],
+      "nextGateway": { "stage": "gateway-1", "checklist": "gateway-1-readiness" },
+      "refs": [{ "doc": "regulations-2026", "anchor": "reg-8", "label": "Regulation 8 — when the timetable must first be published" }]
+    },
+    "notice-next": {
+      "title": "Next: give notice of your plan-making",
+      "summary": "The timetable is out, so the next legally required step is the notice of intention to commence. It starts a minimum four-month notice period, and Gateway 1 cannot be passed until that period has run and the scoping consultation has closed.",
+      "now": [
+        { "text": "Publish the notice as text on a webpage, with the area, title, timetable location and date", "stage": "notice" },
+        { "text": "Plan the scoping consultation to start on or after the notice date", "stage": "scoping" },
+        { "text": "Keep going with the PID, baselining and the draft vision", "stage": "governance" }
+      ],
+      "nextGateway": { "stage": "gateway-1", "checklist": "gateway-1-readiness" },
+      "refs": [{ "doc": "regulations-2026", "anchor": "reg-19", "label": "Regulation 19 — notice of intention to commence" }, { "doc": "regulations-2026", "anchor": "reg-21", "label": "Regulation 21(3) — the earliest Gateway 1 date" }]
+    },
+    "scoping-next": {
+      "title": "Next: run the scoping consultation",
+      "summary": "With notice given, the scoping consultation can start. It must invite the general and specific consultation bodies, ask what the plan should contain and how people want to be engaged, and close before the Gateway 1 summary is published. At least 21 days is recommended.",
+      "now": [
+        { "text": "Publish the notice of scoping consultation and invite the consultation bodies", "stage": "scoping" },
+        { "text": "Use the responses to finish the engagement strategy in the PID", "stage": "governance" },
+        { "text": "Check progress against the readiness checker in each of the five areas", "stage": "gateway-1" }
+      ],
+      "nextGateway": { "stage": "gateway-1", "checklist": "gateway-1-readiness" },
+      "refs": [{ "doc": "regulations-2026", "anchor": "reg-20", "label": "Regulation 20 — scoping consultation" }]
+    },
+    "gateway-1-next": {
+      "title": "Next: decide whether you are ready for Gateway 1",
+      "summary": "Once four months have passed since the notice and the scoping consultation has closed, Gateway 1 is yours to call. Pass it only when the readiness checker is green, or amber with a strategy for the gaps — the 30 months start the day the summary is published.",
+      "now": [
+        { "text": "Complete the readiness checker for the five areas", "stage": "gateway-1" },
+        { "text": "Write the self-assessment summary to the template and publish it", "stage": "gateway-1" },
+        { "text": "Update the timetable the same day", "stage": "timetable" },
+        { "text": "Have the summary of scoping consultation ready to publish the day after", "stage": "scoping-summary" }
+      ],
+      "nextGateway": { "stage": "gateway-1", "checklist": "gateway-1-readiness" },
+      "refs": [{ "doc": "regulations-2026", "anchor": "reg-21", "label": "Regulation 21 — Gateway 1" }, { "doc": "regulations-2026", "anchor": "reg-18", "label": "Regulation 18 — the five-year deadline" }]
+    },
+    "content-consultation-next": {
+      "title": "You are in the first part of preparing the plan",
+      "summary": "The clock is running. The summary of scoping consultation must be published first, then the vision, strategy options and evidence become the proposed plan content and evidence for the second mandatory consultation, which lasts at least six weeks and is followed by a published summary.",
+      "now": [
+        { "text": "Publish the summary of scoping consultation, if not done", "stage": "scoping-summary" },
+        { "text": "Finish the draft vision, the measurable outcomes and the spatial strategy options", "stage": "vision-strategy" },
+        { "text": "Consult on the proposed content and evidence for at least six weeks, and consult the SEA consultation bodies on the environmental report's scope at the same time", "stage": "content-consultation" },
+        { "text": "Publish the summary of that consultation — Gateway 2 cannot start before it", "stage": "content-consultation" },
+        { "text": "Give the Inspectorate three months' notice of your Gateway 2 date", "stage": "collate" }
+      ],
+      "nextGateway": { "stage": "gateway-2", "checklist": "gateway-2-pack" },
+      "refs": [{ "doc": "regulations-2026", "anchor": "reg-22", "label": "Regulation 22" }, { "doc": "regulations-2026", "anchor": "reg-23", "label": "Regulation 23" }]
+    },
+    "gateway-2-next": {
+      "title": "Next: Gateway 2",
+      "summary": "With the content and evidence summary published, Gateway 2 can start any time you choose before the proposed plan consultation. It is most useful when the assessor can see draft policies or options and there is still time to act on the advice.",
+      "now": [
+        { "text": "Bring the draft plan together: preferred strategy, sites, policies, the map of proposed policies, the environmental report", "stage": "collate" },
+        { "text": "Choose up to five soundness issues and write a 2,000-word topic paper on each", "stage": "collate" },
+        { "text": "Prepare the covering letter, timetable, PID, draft statement of compliance and draft statement of soundness", "stage": "gateway-2" },
+        { "text": "Give the Inspectorate three months' notice and suggest workshop dates", "stage": "gateway-2" }
+      ],
+      "nextGateway": { "stage": "gateway-2", "checklist": "gateway-2-pack" },
+      "refs": [{ "doc": "regulations-2026", "anchor": "reg-26", "label": "Regulation 26 — Gateway 2" }]
+    },
+    "gateway-2-during": {
+      "title": "Gateway 2 is under way",
+      "summary": "The assessor has up to six weeks: review in weeks one and two, the workshop in week three, the report in weeks four to six. You can keep working on the plan throughout.",
+      "now": [
+        { "text": "Prepare for the workshop: the agenda is agreed in advance and the discussion is led by the assessor", "stage": "gateway-2" },
+        { "text": "On receiving the report, publish it with everything you submitted, notify those who asked, send copies to anyone identified, and update the timetable the same day", "stage": "gateway-2" },
+        { "text": "Revise the plan having regard to the advice, then plan the eight-week consultation on the proposed local plan", "stage": "plan-consultation" }
+      ],
+      "nextGateway": { "stage": "gateway-3", "checklist": "gateway-3-submission" },
+      "refs": [{ "doc": "procedural-guide", "anchor": "3-5-the-gateway-2-process", "label": "Procedural guide 3.5 — the Gateway 2 process" }]
+    },
+    "plan-consultation-next": {
+      "title": "Next: consult on the proposed local plan",
+      "summary": "The Gateway 2 advice is published, so the third mandatory consultation can start. It is on the plan you intend to submit, lasts at least eight weeks, runs alongside the spatial development strategy conformity consultation where there is one, and should carry the environmental report with it. A published summary follows before Gateway 3.",
+      "now": [
+        { "text": "Finalise the proposed local plan, the map of proposed policies, the evidence details and the statement of how earlier representations were addressed", "stage": "plan-consultation" },
+        { "text": "Publish the notice and documents, invite the consultation bodies, residents and those who asked; allow at least eight weeks", "stage": "plan-consultation" },
+        { "text": "Consult the SDS authority on conformity over the same dates, and publish any supplementary plans statement", "stage": "plan-consultation" },
+        { "text": "Give the Inspectorate three months' notice of Gateway 3 and get a programme officer in post", "stage": "gateway-3" }
+      ],
+      "nextGateway": { "stage": "gateway-3", "checklist": "gateway-3-submission" },
+      "refs": [{ "doc": "regulations-2026", "anchor": "reg-27", "label": "Regulation 27 — consultation on the proposed local plan" }]
+    },
+    "gateway-3-next": {
+      "title": "Next: Gateway 3",
+      "summary": "The proposed plan consultation summary is published, so Gateway 3 can start as soon as you consider the twelve prescribed requirements are met. Secure political approval for submission first — passing the gateway obliges you to submit.",
+      "now": [
+        { "text": "Analyse the consultation feedback and make any final changes; consider whether significant changes need further consultation", "stage": "plan-consultation" },
+        { "text": "Complete the statement of compliance and the statement of soundness", "stage": "gateway-3" },
+        { "text": "Assemble the gateway 3 submission documents and the statement of practical readiness", "stage": "gateway-3" },
+        { "text": "Secure the approvals for submission", "stage": "gateway-3" }
+      ],
+      "nextGateway": { "stage": "gateway-3", "checklist": "gateway-3-submission" },
+      "refs": [{ "doc": "regulations-2026", "anchor": "reg-31", "label": "Regulation 31 — Gateway 3" }, { "doc": "regulations-2026", "anchor": "reg-32", "label": "Regulation 32 — the prescribed requirements" }]
+    },
+    "examination-early": {
+      "title": "The examination has started",
+      "summary": "The Inspector is making the initial assessment and will set out matters, issues and questions, confirm hearing dates and issue a guidance note. Hearing details must be published at least six weeks before hearings open.",
+      "now": [
+        { "text": "Publish the submission date statement, the plan and all submitted documents, and notify those who asked", "stage": "submission" },
+        { "text": "Answer the Inspector's initial queries promptly; do not submit unsolicited material", "stage": "examination" },
+        { "text": "Publish the hearing date, time, place and the examiner's name at least six weeks ahead", "stage": "examination" },
+        { "text": "Prepare hearing statements within the word limit by the deadline", "stage": "examination" }
+      ],
+      "nextGateway": null,
+      "checklist": "examination-submission",
+      "refs": [{ "doc": "regulations-2026", "anchor": "reg-35", "label": "Regulation 35" }, { "doc": "procedural-guide", "anchor": "5-initial-assessment-and-organisation-of-the-hearing-sessions", "label": "Procedural guide 5" }]
+    },
+    "examination-mm": {
+      "title": "Main modifications",
+      "summary": "Any change that materially affects a policy can only be made as a main modification recommended by the Inspector, and every proposed main modification must be consulted on — for up to four weeks unless exceptional — with environmental and habitats assessment where needed, before the Inspector can recommend it.",
+      "now": [
+        { "text": "Agree the schedule of main modifications with the Inspector as a priority after the hearings", "stage": "examination" },
+        { "text": "Run the assessments and the consultation, keeping any further (minor) modifications clearly separate", "stage": "examination" },
+        { "text": "Update the timetable if the examination will run longer", "stage": "timetable" }
+      ],
+      "nextGateway": null,
+      "checklist": "adoption",
+      "refs": [{ "doc": "procedural-guide", "anchor": "8-main-modifications-to-the-plan", "label": "Procedural guide 8 — main modifications" }]
+    },
+    "examination-paused": {
+      "title": "The examination is paused",
+      "summary": "A pause can last up to six months. Before it ends you must send the Inspector a document setting out what has been done about the matters in the pause notification, with any proposed main modifications and further evidence, then publish it and notify those who asked. If the matters are not dealt with, the Inspector must recommend withdrawal.",
+      "now": [
+        { "text": "Notify those who asked and update the timetable to show the pause period", "stage": "examination" },
+        { "text": "Deliver the project plan and milestones the Inspector asked for, and report regularly", "stage": "examination" },
+        { "text": "Send the document and evidence before the pause ends; publish and notify", "stage": "examination" }
+      ],
+      "nextGateway": null,
+      "checklist": "adoption",
+      "refs": [{ "doc": "regulations-2026", "anchor": "reg-36", "label": "Regulation 36 — pause of the examination" }, { "doc": "procedural-guide", "anchor": "9-examination-pauses", "label": "Procedural guide 9 — examination pauses" }]
+    },
+    "adoption-next": {
+      "title": "Next: publish the report and adopt",
+      "summary": "The report must be published as soon as reasonably practicable, with the timetable updated the same day. If the plan is sound, or sound with main modifications, full council adopts it; the adoption statement, the SEA statement and the policies map follow.",
+      "now": [
+        { "text": "Publish the recommendations and reasons, notify those who asked, update the timetable", "stage": "report" },
+        { "text": "Take the plan, with the main modifications, to full council", "stage": "adoption" },
+        { "text": "Publish the adoption statement and the SEA post-adoption statement, and notify", "stage": "adoption" },
+        { "text": "Prepare the policies map within a month of adoption", "stage": "adoption" }
+      ],
+      "nextGateway": null,
+      "checklist": "adoption",
+      "refs": [{ "doc": "regulations-2026", "anchor": "reg-37", "label": "Regulation 37" }, { "doc": "regulations-2026", "anchor": "reg-39", "label": "Regulation 39" }, { "doc": "regulations-2026", "anchor": "reg-85", "label": "Regulation 85" }]
+    },
+    "monitoring-next": {
+      "title": "The plan is adopted: monitor it, and start the next one in time",
+      "summary": "Annual monitoring, the SEA monitoring of significant environmental effects, a plan evaluation report in year four, and Gateway 1 for the next plan within five years of adoption — earlier if circumstances change.",
+      "now": [
+        { "text": "Set up annual monitoring against the national metrics and the plan's measurable outcomes", "stage": "monitoring" },
+        { "text": "Keep the policies map up to date as the development plan changes", "stage": "adoption" },
+        { "text": "Diary the plan evaluation report for year four and the five-year deadline for the next Gateway 1", "stage": "monitoring" }
+      ],
+      "nextGateway": { "stage": "gateway-1", "checklist": "gateway-1-readiness" },
+      "refs": [{ "doc": "regulations-2026", "anchor": "reg-18", "label": "Regulation 18" }, { "doc": "sea-regulations-2004", "anchor": "reg-17", "label": "SEA Regulations, regulation 17" }]
+    }
+  }
+}

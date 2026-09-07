@@ -1,0 +1,24 @@
+{# src/pages/reference.njk — one source document (or one part / chapter of it). #}
+{% extends "layouts/base.njk" %}
+{% block pageContent %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-third lpn-toc-col">
+    <nav class="lpn-toc" aria-labelledby="toc-heading">
+      <h2 class="govuk-heading-s" id="toc-heading">{{ 'In this part' if units and units.length > 1 else 'Contents' }}</h2>
+      {% if units and units.length > 1 %}
+        <p class="govuk-body-s"><a class="govuk-link" href="{{ rel(source.route if source.route else '/reference/' + source.id + '/') }}">All parts of {{ source.short }}</a></p>
+      {% endif %}
+      <ul class="govuk-list govuk-body-s">
+        {% for t in toc %}<li{% if t.level >= 3 %} class="govuk-!-padding-left-3"{% endif %}><a class="govuk-link" href="#{{ t.id }}">{{ t.heading }}</a></li>{% endfor %}
+      </ul>
+    </nav>
+  </div>
+  <div class="govuk-grid-column-two-thirds lpn-reference">
+    <span class="govuk-caption-xl">{{ source.short }} · {{ source.publisher }} · {{ source.updated }}</span>
+    <h1 class="govuk-heading-xl">{{ unitTitle }}</h1>
+    {% if source.note %}<div class="govuk-inset-text">{{ source.note }}</div>{% endif %}
+    <p class="govuk-body-s"><a class="govuk-link" href="{{ source.url }}" rel="external">Read the original</a> · Crown copyright, <a class="govuk-link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">OGL v3.0</a></p>
+    {{ html | safe }}
+  </div>
+</div>
+{% endblock %}

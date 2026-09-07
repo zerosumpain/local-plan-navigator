@@ -1,0 +1,1768 @@
+{
+  "phases": [
+    {
+      "id": "get-ready",
+      "title": "Getting ready",
+      "label": "Before the clock starts",
+      "months": null,
+      "colour": "#505a5f",
+      "summary": "Everything that must, or should, happen before Gateway 1. There is no time limit on this stage, but three things must happen in order: publish the timetable, give at least four months' notice, and run a scoping consultation that ends before Gateway 1."
+    },
+    {
+      "id": "prepare",
+      "title": "Prepare the plan",
+      "label": "Months 1 to 23",
+      "months": [
+        1,
+        23
+      ],
+      "colour": "#1d70b8",
+      "summary": "The 30-month clock starts the day the Gateway 1 self-assessment summary is published. Two mandatory consultations and the Gateway 2 assessment sit inside this phase, in a fixed order."
+    },
+    {
+      "id": "examine",
+      "title": "Examination",
+      "label": "Months 24 to 29",
+      "months": [
+        24,
+        29
+      ],
+      "colour": "#6f2da8",
+      "summary": "After Gateway 3 the plan must be submitted. An Inspector examines it against the tests of soundness; the government expects examinations to take no longer than six months."
+    },
+    {
+      "id": "adopt",
+      "title": "Adoption",
+      "label": "Months 30 to 31",
+      "months": [
+        30,
+        31
+      ],
+      "colour": "#00703c",
+      "summary": "Full council adopts the plan, an adoption statement and the SEA statement are published, and the policies map follows within a month."
+    },
+    {
+      "id": "monitor",
+      "title": "Monitoring",
+      "label": "Month 31 onwards",
+      "months": [
+        31,
+        36
+      ],
+      "colour": "#b58840",
+      "summary": "Annual monitoring against national metrics and the plan's measurable outcomes, a plan evaluation report in year four, and a new plan started within five years of adoption."
+    }
+  ],
+  "stages": [
+    {
+      "id": "sea-check",
+      "phase": "get-ready",
+      "kind": "task",
+      "title": "Confirm you need a Strategic Environmental Assessment",
+      "short": "SEA check",
+      "when": "As early as possible, before Gateway 1",
+      "sequenceRequired": false,
+      "summary": "Strategic Environmental Assessment (SEA) is the environmental assessment of plans and programmes likely to have significant effects on the environment. A local plan sets the framework for future development consent, so the government expects every local plan to need one. The environmental report it produces is a Gateway 3 submission document and an examination submission document, so the assessment has to run alongside the plan from the start.",
+      "must": [
+        "Decide whether the plan falls within regulation 5 of the SEA Regulations. A plan prepared for town and country planning or land use that sets the framework for future development consent of projects does, unless it determines the use of a small area at local level or is a minor modification and you have determined under regulation 9 that it is unlikely to have significant environmental effects.",
+        "If you make a regulation 9 determination that no assessment is needed, take account of the Schedule 1 criteria, consult the consultation bodies first, and prepare a statement of reasons — that statement becomes a Gateway 3 and examination submission document."
+      ],
+      "should": [
+        "Identify the environmental protection objectives relevant to the plan (international, national and community level) and the baseline environmental information you will assess the plan against — the Gateway 1 guidance recommends both are in hand before Gateway 1.",
+        "Gather baseline environmental information at the same time as the other baselining work, because the two overlap."
+      ],
+      "could": [
+        "Plan the environmental report's structure around Schedule 2 now, so the scope can be consulted on with the consultation bodies alongside the plan content and evidence consultation."
+      ],
+      "outputs": [
+        "A recorded decision on whether SEA applies",
+        "The beginnings of an environmental baseline",
+        "Where relevant, a regulation 9 determination and statement of reasons"
+      ],
+      "who": [
+        "Local planning authority",
+        "The consultation bodies: Natural England, the Environment Agency and Historic England"
+      ],
+      "timings": [
+        {
+          "text": "Consultation bodies have 5 weeks to respond to a consultation on the scope and level of detail of the environmental report.",
+          "ref": {
+            "doc": "sea-regulations-2004",
+            "anchor": "reg-12",
+            "label": "SEA Regulations, regulation 12(6)"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "sea-regulations-2004",
+          "anchor": "reg-5",
+          "label": "SEA Regulations 2004, regulation 5 — when an assessment is required"
+        },
+        {
+          "doc": "sea-regulations-2004",
+          "anchor": "reg-9",
+          "label": "SEA Regulations 2004, regulation 9 — determinations"
+        },
+        {
+          "doc": "sea-regulations-2004",
+          "anchor": "reg-12",
+          "label": "SEA Regulations 2004, regulation 12 — the environmental report"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-21",
+          "label": "2026 Regulations, regulation 21(2)(e) — SEA obligations in the Gateway 1 summary"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "30-month-overview",
+          "anchor": "confirm-you-need-to-carry-out-a-strategic-environmental-assessment-sea",
+          "label": "30-month overview: confirm you need to carry out SEA"
+        },
+        {
+          "doc": "getting-ready",
+          "anchor": "progressing-the-strategic-environmental-assessment-sea",
+          "label": "Getting ready: progressing the SEA"
+        }
+      ],
+      "next": [
+        "timetable"
+      ]
+    },
+    {
+      "id": "timetable",
+      "phase": "get-ready",
+      "kind": "task",
+      "title": "Prepare and publish your local plan timetable",
+      "short": "Timetable",
+      "when": "Before or on the day you give notice; then kept up to date",
+      "sequenceRequired": true,
+      "summary": "The timetable is the first legally required step and the document the Planning Inspectorate resources its assessors and Inspectors from. It must be published before or on the same day as the notice of intention to commence, brought into effect by a statement, published in the approved data standard, checked monthly and revised on the day certain stages happen.",
+      "must": [
+        "Include the dates for every key milestone: notice, scoping consultation start and end, Gateway 1 summary, the content and evidence consultation, Gateway 2, the proposed plan consultation, Gateway 3, submission and adoption — plus any optional consultation you already intend to run and any supplementary plans.",
+        "Publish it as two datasets in the approved data standard (plan dataset and plan timetable dataset) in CSV, GeoJSON, GML or GeoPackage, with a user-friendly version alongside.",
+        "Publish the timetable and a statement that it is to have effect, together, before or on the day of the notice of intention to commence.",
+        "Check whether it needs updating at least every month, and revise it by the end of the same day that you publish the Gateway 1 summary, the Gateway 2 or Gateway 3 observations and advice, or the examiner's recommendations.",
+        "Revise it as soon as reasonably practicable when you decide on an extra consultation, repeat Gateway 3, receive a pause notification, or withdraw or revoke the plan."
+      ],
+      "should": [
+        "Set realistic dates: the Inspectorate says inaccurate or unmet timetables may delay the appointment of gateway assessors and Inspectors.",
+        "Give the Planning Inspectorate at least 3 months' notice of when you intend to enter Gateway 2 and Gateway 3.",
+        "Avoid needing full council approval for every update — plan the delegation with senior leaders early.",
+        "Keep a published schedule of amendments alongside the timetable."
+      ],
+      "could": [
+        "Start from the planner in this prototype, which turns a Gateway 1 date into every milestone with the rule behind it."
+      ],
+      "outputs": [
+        "Plan dataset and plan timetable dataset (approved data standard)",
+        "User-friendly timetable webpage",
+        "Statement that the timetable has effect",
+        "Schedule of amendments"
+      ],
+      "who": [
+        "Local planning authority",
+        "Planning Inspectorate (reads it to plan resourcing)"
+      ],
+      "timings": [
+        {
+          "text": "First published no later than the day the notice of intention to commence is made available.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-8",
+            "label": "Regulation 8"
+          }
+        },
+        {
+          "text": "Kept up to date within one month of first publication and each month after that.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-6",
+            "label": "Regulation 6(1)–(2)"
+          }
+        },
+        {
+          "text": "Revised by the end of the same day a relevant plan preparation stage occurs.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-6",
+            "label": "Regulation 6(3)–(4)"
+          }
+        },
+        {
+          "text": "At least 3 months' notice to the Inspectorate before entering Gateway 2 and Gateway 3.",
+          "ref": {
+            "doc": "procedural-guide",
+            "anchor": "3-1-the-local-plan-timetable-and-planning-inspectorate-resourcing",
+            "label": "Procedural guide 3.1.3"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-4",
+          "label": "Regulation 4 — form and content of a local plan timetable"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-6",
+          "label": "Regulation 6 — revision of a local plan timetable"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-8",
+          "label": "Regulation 8 — publication of a local plan timetable"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM7",
+          "label": "NPPF policy PM7 — initiating plan-making"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "creating-a-plan-timetable",
+          "label": "Creating a plan timetable"
+        },
+        {
+          "doc": "procedural-guide",
+          "anchor": "3-1-the-local-plan-timetable-and-planning-inspectorate-resourcing",
+          "label": "Procedural guide 3.1 — the timetable and Inspectorate resourcing"
+        }
+      ],
+      "next": [
+        "notice"
+      ]
+    },
+    {
+      "id": "notice",
+      "phase": "get-ready",
+      "kind": "task",
+      "title": "Give at least 4 months' notice of plan-making",
+      "short": "Notice to commence",
+      "when": "At least 4 months before Gateway 1",
+      "sequenceRequired": true,
+      "summary": "The notice of intention to commence local plan preparation starts a minimum four-month notice period so that communities and stakeholders know plan-making is beginning. It must be published as text on a webpage, not only as a download.",
+      "must": [
+        "Include the name of the authority (and of every other authority for a joint plan), the geographical area the plan covers, the title you will use for the plan, where the timetable is published, and the date the notice is made available.",
+        "Say so if the local plan is to incorporate all or part of a minerals and waste plan.",
+        "Publish it as text on a webpage on your own website, and make it available for inspection at your principal office and any other places you consider appropriate.",
+        "Publish the timetable before or on the same day.",
+        "Issue a new notice, and serve a new notice period, if the plan's area or type changes, the partners in a joint plan change, or the Inspectorate recommends withdrawal and a restart."
+      ],
+      "should": [
+        "Describe the area in words (for example the administrative boundary and its ONS code) and show it on a map; add a shapefile if the boundary is not a national geography.",
+        "Give the date you expect to pass through Gateway 1.",
+        "Give the webpage a name that includes 'notice to commence' and the plan's title, and link it from related content and navigation."
+      ],
+      "could": [
+        "Give more than four months' notice if a longer lead-in helps stakeholders before the scoping consultation."
+      ],
+      "outputs": [
+        "Notice of intention to commence local plan preparation (webpage)"
+      ],
+      "who": [
+        "Local planning authority"
+      ],
+      "timings": [
+        {
+          "text": "Gateway 1 cannot be passed until the first day after four months from the notice — or the day after the scoping consultation closes, whichever is later.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-21",
+            "label": "Regulation 21(3)"
+          }
+        },
+        {
+          "text": "Transitional rule: authorities caught by the Schedule had to give notice by 30 June 2026 or 31 December 2026 depending on their circumstances.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "schedule",
+            "label": "Schedule — transitional provisions"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-19",
+          "label": "Regulation 19 — notice of intention to commence local plan preparation"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-88",
+          "label": "Regulation 88 — what 'made available' means"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "schedule",
+          "label": "Schedule — when the first notice under the new system is due"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "giving-notice",
+          "label": "Giving notice of your plan-making"
+        }
+      ],
+      "next": [
+        "governance",
+        "scoping"
+      ]
+    },
+    {
+      "id": "governance",
+      "phase": "get-ready",
+      "kind": "task",
+      "title": "Decide your project management and governance",
+      "short": "Governance and PID",
+      "when": "During the notice period",
+      "sequenceRequired": false,
+      "summary": "Project management is one of the five areas the Gateway 1 self-assessment must cover, and the Gateway 2 assessor will judge the effectiveness of your arrangements against your published project initiation document (PID). The government and the Planning Advisory Service expect a PID, a risk register and a sign-off plan before the clock starts.",
+      "must": [
+        "Set out your project management and governance arrangements in the Gateway 1 self-assessment summary."
+      ],
+      "should": [
+        "Complete a project initiation document covering scope and the relationship with other plans, the engagement strategy, detailed project planning behind the timetable, governance and decision-making, resources and skills, funding, and key risks with mitigations. The PAS template is the recommended starting point.",
+        "Have a robust approach to manage, govern, resource and finance the plan, identified risks with processes to monitor and mitigate them, and involve every relevant team and decision maker in signing off the approach.",
+        "Work with senior leaders on efficient sign-offs — including any changes to the constitution or standing orders — so that gateways and submission are not held up waiting for committees.",
+        "Treat the PID as a living document and reuse parts of it at the Gateway 1 summary, formal consultations and later gateways."
+      ],
+      "could": [
+        "Share your completed readiness checker with MHCLG so they can see where support is needed."
+      ],
+      "outputs": [
+        "Project initiation document (not required to be published in full)",
+        "Risk register",
+        "Delegation and sign-off plan"
+      ],
+      "who": [
+        "Local planning authority",
+        "Elected members and senior leaders",
+        "Planning Advisory Service (optional support)"
+      ],
+      "timings": [],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-21",
+          "label": "Regulation 21(2)(b) — governance in the self-assessment summary"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM7",
+          "label": "NPPF policy PM7 — a project initiation document and sign-off plan"
+        },
+        {
+          "doc": "procedural-guide",
+          "anchor": "3-5-the-gateway-2-process",
+          "label": "Procedural guide 3.5.9 — the assessor advises on project management against the PID"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "getting-ready",
+          "anchor": "using-a-project-initiation-document-pid-to-help-you-get-ready",
+          "label": "Getting ready: using a PID"
+        }
+      ],
+      "next": [
+        "scoping"
+      ]
+    },
+    {
+      "id": "scoping",
+      "phase": "get-ready",
+      "kind": "consultation",
+      "title": "Run a scoping consultation",
+      "short": "Scoping consultation",
+      "when": "After notice; must close before Gateway 1",
+      "sequenceRequired": true,
+      "summary": "The first of three mandatory consultations. It asks stakeholders what the plan should contain and how they want to be engaged throughout. It cannot start before the notice is published and must finish before the Gateway 1 summary is published; the government recommends at least 21 days.",
+      "must": [
+        "Invite the general consultation bodies you consider appropriate and the specific consultation bodies you consider may have an interest to make representations on what the plan should contain and how you should engage with them.",
+        "Publish a notice of scoping consultation stating the matters consulted on, the closing date, the address for representations, and that people may ask to be notified of later steps.",
+        "Accept representations from anyone, and record who asked to be notified of later stages — they must be notified at each of those stages."
+      ],
+      "should": [
+        "Run it for at least 21 days.",
+        "Ask questions built on your SWOT analysis and emerging priorities so that feedback stays focused on what the plan can deliver.",
+        "Use the feedback to shape the community engagement strategy in your PID."
+      ],
+      "could": [
+        "Combine it with early engagement on the vision, since the same people are being asked about the same future."
+      ],
+      "outputs": [
+        "Notice of scoping consultation",
+        "Representations and a list of people who asked to be notified",
+        "Material for the summary of scoping consultation (published after Gateway 1)"
+      ],
+      "who": [
+        "Local planning authority",
+        "General and specific consultation bodies",
+        "Anyone who wants to respond"
+      ],
+      "timings": [
+        {
+          "text": "No earlier than the day the notice of intention to commence is made available.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-20",
+            "label": "Regulation 20(1)"
+          }
+        },
+        {
+          "text": "Gateway 1 cannot be passed before the day after the closing date in the notice of scoping consultation.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-21",
+            "label": "Regulation 21(3)(b)"
+          }
+        },
+        {
+          "text": "At least 21 days is recommended.",
+          "ref": {
+            "doc": "engaging-the-public",
+            "anchor": "scoping-consultation-invites",
+            "label": "Engaging the public: scoping consultation"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-20",
+          "label": "Regulation 20 — scoping consultation"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-2",
+          "label": "Regulation 2 — general and specific consultation bodies"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM6",
+          "label": "NPPF policy PM6(1)(d) — engage positively and early"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "engaging-the-public",
+          "label": "Engaging the public when preparing a local plan"
+        }
+      ],
+      "next": [
+        "baseline",
+        "gateway-1"
+      ]
+    },
+    {
+      "id": "baseline",
+      "phase": "get-ready",
+      "kind": "task",
+      "title": "Gather baseline information and start the vision, land availability and evidence",
+      "short": "Baselining and vision",
+      "when": "Throughout the getting-ready stage",
+      "sequenceRequired": false,
+      "summary": "None of this is legally required before Gateway 1, but the guidance is blunt that authorities that have not done it are unlikely to adopt within 30 months. Baselining also meets the survey-of-area duty in section 13 of the 2004 Act and feeds the environmental baseline for SEA.",
+      "must": [
+        "Describe the anticipated content of the plan, and your progress on it, in the Gateway 1 self-assessment summary."
+      ],
+      "should": [
+        "Collect and analyse data on the current and future picture of the area — population, deprivation, jobs, housing delivery against requirement, affordability, infrastructure, transport, environmental assets, local housing need under the standard method, projections and known investments.",
+        "Map settlement boundaries, existing broad locations, constraints, key infrastructure and planned projects, ideally in GIS.",
+        "Review corporate priorities and other strategies, then answer the critical-analysis prompts: does the settlement hierarchy need to change, has the current strategy worked, have allocations come forward, what are the strategic challenges.",
+        "Use the baseline and a SWOT analysis to draft a vision, and begin identifying up to 10 measurable outcomes.",
+        "By Gateway 1: understand the plan's scope, have mostly scoped your evidence needs with a delivery plan, have started to understand the level of development required, and have made early considerations of spatial options."
+      ],
+      "could": [
+        "Run a call for sites — the first step of the site assessment process.",
+        "Start a draft statement of compliance and upload evidence to it as you go, so the gateways can see progress towards a legally compliant plan.",
+        "Open conversations with neighbouring authorities, infrastructure providers and statutory bodies that will be critical to delivery, and begin statements of common ground."
+      ],
+      "outputs": [
+        "Baseline data, maps and critical analysis",
+        "Draft vision and candidate measurable outcomes",
+        "Evidence scope and delivery plan",
+        "Call for sites results (optional)",
+        "Draft statement of compliance (optional)"
+      ],
+      "who": [
+        "Local planning authority",
+        "Neighbouring authorities and infrastructure providers",
+        "Statutory bodies"
+      ],
+      "timings": [],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-21",
+          "label": "Regulation 21(2)(d) — anticipated content in the self-assessment"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM8",
+          "label": "NPPF policy PM8 — evidence for plan-making"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM9",
+          "label": "NPPF policy PM9 — identifying and assessing land"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "HO1",
+          "label": "NPPF policy HO1 — assessing the need for homes"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM10",
+          "label": "NPPF policy PM10 — cooperation between plan-making authorities"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "gathering-baseline-information",
+          "label": "Gathering baselining information to inform a local plan"
+        },
+        {
+          "doc": "preparing-a-vision",
+          "label": "Preparing a local plan vision"
+        },
+        {
+          "doc": "getting-ready",
+          "anchor": "recommended-progress-to-make-by-gateway-1",
+          "label": "Getting ready: recommended progress by Gateway 1"
+        }
+      ],
+      "next": [
+        "gateway-1"
+      ]
+    },
+    {
+      "id": "gateway-1",
+      "phase": "get-ready",
+      "kind": "gateway",
+      "title": "Gateway 1: self-assess your readiness and start the clock",
+      "short": "Gateway 1",
+      "when": "At least 4 months after notice and after the scoping consultation closes; no later than 5 years after adopting the existing plan",
+      "sequenceRequired": true,
+      "clock": [
+        0,
+        0
+      ],
+      "summary": "Gateway 1 is a self-assessment: no assessor, no Inspectorate involvement. You pass it by publishing a self-assessment summary of what you have done to get ready. The day you publish it is day one of the 30 months, and it is the date the next plan's five-year deadline counts from.",
+      "must": [
+        "Prepare a self-assessment summary covering the five areas set out in regulation 21(2): the timetable (including whether it complies with section 15B and Part 2 of the Regulations), project management and governance, the approach to consultation and engagement, the anticipated content of the plan, and any obligations under Parts 2 and 3 of the SEA Regulations.",
+        "Publish it no earlier than the later of the first day after four months from the notice, and the day after the scoping consultation closes.",
+        "Begin preparation of the new plan — which means publishing this summary — within five years of adopting or approving the existing plan.",
+        "Update the timetable the same day to record the date you published the summary."
+      ],
+      "should": [
+        "Use the government's template: five sections of roughly 150 to 250 words each in plain English, with links to the timetable, engagement outputs and any strategy documents, and a way for people to sign up for updates.",
+        "Use the readiness checker (red, amber, green statements for each activity) to decide whether you are ready; all green means ready, amber means proceed only with a strategy for the gaps, red means you are unlikely to adopt in 30 months.",
+        "Not update the summary afterwards — it is the record of what you did to get ready.",
+        "Share the final readiness checker with MHCLG."
+      ],
+      "could": [
+        "Take up the Planning Advisory Service's optional Gateway 1 support."
+      ],
+      "outputs": [
+        "Gateway 1 self-assessment summary (published)",
+        "Updated timetable recording the date"
+      ],
+      "who": [
+        "Local planning authority",
+        "Planning Advisory Service (optional)",
+        "MHCLG (receives the readiness checker if shared)"
+      ],
+      "timings": [
+        {
+          "text": "Earliest date: the later of 4 months after the notice and the day after the scoping consultation closes.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-21",
+            "label": "Regulation 21(3)"
+          }
+        },
+        {
+          "text": "Latest date: within 5 years of adopting the existing plan; transitional deadlines of 31 October 2026 or 30 April 2027 apply to some authorities.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-18",
+            "label": "Regulation 18 and the Schedule"
+          }
+        },
+        {
+          "text": "The 30 months run from this date; the NPPF expects adoption within 30 months of publishing the summary.",
+          "ref": {
+            "doc": "nppf",
+            "anchor": "PM2",
+            "label": "NPPF policy PM2(2)"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-21",
+          "label": "Regulation 21 — Gateway 1: self-assessment of readiness"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-18",
+          "label": "Regulation 18 — when a new plan must begin"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-6",
+          "label": "Regulation 6(3) — update the timetable the same day"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "gateway-1",
+          "label": "Gateway 1 for local plans: what you need to do"
+        },
+        {
+          "doc": "getting-ready",
+          "label": "Getting ready to prepare a new plan"
+        }
+      ],
+      "next": [
+        "scoping-summary"
+      ]
+    },
+    {
+      "id": "scoping-summary",
+      "phase": "prepare",
+      "kind": "task",
+      "title": "Publish the summary of your scoping consultation",
+      "short": "Scoping summary",
+      "when": "After Gateway 1 and before the content and evidence consultation",
+      "sequenceRequired": true,
+      "clock": [
+        0,
+        1
+      ],
+      "summary": "Every mandatory consultation is followed by a published summary, and the next step in the sequence cannot start until it is out. This first summary records who was invited, how, the main issues raised and how you have had regard to them so far.",
+      "must": [
+        "Set out the general and specific consultation bodies invited, the manner in which they were asked, a summary of the main issues raised (by invited bodies or anyone else), and how you have had regard to those representations to date — or that no representations were made.",
+        "Make it available no earlier than the day after the Gateway 1 summary was published, and before the consultation on proposed plan content and evidence starts."
+      ],
+      "should": [
+        "Publish it quickly — it is on the critical path and the clock is running.",
+        "Show how the feedback changed the engagement strategy and the emerging vision, so people can see they were heard."
+      ],
+      "could": [
+        "Publish the analysis on the website and social media to build trust for the later consultations."
+      ],
+      "outputs": [
+        "Summary of scoping consultation"
+      ],
+      "who": [
+        "Local planning authority"
+      ],
+      "timings": [
+        {
+          "text": "No earlier than the day after the self-assessment summary is made available.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-22",
+            "label": "Regulation 22(3)"
+          }
+        },
+        {
+          "text": "Must precede the notice of plan content and evidence consultation.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-23",
+            "label": "Regulation 23(1)"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-22",
+          "label": "Regulation 22 — publication of summary of scoping consultation"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "30-month-overview",
+          "anchor": "publish-a-summary-of-your-scoping-consultation",
+          "label": "30-month overview: publish a summary of your scoping consultation"
+        }
+      ],
+      "next": [
+        "vision-strategy"
+      ]
+    },
+    {
+      "id": "vision-strategy",
+      "phase": "prepare",
+      "kind": "task",
+      "title": "Firm up the vision, spatial strategy options, sites and evidence",
+      "short": "Vision and strategy",
+      "when": "Months 1 to about 6",
+      "sequenceRequired": false,
+      "summary": "The first months of the clock turn the getting-ready work into consultable content: a draft vision with aims, objectives and measurable outcomes, spatial strategy options that take reasonable alternatives into account, a continuing site selection process, and the general evidence that any strategy will need.",
+      "must": [
+        "Work towards a plan that will contain a vision for how the area will change over the plan period, relating to its particular characteristics, and no more than ten measurable outcomes to monitor progress against it — these are Gateway 3 prescribed requirements.",
+        "Have regard, in preparing the plan, to the matters in section 15CA(6) of the Act and regulation 14, including your own self-assessment summary, responses to any extra consultation, local transport policies, major-accident-hazard objectives and the national waste management plan."
+      ],
+      "should": [
+        "Finish the draft vision, agree aims and objectives, and identify the spatial strategy options, assessing how each choice of sites could have environmental effects.",
+        "Keep gathering the general evidence — retail and employment land reviews, a strategic flood risk assessment, a strategic housing market assessment — and continue site selection.",
+        "Contact the stakeholders critical to delivery at the earliest stage and keep informal engagement going between the formal consultations; prepare and maintain statements of common ground on cross-boundary matters.",
+        "Draw on existing evidence before commissioning new evidence; produce it jointly with neighbours where that avoids duplication; do not plan to produce new evidence after submission unless the Inspector asks."
+      ],
+      "could": [
+        "Start thinking about policies now, against national policy and legal requirements, remembering the NPPF's rule that a local plan should not duplicate or restate national decision-making policies.",
+        "Use the 'requirement to assist' as a last resort if other organisations will not provide information you need."
+      ],
+      "outputs": [
+        "Draft vision with aims, objectives and up to 10 measurable outcomes",
+        "Spatial strategy options",
+        "Evidence base scope with completion dates",
+        "Statements of common ground (in progress)"
+      ],
+      "who": [
+        "Local planning authority",
+        "Neighbouring authorities, highway authorities, Natural England and other bodies critical to delivery"
+      ],
+      "timings": [],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-11",
+          "label": "Regulation 11 — form and content of local plans"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-14",
+          "label": "Regulation 14 — other matters to which regard is to be had"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM2",
+          "label": "NPPF policy PM2 — local plans"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM6",
+          "label": "NPPF policy PM6 — general principles for plan-making"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM8",
+          "label": "NPPF policy PM8 — evidence"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM11",
+          "label": "NPPF policy PM11 — statements of common ground"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "S2",
+          "label": "NPPF policy S2 — producing a spatial strategy"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "preparing-a-vision",
+          "label": "Preparing a local plan vision"
+        },
+        {
+          "doc": "30-month-overview",
+          "anchor": "continue-to-work-on-your-vision-spatial-strategy-sites-and-evidence",
+          "label": "30-month overview: continue to work on your vision, spatial strategy, sites and evidence"
+        }
+      ],
+      "next": [
+        "content-consultation"
+      ]
+    },
+    {
+      "id": "content-consultation",
+      "phase": "prepare",
+      "kind": "consultation",
+      "title": "Consult on the proposed plan content and evidence",
+      "short": "Content and evidence consultation",
+      "when": "About month 7; at least 6 weeks, then a published summary",
+      "sequenceRequired": true,
+      "clock": [
+        6,
+        9
+      ],
+      "summary": "The second mandatory consultation puts the draft vision, proposed aims and objectives, the proposed spatial strategy approach, and the evidence gathered and still to gather in front of the public for at least six weeks. The government recommends consulting on the scope of the SEA environmental report at the same time. A published summary must follow before Gateway 2.",
+      "must": [
+        "Start no earlier than the day after the summary of scoping consultation is published.",
+        "Make available a notice of plan content and evidence consultation and the proposed local plan content and evidence: the proposed vision and measurable outcomes, any aims and objectives, a summary of the proposed approach to policies (especially the location of development), details of evidence gathered and a summary of what is still to be gathered, and any supporting information.",
+        "Notify and invite representations from the appropriate general consultation bodies, the specific consultation bodies that may have an interest, residents and businesses you consider appropriate, and everyone who asked to be notified.",
+        "Allow at least six weeks from the date the notice is published for representations.",
+        "Publish a summary of the consultation afterwards (invitees, method, main issues, how regard has been had), no earlier than the day after the closing date — Gateway 2 cannot start until it is out."
+      ],
+      "should": [
+        "Consult the consultation bodies on the scope and level of detail of the environmental report at the same time; they have five weeks to respond.",
+        "Ask targeted questions about the aims and objectives so the vision can be firmed up afterwards.",
+        "Treat this as the last consultation before the proposed plan consultation — extra formal consultations add delay."
+      ],
+      "could": [
+        "Include initial draft policies, including site allocation policies, if they are ready."
+      ],
+      "outputs": [
+        "Notice of plan content and evidence consultation",
+        "Proposed local plan content and evidence",
+        "Summary of consultation on proposed local plan content and evidence",
+        "SEA scoping responses from the consultation bodies"
+      ],
+      "who": [
+        "Local planning authority",
+        "General and specific consultation bodies",
+        "Residents and businesses",
+        "SEA consultation bodies"
+      ],
+      "timings": [
+        {
+          "text": "Minimum 6 weeks from publication of the notice.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-23",
+            "label": "Regulation 23(5)"
+          }
+        },
+        {
+          "text": "Summary published no earlier than the day after the closing date.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-24",
+            "label": "Regulation 24(3)"
+          }
+        },
+        {
+          "text": "Consultation bodies respond on SEA scope within 5 weeks.",
+          "ref": {
+            "doc": "sea-regulations-2004",
+            "anchor": "reg-12",
+            "label": "SEA Regulations, regulation 12(5)–(6)"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-23",
+          "label": "Regulation 23 — consultation on proposed local plan content and evidence"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-24",
+          "label": "Regulation 24 — publication of the summary"
+        },
+        {
+          "doc": "sea-regulations-2004",
+          "anchor": "reg-12",
+          "label": "SEA Regulations 2004, regulation 12 — scoping the environmental report"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "engaging-the-public",
+          "anchor": "consult-on-the-proposed-plan-content-and-evidence",
+          "label": "Engaging the public: consult on the proposed plan content and evidence"
+        },
+        {
+          "doc": "30-month-overview",
+          "anchor": "consult-on-the-proposed-plan-content-and-evidence",
+          "label": "30-month overview: consult on the proposed plan content and evidence"
+        }
+      ],
+      "next": [
+        "collate"
+      ]
+    },
+    {
+      "id": "collate",
+      "phase": "prepare",
+      "kind": "task",
+      "title": "Collate the draft plan",
+      "short": "Draft plan",
+      "when": "Months 9 to 14, before Gateway 2",
+      "sequenceRequired": false,
+      "summary": "With the consultation feedback in, the elements become a draft plan: a preferred spatial strategy, the sites to allocate, policies, the map of proposed local plan policies, and a developing environmental report. Gateway 2 is most useful when the assessor can see this work in progress, so the timing of the gateway follows from how quickly the draft comes together.",
+      "must": [
+        "Have regard to the consultation feedback as the plan develops.",
+        "Prepare a map of proposed local plan policies: based on an Ordnance Survey map, with a key, showing where each area-specific policy applies, and listing every plan-wide policy by title, reference and description.",
+        "Give the Planning Inspectorate at least 3 months' notice of your intended Gateway 2 date through the timetable."
+      ],
+      "should": [
+        "Decide the preferred spatial strategy from the evidence on site availability and other matters, decide the sites to allocate, and write the policies.",
+        "Keep gathering the specific evidence for policies and allocations and record it in the draft statement of compliance and the draft statement of soundness.",
+        "Develop the environmental report, using the feedback to predict and evaluate the plan's cumulative effects.",
+        "Allocate at least 10% of the housing requirement on sites of one hectare or less and a further 10% on sites of one to two and a half hectares, unless there are strong reasons not to.",
+        "Identify the up to five soundness issues you want the Gateway 2 assessor's advice on, and draft a 2,000-word topic paper on each."
+      ],
+      "could": [
+        "Prepare a draft Green Belt review if you have Green Belt, and a draft housing requirement topic paper explaining any departure from the standard method figure or a stepped trajectory."
+      ],
+      "outputs": [
+        "Draft plan or draft policies",
+        "Map of proposed local plan policies (draft)",
+        "Draft statement of compliance",
+        "Draft statement of soundness",
+        "Topic papers on up to five issues",
+        "Environmental report (in progress)"
+      ],
+      "who": [
+        "Local planning authority"
+      ],
+      "timings": [
+        {
+          "text": "Notify the Inspectorate at least 3 months before the intended Gateway 2 date.",
+          "ref": {
+            "doc": "procedural-guide",
+            "anchor": "3-1-the-local-plan-timetable-and-planning-inspectorate-resourcing",
+            "label": "Procedural guide 3.1.3"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-25",
+          "label": "Regulation 25 — map of proposed local plan policies"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM9",
+          "label": "NPPF policy PM9 — identifying and assessing land"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "HO3",
+          "label": "NPPF policy HO3 — providing land for homes"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "HO6",
+          "label": "NPPF policy HO6 — a diverse mix of sites"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM12",
+          "label": "NPPF policy PM12 — developer contributions"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM13",
+          "label": "NPPF policy PM13 — setting standards"
+        },
+        {
+          "doc": "procedural-guide",
+          "anchor": "3-6-supporting-materials-for-the-gateway-2-assessment",
+          "label": "Procedural guide 3.6 — supporting materials for Gateway 2"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "30-month-overview",
+          "anchor": "collate-elements-of-the-plan",
+          "label": "30-month overview: collate elements of the plan"
+        }
+      ],
+      "next": [
+        "gateway-2"
+      ]
+    },
+    {
+      "id": "gateway-2",
+      "phase": "prepare",
+      "kind": "gateway",
+      "title": "Gateway 2: observations and advice from an assessor",
+      "short": "Gateway 2",
+      "when": "After the content and evidence summary, before the proposed plan consultation; usually around the halfway point; 4 to 6 weeks",
+      "sequenceRequired": true,
+      "clock": [
+        14,
+        16
+      ],
+      "summary": "An Inspector, acting as gateway assessor, reviews what you send, runs a two-day workshop on up to five issues you choose, and reports on soundness, progress towards the prescribed requirements and conformity with any spatial development strategy. You must have regard to the advice and publish it, with everything you sent, before consulting on the proposed plan. You only do Gateway 2 once.",
+      "must": [
+        "Seek observations and advice no earlier than the day after the summary of the content and evidence consultation is published — and before the proposed plan consultation.",
+        "Seek observations on the content you send and on progress towards a plan an examiner could reasonably find sound; advice on preparing such a plan, including further work; and observations and advice on progress towards prescribed requirements (a) to (f), (i) and (k), and towards general conformity with any operative spatial development strategy.",
+        "Send the documents you consider necessary on the same day you seek the advice.",
+        "On the day you publish the observations or advice: make them available, make available everything you sent the assessor, notify everyone who asked to be notified, and send a copy to each person identified or referred to in the advice.",
+        "Update the timetable the same day the advice is published.",
+        "Have regard to the observations and advice in preparing the plan; the Gateway 3 assessor checks that the Gateway 2 advice was published."
+      ],
+      "should": [
+        "Send a covering letter (stage reached, activity since the last consultation, up to five key issues, any consultation issues to flag, a document list), the timetable, the PID, the draft statement of compliance and the draft statement of soundness.",
+        "Also send the notice to commence, the scoping consultation documents and summary, the Gateway 1 summary, the content and evidence consultation documents and summary, topic papers, a full list of evidence documents with completion dates, the draft vision with up to 10 outcomes, spatial strategy options or a draft strategy, the latest draft plan or policies map, housing requirement evidence, Traveller and other needs evidence, site selection evidence, any draft Green Belt review, engagement evidence and progress on the Habitats Regulations and SEA assessments.",
+        "Time it so there is enough content for meaningful advice but still months before the eight-week consultation to act on it; draft policies or options make the gateway far more valuable.",
+        "Expect a service level agreement and invoice from the Inspectorate under the standard daily amount regulations."
+      ],
+      "could": [
+        "Have a Planning Advisory Service observer at the workshop, and ask for a technical specialist where a matter needs one.",
+        "Redact personal or commercially sensitive information before publishing the submitted material."
+      ],
+      "outputs": [
+        "Gateway 2 submission (covering letter and supporting documents)",
+        "Assessor's report of observations and advice",
+        "Published report and submission documents",
+        "Notifications to those who asked"
+      ],
+      "who": [
+        "Local planning authority",
+        "Gateway assessor (a Planning Inspector)",
+        "Planning Advisory Service (observer, optional)"
+      ],
+      "timings": [
+        {
+          "text": "Earliest: the day after the content and evidence consultation summary is published.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-26",
+            "label": "Regulation 26(1)"
+          }
+        },
+        {
+          "text": "4 to 6 weeks: appointment and review in weeks 1 to 2, workshop in week 3, report in weeks 4 to 6.",
+          "ref": {
+            "doc": "procedural-guide",
+            "anchor": "gateway-2-process-overview",
+            "label": "Procedural guide — Gateway 2 process overview"
+          }
+        },
+        {
+          "text": "3 months' notice to the Inspectorate beforehand.",
+          "ref": {
+            "doc": "procedural-guide",
+            "anchor": "3-1-the-local-plan-timetable-and-planning-inspectorate-resourcing",
+            "label": "Procedural guide 3.1.3"
+          }
+        },
+        {
+          "text": "Timetable revised the same day the advice is published.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-6",
+            "label": "Regulation 6(3)–(4)"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-26",
+          "label": "Regulation 26 — Gateway 2: observations and advice from an appointed person"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-32",
+          "label": "Regulation 32 — the prescribed requirements the assessor tracks progress against"
+        },
+        {
+          "doc": "procedural-guide",
+          "anchor": "3-3-purpose-of-the-gateway-2-assessment",
+          "label": "Procedural guide 3.3 to 3.6 — Gateway 2"
+        },
+        {
+          "doc": "costs-regulations-2026",
+          "anchor": "reg-5",
+          "label": "Standard daily amount — £993 a day"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "gateway-2",
+          "label": "Gateway 2 assessment for local plans: what you need to do"
+        },
+        {
+          "doc": "procedural-guide",
+          "anchor": "3-5-the-gateway-2-process",
+          "label": "Procedural guide 3.5 — the Gateway 2 process"
+        }
+      ],
+      "diagram": "gateway-2",
+      "next": [
+        "plan-consultation"
+      ]
+    },
+    {
+      "id": "plan-consultation",
+      "phase": "prepare",
+      "kind": "consultation",
+      "title": "Consult on the proposed local plan",
+      "short": "Proposed plan consultation",
+      "when": "After the Gateway 2 advice is published; at least 8 weeks, then a published summary",
+      "sequenceRequired": true,
+      "clock": [
+        18,
+        21
+      ],
+      "summary": "The third mandatory consultation is on the plan you intend to submit: the proposed local plan, the map of proposed policies, the evidence and a statement of how earlier representations were addressed. Where a spatial development strategy is operative, its authority must be consulted on general conformity over exactly the same period. The environmental report should be consulted on at the same time. A published summary must follow before Gateway 3.",
+      "must": [
+        "Start no earlier than the day after you publish the Gateway 2 observations and advice.",
+        "Make available a notice of proposed local plan consultation and the proposed local plan submission documents: the proposed plan, the map of proposed local plan policies, details of the evidence gathered, a statement of who was invited to the earlier consultations, how, the main issues raised and how they have been addressed, and any other relevant supporting documents.",
+        "Notify and invite the appropriate general consultation bodies, interested specific consultation bodies, residents and businesses you consider appropriate, and everyone who asked to be notified; allow at least eight weeks from the date the notice is published.",
+        "Where a spatial development strategy is operative, on the same day notify its authority and invite representations on general conformity by the same closing date.",
+        "Where supplementary plans form part of the development plan, publish a supplementary plans statement the same day, saying for each whether the plan covers its matters and whether it stays, is revoked or is requested to be revoked.",
+        "Publish a summary of the consultation afterwards, no earlier than the day after the closing date — Gateway 3 cannot start until it is out."
+      ],
+      "should": [
+        "Consult on the SEA environmental report at the same time, sending it to the consultation bodies and the public consultees with a website address and a period that gives them an effective opportunity to comment.",
+        "Analyse the feedback and make any final changes for Gateway 3 — but avoid a further formal consultation unless changes are significant, such as adding or removing sites; if the environmental report changes significantly, consider further consultation on that too.",
+        "Give the Inspectorate at least 3 months' notice of your Gateway 3 date."
+      ],
+      "could": [
+        "Use digital engagement tools and automation for handling responses, as the government's case studies describe."
+      ],
+      "outputs": [
+        "Notice of proposed local plan consultation",
+        "Proposed local plan submission documents",
+        "Supplementary plans statement (where relevant)",
+        "SDS conformity representations (where relevant)",
+        "Environmental report (consultation version)",
+        "Summary of consultation on the proposed local plan"
+      ],
+      "who": [
+        "Local planning authority",
+        "Consultation bodies, residents and businesses",
+        "Spatial development strategy authority (where one is operative)",
+        "SEA consultation bodies and public consultees"
+      ],
+      "timings": [
+        {
+          "text": "Minimum 8 weeks from publication of the notice.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-27",
+            "label": "Regulation 27(5)"
+          }
+        },
+        {
+          "text": "SDS conformity consultation runs over the same dates.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-28",
+            "label": "Regulation 28"
+          }
+        },
+        {
+          "text": "Summary published no earlier than the day after the closing date.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-30",
+            "label": "Regulation 30(3)"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-27",
+          "label": "Regulation 27 — consultation on the proposed local plan"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-28",
+          "label": "Regulation 28 — conformity with an operative spatial development strategy"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-29",
+          "label": "Regulation 29 — supplementary plans statement"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-30",
+          "label": "Regulation 30 — publication of the summary"
+        },
+        {
+          "doc": "sea-regulations-2004",
+          "anchor": "reg-13",
+          "label": "SEA Regulations 2004, regulation 13 — consultation procedures"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "engaging-the-public",
+          "anchor": "consult-on-the-proposed-local-plan",
+          "label": "Engaging the public: consult on the proposed local plan"
+        },
+        {
+          "doc": "30-month-overview",
+          "anchor": "consult-on-the-proposed-local-plan",
+          "label": "30-month overview: consult on the proposed local plan"
+        }
+      ],
+      "next": [
+        "gateway-3"
+      ]
+    },
+    {
+      "id": "gateway-3",
+      "phase": "prepare",
+      "kind": "gateway",
+      "title": "Gateway 3: check the plan meets the prescribed requirements",
+      "short": "Gateway 3",
+      "when": "After the proposed plan summary, when you consider the prescribed requirements are met; 4 weeks, up to 6 by exception",
+      "sequenceRequired": true,
+      "clock": [
+        22,
+        23
+      ],
+      "summary": "Gateway 3 is a stop/go checkpoint. An assessor tests the plan against the twelve prescribed requirements in regulation 32, including whether you are practically ready for examination. Pass, and you must submit the plan; fail, and you fix what was found and repeat the gateway. Soundness is not examined here, except in exceptional circumstances.",
+      "must": [
+        "Seek the assessment when you consider the prescribed requirements are met, and in any event no earlier than the day after the summary of the proposed plan consultation is published.",
+        "Send the gateway 3 submission documents the same day: the proposed plan, the map of proposed policies, a statement of compliance, a statement of soundness, a statement summarising all consultation and engagement, the three consultation summaries, any SDS conformity representations, a statement of the practical arrangements showing readiness for examination, any supplementary plans statement, the environmental report (or the regulation 9 statement of reasons), and anything else needed to support the assessment.",
+        "Publish the observations or advice as soon as reasonably practicable, notify those who asked, and send a copy to anyone identified in it; when the requirements are met, publish a gateway 3 completion statement and the submission documents the same day.",
+        "Update the timetable the same day the advice is published.",
+        "If any requirement is not met: as soon as reasonably practicable, address the reasoned justification, make sure the requirements are met, seek further observations and advice, and send the updated submission documents — as many times as it takes."
+      ],
+      "should": [
+        "Secure the political approvals for submission before entering Gateway 3, because passing it obliges you to submit.",
+        "Show practical readiness: a suitably qualified programme officer in post with time for the whole examination, a compliant examination website ready on submission, a hearing venue and video-conferencing, enough staff and consultancy support for the examination's duration, and availability after the hearings to finalise main modifications.",
+        "Provide a summary of representations relating to the prescribed requirements with your responses, a summary of how the Gateway 2 advice was addressed, and — if the plan changed after consultation — a statement of the changes and any consultation on them.",
+        "Give the Inspectorate at least 3 months' notice of the date."
+      ],
+      "could": [
+        "Agree provisional hearing dates with the assessor, which speeds up the start of the examination."
+      ],
+      "outputs": [
+        "Gateway 3 submission documents",
+        "Assessor's report with a conclusion and reasons on each requirement",
+        "Gateway 3 completion statement (on success)",
+        "Notifications to those who asked"
+      ],
+      "who": [
+        "Local planning authority",
+        "Gateway assessor (a Planning Inspector)",
+        "Programme officer (in post by the start of the gateway)"
+      ],
+      "timings": [
+        {
+          "text": "Earliest: the day after the proposed plan consultation summary is published.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-31",
+            "label": "Regulation 31(1)(b)"
+          }
+        },
+        {
+          "text": "Normally 4 weeks, maximum 6 in exceptional circumstances; remedial work must fit inside the 6 weeks or the gateway is repeated.",
+          "ref": {
+            "doc": "procedural-guide",
+            "anchor": "3-7-purpose-of-a-gateway-3-assessment",
+            "label": "Procedural guide 3.7 and 3.13"
+          }
+        },
+        {
+          "text": "3 months' notice to the Inspectorate beforehand.",
+          "ref": {
+            "doc": "procedural-guide",
+            "anchor": "3-1-the-local-plan-timetable-and-planning-inspectorate-resourcing",
+            "label": "Procedural guide 3.1.3"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-31",
+          "label": "Regulation 31 — Gateway 3: prescribed requirements assessment"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-32",
+          "label": "Regulation 32 — the twelve prescribed requirements"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-33",
+          "label": "Regulation 33 — repeat of Gateway 3"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-17",
+          "label": "Regulation 17 — gateway 3 submission documents, statement of compliance, statement of soundness"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "gateway-3",
+          "label": "Gateway 3 for local plans: what you need to do"
+        },
+        {
+          "doc": "procedural-guide",
+          "anchor": "3-10-preparation-for-gateway-3",
+          "label": "Procedural guide 3.10 to 3.15 — Gateway 3"
+        }
+      ],
+      "diagram": "gateway-3",
+      "next": [
+        "submission"
+      ]
+    },
+    {
+      "id": "submission",
+      "phase": "examine",
+      "kind": "task",
+      "title": "Submit the plan for independent examination",
+      "short": "Submission",
+      "when": "Normally within 3 weeks of the Gateway 3 report",
+      "sequenceRequired": true,
+      "clock": [
+        23,
+        24
+      ],
+      "summary": "Passing Gateway 3 obliges the authority to submit the plan to the Secretary of State for independent examination. The Inspectorate expects submission within three weeks of the report; the submission documents largely mirror the Gateway 3 pack, and everything must be published and notified as soon as reasonably practicable.",
+      "must": [
+        "Submit the proposed plan with the prescribed documents: the map of proposed policies, the gateway 3 completion statement, the statement summarising consultation and engagement, the summary of the proposed plan consultation, any SDS conformity representations, the statement of compliance, the statement of soundness, the environmental report (or regulation 9 statement of reasons), and the supporting documents needed to show the plan is sound.",
+        "As soon as reasonably practicable after submitting: publish a statement of the submission date, make the plan and every submitted document available, and notify everyone who asked to be notified.",
+        "If the plan changed since Gateway 3, provide a statement of the alterations and whether they were consulted on."
+      ],
+      "should": [
+        "Submit within 3 weeks of the Gateway 3 report unless the assessor's advice identified work worth doing first — and tell the Inspectorate at once if the date will slip.",
+        "Confirm the programme officer, the examination website and the hearing venue provisionally agreed at Gateway 3.",
+        "Not prepare new or additional evidence after submission unless the Inspector asks for it."
+      ],
+      "could": [
+        "Provide full versions of specific representations if the Gateway 3 advice or the Inspector's initial assessment suggests they would help."
+      ],
+      "outputs": [
+        "Submitted plan and prescribed documents",
+        "Statement of the submission date",
+        "Notifications"
+      ],
+      "who": [
+        "Local planning authority",
+        "Secretary of State (Planning Inspectorate)",
+        "Programme officer"
+      ],
+      "timings": [
+        {
+          "text": "Normally within 3 weeks of receiving the Gateway 3 report.",
+          "ref": {
+            "doc": "procedural-guide",
+            "anchor": "4-1-timing-of-local-plan-submission",
+            "label": "Procedural guide 4.1.1"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-34",
+          "label": "Regulation 34 — submission of documents and information to the Secretary of State"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM8",
+          "label": "NPPF policy PM8(2)(d) — no new evidence after submission unless asked"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "procedural-guide",
+          "anchor": "4-submission",
+          "label": "Procedural guide 4 — submission"
+        }
+      ],
+      "next": [
+        "examination"
+      ]
+    },
+    {
+      "id": "examination",
+      "phase": "examine",
+      "kind": "examination",
+      "title": "Independent examination",
+      "short": "Examination",
+      "when": "Months 24 to 29; expected to take no more than 6 months; may be paused for up to 6 months",
+      "sequenceRequired": true,
+      "clock": [
+        24,
+        29
+      ],
+      "summary": "An Inspector examines whether it is reasonable to conclude the plan is sound against the tests in NPPF policy PM15. The process is inquisitorial: matters, issues and questions, hearing statements, hearing sessions of usually three days a week, site visits, and a running list of main modifications, which must be consulted on for up to four weeks before they can be recommended. Three outcomes are possible: adopt, adopt with main modifications, or withdraw.",
+      "must": [
+        "At least 6 weeks before a hearing opens, make available the date, time and place of the hearing and the name of the examiner, and notify everyone who asked.",
+        "Give anyone who made representations on the plan the opportunity to appear before and be heard by the Inspector if they asked to.",
+        "If the examination is paused: notify those who asked as soon as reasonably practicable, revise the timetable to show the pause period, and before the pause ends send the Inspector a document setting out what has been done (and any proposed main modifications, or why none) with any further evidence — then publish it and notify.",
+        "Consult publicly on all proposed main modifications, with environmental assessment and habitats regulations assessment where necessary, before the Inspector can recommend them."
+      ],
+      "should": [
+        "Keep the programme officer, staff and consultants available for the whole examination and for a focused period after the hearings to finalise main modifications.",
+        "Answer the Inspector's initial queries and front-loaded requests promptly; hearing statements are normally limited to 3,000 words and due two to three weeks before the hearings.",
+        "Maintain the running list of potential main modifications the Inspector asks for, and treat agreeing the schedule as a priority once hearings close.",
+        "Keep main modifications consultation to a maximum of 4 weeks unless exceptional circumstances apply, and clearly separate any further (minor) modifications, which are not before the Inspector.",
+        "Complete the fact-check of the final report within 5 days of receiving it, checking the report and the schedule of modifications are consistent."
+      ],
+      "could": [
+        "Use examination statements of common ground on technical matters; ask for a technical seminar where methodology needs explaining; be assisted by a legal advocate at hearings.",
+        "Commit, through a main modification, to early preparation of the next plan where that is the only way to address a shortcoming without a lengthy delay."
+      ],
+      "outputs": [
+        "Inspector's guidance note",
+        "Matters, issues and questions",
+        "Hearing statements and hearing sessions",
+        "Schedule of main modifications and consultation",
+        "Soundness letters (published on the examination website)",
+        "Inspector's final report"
+      ],
+      "who": [
+        "Examining Inspector (or panel)",
+        "Local planning authority",
+        "Programme officer",
+        "Representors who asked to be heard",
+        "Statutory bodies (invited sparingly)",
+        "MHCLG (receives soundness letters and reports 48 hours ahead)"
+      ],
+      "timings": [
+        {
+          "text": "Hearing details published at least 6 weeks before the hearing opens.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-35",
+            "label": "Regulation 35"
+          }
+        },
+        {
+          "text": "A pause may last up to 6 months.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-36",
+            "label": "Regulation 36(1)"
+          }
+        },
+        {
+          "text": "Examinations should take no longer than 6 months.",
+          "ref": {
+            "doc": "procedural-guide",
+            "anchor": "2-overview",
+            "label": "Procedural guide 2.7"
+          }
+        },
+        {
+          "text": "Main modifications consultation: maximum 4 weeks unless exceptional.",
+          "ref": {
+            "doc": "procedural-guide",
+            "anchor": "8-main-modifications-to-the-plan",
+            "label": "Procedural guide 8.7"
+          }
+        },
+        {
+          "text": "Fact-check of the final report within 5 days.",
+          "ref": {
+            "doc": "procedural-guide",
+            "anchor": "11-4-fact-check-final-reports",
+            "label": "Procedural guide 11.4.1"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-35",
+          "label": "Regulation 35 — independent examination"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-36",
+          "label": "Regulation 36 — pause of the examination for further work"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM15",
+          "label": "NPPF policy PM15 — the tests of soundness"
+        },
+        {
+          "doc": "procedural-guide",
+          "anchor": "5-initial-assessment-and-organisation-of-the-hearing-sessions",
+          "label": "Procedural guide 5 to 12 — the examination"
+        },
+        {
+          "doc": "costs-regulations-2026",
+          "anchor": "reg-5",
+          "label": "Standard daily amount — £993 a day"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "procedural-guide",
+          "anchor": "7-conduct-of-the-hearing-sessions",
+          "label": "Procedural guide 7 — conduct of the hearing sessions"
+        },
+        {
+          "doc": "procedural-guide",
+          "anchor": "9-examination-pauses",
+          "label": "Procedural guide 9 — examination pauses"
+        }
+      ],
+      "diagram": "examination",
+      "next": [
+        "report"
+      ]
+    },
+    {
+      "id": "report",
+      "phase": "adopt",
+      "kind": "task",
+      "title": "Publish the Inspector's recommendations and reasons",
+      "short": "Inspector's report",
+      "when": "As soon as reasonably practicable after receipt",
+      "sequenceRequired": true,
+      "clock": [
+        29,
+        30
+      ],
+      "summary": "The examination ends when the Inspector's report reaches the authority. The Inspectorate does not publish it; the authority must, as soon as reasonably practicable, and must update the timetable the same day. The report recommends adoption, adoption with main modifications, or withdrawal.",
+      "must": [
+        "Publish the recommendations and reasons as soon as reasonably practicable after receiving them (or after any direction from the Secretary of State), make them available, and notify everyone who asked to be notified of publication.",
+        "Revise the timetable by the end of the same day.",
+        "If the Inspector recommends withdrawal and the plan is withdrawn: publish a withdrawal statement, notify everyone invited to the three consultations, and stop making the plan's documents available (other than the statement and the timetable)."
+      ],
+      "should": [
+        "Inform the Planning Inspectorate of adoption dates so its published list of plans stays accurate."
+      ],
+      "could": [],
+      "outputs": [
+        "Published recommendations and reasons",
+        "Updated timetable",
+        "Withdrawal statement (if withdrawn)"
+      ],
+      "who": [
+        "Local planning authority",
+        "Examining Inspector"
+      ],
+      "timings": [
+        {
+          "text": "Timetable revised the same day the recommendations are published.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-6",
+            "label": "Regulation 6(3)–(4)"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-37",
+          "label": "Regulation 37 — publication of the recommendations and reasons of the examiner"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-38",
+          "label": "Regulation 38 — withdrawal of a local plan"
+        },
+        {
+          "doc": "procedural-guide",
+          "anchor": "10-inspectors-reports-and-recommendations",
+          "label": "Procedural guide 10 — Inspector's reports and recommendations"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "procedural-guide",
+          "anchor": "11-5-delivery-of-the-final-report",
+          "label": "Procedural guide 11.5 — delivery of the final report"
+        }
+      ],
+      "next": [
+        "adoption"
+      ]
+    },
+    {
+      "id": "adoption",
+      "phase": "adopt",
+      "kind": "adoption",
+      "title": "Adopt the plan and publish the policies map",
+      "short": "Adoption",
+      "when": "Months 30 to 31; policies map within 1 month of adoption",
+      "sequenceRequired": true,
+      "clock": [
+        30,
+        31
+      ],
+      "summary": "If the plan is found sound, or could be with the recommended main modifications, the government expects it to be adopted, with the modifications, by full council. Adoption triggers an adoption statement, the SEA post-adoption statement, and — within a month — a policies map that brings together every policy in the development plan.",
+      "must": [
+        "Get full council approval to adopt the plan, incorporating any recommended main modifications.",
+        "As soon as reasonably practicable after adoption, make the plan and an adoption statement available, and send the statement to everyone who asked to be notified of adoption.",
+        "Include in the adoption statement: the adoption date, any modifications made, where the plan can be inspected, the date by which the next plan must begin, that an aggrieved person may apply to the High Court under section 113, and the grounds and period for doing so.",
+        "Publish the adopted plan in a searchable electronic format.",
+        "Publish the SEA adoption information: the plan, the environmental report and a statement of how environmental considerations were integrated, how the report and consultation opinions were taken into account, why the plan was chosen over the reasonable alternatives, and the monitoring measures; inform the consultation bodies and public consultees.",
+        "Prepare the policies map immediately after adoption and no later than one month after it, reproduced from an Ordnance Survey map with a key, illustrating every area-specific policy in the development plan and listing every plan-wide policy; keep it up to date and publicise each revision the same day."
+      ],
+      "should": [
+        "Tell the Planning Inspectorate the plan has been adopted.",
+        "Keep making the plan, the examiner's recommendations and the policies map available indefinitely; other documents can be withdrawn three months after adoption."
+      ],
+      "could": [],
+      "outputs": [
+        "Adopted local plan",
+        "Adoption statement",
+        "SEA post-adoption statement",
+        "Policies map"
+      ],
+      "who": [
+        "Full council",
+        "Local planning authority",
+        "SEA consultation bodies and public consultees"
+      ],
+      "timings": [
+        {
+          "text": "Policies map prepared immediately after adoption and no later than one month after.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-85",
+            "label": "Regulation 85(2)"
+          }
+        },
+        {
+          "text": "Documents other than the plan, the recommendations, the timetable and the policies map may be withdrawn three months after adoption.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-88",
+            "label": "Regulation 88(2)–(3)"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-39",
+          "label": "Regulation 39 — adoption of a local plan and the adoption statement"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-85",
+          "label": "Regulation 85 — form and content of a policies map"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-86",
+          "label": "Regulation 86 — revision of a policies map"
+        },
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-11",
+          "label": "Regulation 11(5) — searchable electronic format"
+        },
+        {
+          "doc": "sea-regulations-2004",
+          "anchor": "reg-16",
+          "label": "SEA Regulations 2004, regulation 16 — information as to adoption"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "30-month-overview",
+          "anchor": "month-30-to-31-adopt-plan-and-publish-policies-map",
+          "label": "30-month overview: adopt plan and publish policies map"
+        }
+      ],
+      "next": [
+        "monitoring"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "phase": "monitor",
+      "kind": "monitoring",
+      "title": "Monitor the plan and start the next one in time",
+      "short": "Monitoring",
+      "when": "Every year from adoption; plan evaluation report in year 4; next plan begun within 5 years",
+      "sequenceRequired": true,
+      "clock": [
+        31,
+        36
+      ],
+      "summary": "Monitoring reviews progress against the vision and its measurable outcomes and against nationally prescribed metrics, and the SEA Regulations require the significant environmental effects of implementation to be monitored. A plan evaluation report in year four feeds the next plan, which must have passed Gateway 1 within five years of adoption — earlier if circumstances change.",
+      "must": [
+        "Begin preparation of the next local plan — that is, publish its Gateway 1 summary — within five years of the day after adoption.",
+        "Monitor the significant environmental effects of implementing the plan so that unforeseen adverse effects are identified early and remedied.",
+        "Keep the policies map up to date as other parts of the development plan change."
+      ],
+      "should": [
+        "Monitor annually, on the same date as every other authority, against the nationally prescribed metrics and the plan's measurable outcomes.",
+        "Produce the plan evaluation report in year four to decide which policies and sites carry forward.",
+        "Consider starting the next plan earlier where there has been a significant change in local or national context, the housing requirement has significantly increased after a spatial development strategy, the assessed need has changed significantly with no strategy in place, an Inspector recommended an early new plan, decisions are being made under the presumption in favour of sustainable development, or monitoring suggests the five-year supply will not last until the next adoption.",
+        "Identify and update annually a five-year supply of deliverable housing sites with the appropriate buffer, and a five-year supply of traveller sites."
+      ],
+      "could": [
+        "Carry forward policies that remain relevant and consistent with national policy rather than starting from scratch."
+      ],
+      "outputs": [
+        "Annual monitoring",
+        "Plan evaluation report (year 4)",
+        "SEA monitoring",
+        "Housing land supply updates",
+        "Notice to commence the next plan"
+      ],
+      "who": [
+        "Local planning authority"
+      ],
+      "timings": [
+        {
+          "text": "Next plan begun within 5 years of adoption.",
+          "ref": {
+            "doc": "regulations-2026",
+            "anchor": "reg-18",
+            "label": "Regulation 18"
+          }
+        },
+        {
+          "text": "Plan evaluation report in year 4.",
+          "ref": {
+            "doc": "30-month-overview",
+            "anchor": "month-31-onwards-monitor-your-plan",
+            "label": "30-month overview: monitor your plan"
+          }
+        }
+      ],
+      "refs": [
+        {
+          "doc": "regulations-2026",
+          "anchor": "reg-18",
+          "label": "Regulation 18 — preparation of a new local plan"
+        },
+        {
+          "doc": "sea-regulations-2004",
+          "anchor": "reg-17",
+          "label": "SEA Regulations 2004, regulation 17 — monitoring"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM2",
+          "label": "NPPF policy PM2(3) — when to prepare the next plan earlier"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "PM7",
+          "label": "NPPF policy PM7(2) — use the four-year plan evaluation report"
+        },
+        {
+          "doc": "nppf",
+          "anchor": "annex-d",
+          "label": "NPPF Annex D — five year housing land supply and the Housing Delivery Test"
+        }
+      ],
+      "guidance": [
+        {
+          "doc": "30-month-overview",
+          "anchor": "when-to-start-preparing-your-new-plan",
+          "label": "30-month overview: when to start preparing your new plan"
+        }
+      ],
+      "next": []
+    }
+  ]
+}

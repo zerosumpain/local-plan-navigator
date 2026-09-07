@@ -1,0 +1,45 @@
+{# src/pages/code.njk — the code, the dependencies and the download. #}
+{% extends "layouts/base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% block pageContent %}
+<h1 class="govuk-heading-xl">The code</h1>
+<p class="govuk-body-l">Everything that builds this site, with comments, plus the dependencies it uses and a zip of the whole repository.</p>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h2 class="govuk-heading-l">Download</h2>
+    <p class="govuk-body">The zip holds the templates, data, styles, client code, build script and tests — about {{ (code.zipBytes / 1024) | round(0) }} KB. Unzip it, then:</p>
+    <pre class="lpn-code" tabindex="0" aria-label="Build commands"><code>npm install
+npm run build      # renders dist/
+npm run serve      # serves it at http://localhost:5177/projects/local-plan-navigator/
+npm test           # data integrity and schedule maths</code></pre>
+    <div class="govuk-button-group">
+      {{ govukButton({ text: "Download the source (zip)", href: rel('/download/local-plan-navigator-source.zip'), attributes: { download: "local-plan-navigator-source.zip" } }) }}
+      {{ govukButton({ text: "View on GitHub", href: "https://github.com/zerosumpain/local-plan-navigator", classes: "govuk-button--secondary" }) }}
+    </div>
+    <h2 class="govuk-heading-l">How it is put together</h2>
+    <p class="govuk-body">There is no server. <span class="lpn-mono">build.mjs</span> runs seven steps: the government texts in <span class="lpn-mono">content/sources/</span> are chunked into a search corpus and rendered as reference pages; every page in <span class="lpn-mono">scripts/site-map.mjs</span> is rendered from its Nunjucks template with the GOV.UK Frontend macros; the Sass is compiled; the client TypeScript is bundled with esbuild, split so the two model engines only load on the Ask page; static files are copied; and this page's zip is made. The process map, the stage pages, the planner and the diagrams all read <span class="lpn-mono">content/stages.json</span>, so they cannot drift apart.</p>
+  </div>
+  <div class="govuk-grid-column-one-third">
+    <h2 class="govuk-heading-m">Dependencies</h2>
+    <dl class="govuk-summary-list govuk-summary-list--no-border govuk-body-s">
+      {% for d in code.dependencies %}
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">{{ d.name }}<br><span class="govuk-!-font-weight-regular">{{ d.version }}</span></dt><dd class="govuk-summary-list__value">{{ d.purpose }}<br><span class="govuk-hint govuk-!-font-size-16">{{ d.licence }}{% if d.dev %} · build only{% endif %}</span></dd></div>
+      {% endfor %}
+    </dl>
+  </div>
+</div>
+
+<h2 class="govuk-heading-l">Files</h2>
+<p class="govuk-body">{{ code.files.length }} files, {{ code.totalLines }} lines. Pick one from the list, or scroll.</p>
+<ul class="govuk-list lpn-file-list govuk-body-s">
+  {% for f in code.files %}<li><a class="govuk-link lpn-mono" href="#file-{{ f.path | slug }}">{{ f.path }}</a> <span class="govuk-hint govuk-!-display-inline govuk-!-font-size-16">{{ f.lines }} lines — {{ f.summary }}</span></li>{% endfor %}
+</ul>
+{% for f in code.files %}
+<section class="lpn-file" id="file-{{ f.path | slug }}">
+  <h3 class="govuk-heading-m lpn-mono">{{ f.path }}</h3>
+  <p class="govuk-body-s">{{ f.summary }}</p>
+  <pre class="lpn-code" tabindex="0" aria-label="{{ f.path }}"><code>{{ f.html | safe }}</code></pre>
+  <p class="govuk-body-s"><a class="govuk-link" href="#main-content">Back to top</a></p>
+</section>
+{% endfor %}
+{% endblock %}

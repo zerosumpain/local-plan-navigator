@@ -1,0 +1,20 @@
+{# src/pages/reference-index.njk — contents page of a document split into parts or chapters. #}
+{% extends "layouts/base.njk" %}
+{% block pageContent %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+<span class="govuk-caption-xl">{{ source.publisher }} · {{ source.updated }}</span>
+<h1 class="govuk-heading-xl">{{ source.title }}</h1>
+{% if source.note %}<div class="govuk-inset-text">{{ source.note }}</div>{% endif %}
+<p class="govuk-body"><a class="govuk-link" href="{{ source.url }}" rel="external">The original on {{ 'legislation.gov.uk' if source.kind == 'legislation' else 'GOV.UK' }}</a></p>
+<h2 class="govuk-heading-l">Contents</h2>
+<ol class="govuk-list govuk-list--number">
+  {% for u in units %}
+  <li><a class="govuk-link govuk-!-font-weight-bold" href="{{ rel(u.route) }}">{{ u.title }}</a>
+    {% if u.sections and u.sections.length %}
+    <ul class="govuk-list govuk-body-s govuk-!-margin-top-1">{% for s in u.sections %}<li><a class="govuk-link" href="{{ rel(u.route) }}#{{ s.id }}">{{ s.heading }}</a></li>{% endfor %}</ul>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ol>
+</div></div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{# src/layouts/base.njk — every page extends this.
+
+   It extends GOV.UK Frontend's own page template (govuk/template.njk) and
+   swaps in the parts that are different for a prototype that is NOT on GOV.UK:
+
+   - the "generic header" (added in GOV.UK Frontend v6 for services that are
+     not on GOV.UK) instead of the crown header
+   - a phase banner that says what this is, on every page
+   - a footer without the crown or the coat of arms, but with the OGL
+     attribution the reproduced content requires
+#}
+{% extends "govuk/template.njk" %}
+
+{% from "govuk/components/generic-header/macro.njk" import govukGenericHeader %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% block pageTitle %}{{ title }} – Local Plan Navigator (prototype){% endblock %}
+
+{% block head %}
+  <meta name="description" content="{{ description | default('A prototype that helps local planning authorities in England find their way through the 30-month local plan process.') }}">
+  <meta name="robots" content="index,follow">
+  <link rel="stylesheet" href="{{ base }}assets/app.css">
+  {% block pageHead %}{% endblock %}
+{% endblock %}
+
+{% block headIcons %}
+  <link rel="icon" href="{{ base }}assets/favicon.svg" type="image/svg+xml">
+{% endblock %}
+
+{% block header %}
+  <header class="govuk-template__header">
+    {{ govukGenericHeader({
+      url: base,
+      logoHtml: '<span class="lpn-logotype">Local Plan Navigator</span><strong class="govuk-tag govuk-tag--yellow lpn-logotype-tag">Prototype</strong>',
+      attributes: { "data-module": "lpn-header" }
+    }) }}
+    {{ govukServiceNavigation({
+      ariaLabel: "Service navigation",
+      navigation: nav
+    }) }}
+  </header>
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: { text: "Prototype" },
+    html: 'This is a personal prototype, not a government service, and it has no connection with MHCLG or the Planning Inspectorate. The guidance it quotes is reproduced from GOV.UK and legislation.gov.uk under the Open Government Licence – <a class="govuk-link" href="' + base + 'sources/">check the originals</a> before relying on anything here.'
+  }) }}
+  {% if breadcrumbs %}
+    {{ govukBreadcrumbs({ items: breadcrumbs, collapseOnMobile: true }) }}
+  {% elif backLink %}
+    {{ govukBackLink({ href: backLink.href, text: backLink.text | default("Back") }) }}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% block pageContent %}{% endblock %}
+{% endblock %}
+
+{% block footer %}
+  {% include "partials/footer.njk" %}
+{% endblock %}
+
+{% block bodyEnd %}
+  <script type="module" src="{{ base }}assets/app.js"></script>
+{% endblock %}

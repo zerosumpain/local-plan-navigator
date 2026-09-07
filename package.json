@@ -1,0 +1,32 @@
+{
+  "name": "local-plan-navigator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local Plan Navigator — a GOV.UK-styled prototype that helps local planning authorities find their way through the 30-month local plan process (England).",
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch",
+    "serve": "node scripts/serve.mjs",
+    "corpus": "node scripts/build-corpus.mjs",
+    "fetch-sources": "node scripts/fetch-sources.mjs",
+    "test": "node --test tests/*.test.mjs && node scripts/check-links.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "a11y": "node scripts/a11y.mjs"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "4.2.0",
+    "@mlc-ai/web-llm": "0.2.84",
+    "govuk-frontend": "6.5.0",
+    "minisearch": "7.2.0"
+  },
+  "devDependencies": {
+    "axe-core": "^4.13.0",
+    "esbuild": "0.28.2",
+    "fflate": "0.8.3",
+    "marked": "18.0.11",
+    "nunjucks": "3.2.4",
+    "sass": "1.92.1",
+    "turndown": "7.2.4"
+  }
+}

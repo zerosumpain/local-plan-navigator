@@ -1,0 +1,32 @@
+{# src/pages/checklist.njk — one interactive checklist. Works without JavaScript
+   as a plain list; with it, ticks persist in localStorage and a count updates. #}
+{% extends "layouts/base.njk" %}
+{% from "partials/macros.njk" import cite %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% block pageContent %}
+<h1 class="govuk-heading-xl">{{ checklist.title }}</h1>
+<p class="govuk-body-l">{{ checklist.intro }}</p>
+<p class="govuk-body">Source: {{ cite(checklist.ref, base) }}{% if checklist.guidance %} · Guidance: {{ cite(checklist.guidance, base) }}{% endif %}</p>
+<ul class="lpn-key" aria-label="Key"><li><span class="lpn-obligation lpn-obligation--must">Must</span> a legal requirement</li><li><span class="lpn-obligation lpn-obligation--should">Should</span> expected by guidance</li></ul>
+
+<div class="lpn-checklist" data-checklist="{{ checklist.id }}">
+  <p class="govuk-body" data-progress aria-live="polite"></p>
+  {% for g in checklist.groups %}
+    <fieldset class="govuk-fieldset govuk-!-margin-bottom-6">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m"><h2 class="govuk-fieldset__heading">{{ g.title }}</h2></legend>
+      <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+        {% for item in g.items %}
+        <div class="govuk-checkboxes__item">
+          <input class="govuk-checkboxes__input" id="{{ item.id }}" name="{{ checklist.id }}" type="checkbox" value="{{ item.id }}">
+          <label class="govuk-label govuk-checkboxes__label" for="{{ item.id }}"><span class="lpn-obligation lpn-obligation--{{ 'must' if item.must else 'should' }}">{{ 'Must' if item.must else 'Should' }}</span> {{ item.text }}</label>
+        </div>
+        {% endfor %}
+      </div>
+    </fieldset>
+  {% endfor %}
+  <div class="govuk-button-group">
+    {{ govukButton({ text: "Print this checklist", classes: "govuk-button--secondary", attributes: { "data-action": "print" } }) }}
+    {{ govukButton({ text: "Clear my ticks", classes: "govuk-button--warning", attributes: { "data-action": "reset" } }) }}
+  </div>
+</div>
+{% endblock %}

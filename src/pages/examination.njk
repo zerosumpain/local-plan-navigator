@@ -1,0 +1,38 @@
+{# src/pages/examination.njk — submission to report, from the procedural guide. #}
+{% extends "layouts/base.njk" %}
+{% from "partials/macros.njk" import cite, citeList, obligations, diagram, flowText %}
+{% block pageContent %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+<h1 class="govuk-heading-xl">The examination</h1>
+<p class="govuk-body-l">{{ stage.summary }}</p>
+{{ diagram(stage.diagramSvg, stage.diagramMermaid, stage.diagramFlow.title, false) }}
+<details class="govuk-details"><summary class="govuk-details__summary"><span class="govuk-details__summary-text">The steps as a list</span></summary><div class="govuk-details__text">{{ flowText(stage.diagramFlow) }}</div></details>
+
+<h2 class="govuk-heading-l">Submission</h2>
+<p class="govuk-body">{{ submission.summary }}</p>
+<p class="govuk-body"><a class="govuk-link" href="{{ rel('/process/submission/') }}">Submission in detail</a> · <a class="govuk-link" href="{{ rel('/checklists/examination-submission/') }}">Submission checklist</a></p>
+
+<h2 class="govuk-heading-l">During the examination</h2>
+{{ obligations(stage) }}
+
+<h2 class="govuk-heading-l">Three outcomes</h2>
+<ol class="govuk-list govuk-list--number govuk-list--spaced">
+  <li><strong>Sound as submitted</strong> — the Inspector must recommend adoption.</li>
+  <li><strong>Unsound, but capable of being made sound by main modifications</strong> — the Inspector must recommend the modifications and adoption, with reasons; the modifications must relate directly to the reasons for unsoundness.</li>
+  <li><strong>Unsound and not capable of being made sound</strong> — the Inspector must recommend withdrawal, with reasons.</li>
+</ol>
+
+<h2 class="govuk-heading-l">After the report</h2>
+<p class="govuk-body">{{ report.summary }}</p>
+<p class="govuk-body"><a class="govuk-link" href="{{ rel('/process/report/') }}">Publishing the report</a> · <a class="govuk-link" href="{{ rel('/process/adoption/') }}">Adoption</a> · <a class="govuk-link" href="{{ rel('/checklists/adoption/') }}">Adoption checklist</a></p>
+
+<h2 class="govuk-heading-m">Timings</h2>
+<div class="lpn-table-scroll"><table class="govuk-table">
+  <caption class="govuk-table__caption govuk-visually-hidden">Examination timing rules</caption>
+  <thead class="govuk-table__head"><tr class="govuk-table__row"><th scope="col" class="govuk-table__header">Rule</th><th scope="col" class="govuk-table__header">Source</th></tr></thead>
+  <tbody class="govuk-table__body">{% for t in stage.timings %}<tr class="govuk-table__row"><td class="govuk-table__cell">{{ t.text }}</td><td class="govuk-table__cell">{{ cite(t.ref, base) }}</td></tr>{% endfor %}</tbody>
+</table></div>
+<h2 class="govuk-heading-m">The law and guidance</h2>
+{{ citeList(stage.refs, base) }}
+</div></div>
+{% endblock %}

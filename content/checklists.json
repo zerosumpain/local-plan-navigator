@@ -1,0 +1,221 @@
+{
+  "checklists": [
+    {
+      "id": "gateway-1-readiness",
+      "title": "Gateway 1 readiness",
+      "intro": "The five areas regulation 21(2) says the self-assessment summary must cover, with the progress MHCLG recommends in each before you start the 30 months. Tick what is true today; the count tells you how ready you are.",
+      "ref": { "doc": "regulations-2026", "anchor": "reg-21", "label": "Regulation 21(2)" },
+      "guidance": { "doc": "getting-ready", "anchor": "recommended-progress-to-make-by-gateway-1", "label": "Getting ready: recommended progress by Gateway 1" },
+      "groups": [
+        { "title": "1. Local plan timetable", "items": [
+          { "id": "g1-tt-published", "text": "The first version of the timetable is published in the approved data standard, with a user-friendly version and the statement that it has effect", "must": true },
+          { "id": "g1-tt-dates", "text": "It contains every date regulation 4 requires, and the dates show how the plan will be adopted within 30 months", "must": true },
+          { "id": "g1-tt-notice", "text": "It was published before or on the same day as the notice of intention to commence", "must": true },
+          { "id": "g1-tt-monthly", "text": "A monthly check and a same-day update process are in place, and it does not need full council approval each time", "must": false }
+        ]},
+        { "title": "2. Project management and governance", "items": [
+          { "id": "g1-pm-pid", "text": "A project initiation document exists covering scope, engagement strategy, detailed project planning, governance, resources and skills, funding, and risks with mitigations", "must": false },
+          { "id": "g1-pm-resourced", "text": "The plan is resourced and financed to deliver the timetable", "must": false },
+          { "id": "g1-pm-risks", "text": "Risks are identified with processes to monitor, manage and mitigate them", "must": false },
+          { "id": "g1-pm-signoff", "text": "All relevant teams and decision makers have designed, tested and signed off the approach, and delegations are agreed for efficient sign-off at key stages", "must": false }
+        ]},
+        { "title": "3. Consultation and engagement", "items": [
+          { "id": "g1-ce-notice", "text": "The notice of intention to commence was published at least four months before the intended Gateway 1 date, as text on a webpage", "must": true },
+          { "id": "g1-ce-scoping", "text": "The scoping consultation invited the appropriate general and specific consultation bodies, asked what the plan should contain and how to engage, and has closed", "must": true },
+          { "id": "g1-ce-strategy", "text": "A community engagement strategy exists, with regard to government guidance, in the PID", "must": false },
+          { "id": "g1-ce-diverse", "text": "Processes are in place to maximise responses from a diverse range of stakeholders, digital-first and traditional", "must": false },
+          { "id": "g1-ce-feedback", "text": "Key decision makers have given feedback on the strategy", "must": false }
+        ]},
+        { "title": "4. Anticipated content of the plan", "items": [
+          { "id": "g1-ac-scope", "text": "The proposed scope of the plan is understood from monitoring of the existing plan, baselining and early engagement", "must": false },
+          { "id": "g1-ac-vision", "text": "A draft vision exists and measurable outcomes are being identified", "must": false },
+          { "id": "g1-ac-evidence", "text": "Evidence needs are mostly identified and scoped, with a delivery plan", "must": false },
+          { "id": "g1-ac-need", "text": "The likely level of development required is starting to be understood (local housing need under the standard method, other needs)", "must": false },
+          { "id": "g1-ac-options", "text": "Early high-level spatial options and topics needing specific policies have been considered", "must": false }
+        ]},
+        { "title": "5. Strategic Environmental Assessment", "items": [
+          { "id": "g1-sea-required", "text": "Whether SEA is required has been confirmed (expected for all local plans)", "must": true },
+          { "id": "g1-sea-objectives", "text": "The relevant environmental protection objectives at international, national and community level are identified", "must": false },
+          { "id": "g1-sea-baseline", "text": "Baseline information against which to assess the plan is identified: environmental characteristics of areas likely to be affected, existing problems and key receptors", "must": false }
+        ]},
+        { "title": "Passing the gateway", "items": [
+          { "id": "g1-pass-timing", "text": "Today is at least four months after the notice and after the scoping consultation closed, and within five years of adopting the existing plan (or the transitional deadline)", "must": true },
+          { "id": "g1-pass-summary", "text": "The self-assessment summary is written to the template, 150 to 250 words a section, with links and a sign-up for updates", "must": true },
+          { "id": "g1-pass-timetable", "text": "The timetable will be updated the same day to record the publication date", "must": true }
+        ]}
+      ]
+    },
+    {
+      "id": "gateway-2-pack",
+      "title": "Gateway 2 submission pack",
+      "intro": "What the Planning Inspectorate asks for, and what it suggests, at Gateway 2. The Regulations leave the content to you; the procedural guide is specific about what makes the assessment useful.",
+      "ref": { "doc": "regulations-2026", "anchor": "reg-26", "label": "Regulation 26" },
+      "guidance": { "doc": "procedural-guide", "anchor": "3-6-supporting-materials-for-the-gateway-2-assessment", "label": "Procedural guide 3.6" },
+      "groups": [
+        { "title": "Timing", "items": [
+          { "id": "g2-t-summary", "text": "The summary of consultation on proposed plan content and evidence is published (the gateway cannot start before the day after)", "must": true },
+          { "id": "g2-t-notice", "text": "The Planning Inspectorate was given at least three months' notice through the timetable", "must": false },
+          { "id": "g2-t-workshop", "text": "Suggested dates and a venue for the two-day workshop are included", "must": false }
+        ]},
+        { "title": "Covering letter and procedural documents", "items": [
+          { "id": "g2-c-letter", "text": "Covering letter: stage reached, activity since the last consultation, up to five key issues, consultation issues to flag, and a list of documents", "must": false },
+          { "id": "g2-c-timetable", "text": "Up-to-date local plan timetable", "must": false },
+          { "id": "g2-c-pid", "text": "Project initiation document", "must": false },
+          { "id": "g2-c-soc", "text": "Draft statement of compliance", "must": false },
+          { "id": "g2-c-sos", "text": "Draft statement of soundness", "must": false }
+        ]},
+        { "title": "Consultation documents", "items": [
+          { "id": "g2-cd-notice", "text": "Notice of intention to commence local plan preparation", "must": false },
+          { "id": "g2-cd-scoping", "text": "Scoping consultation documents and the summary of feedback", "must": false },
+          { "id": "g2-cd-g1", "text": "Gateway 1 self-assessment summary", "must": false },
+          { "id": "g2-cd-content", "text": "Proposed plan content and evidence consultation documents and their summary", "must": false }
+        ]},
+        { "title": "Work towards the draft plan", "items": [
+          { "id": "g2-w-topic", "text": "Topic papers on the up-to-five issues (2,000 words each, cross-referencing evidence, with representations raising concerns and your response)", "must": false },
+          { "id": "g2-w-evidence", "text": "Full list of evidence base documents with expected completion dates", "must": false },
+          { "id": "g2-w-vision", "text": "Draft vision, aims and objectives and up to 10 draft outcomes", "must": false },
+          { "id": "g2-w-strategy", "text": "Spatial strategy options or a draft spatial strategy", "must": false },
+          { "id": "g2-w-draft", "text": "Latest draft plan and/or policies map", "must": false },
+          { "id": "g2-w-housing", "text": "Progress towards the housing requirement: housing needs assessment, strategic housing market assessment, trajectory, site-selection methodology", "must": false },
+          { "id": "g2-w-traveller", "text": "Progress on Traveller accommodation needs and supply", "must": false },
+          { "id": "g2-w-other", "text": "Progress on other development needs (employment, retail) and supply", "must": false },
+          { "id": "g2-w-sites", "text": "Site selection approach and evidence", "must": false },
+          { "id": "g2-w-greenbelt", "text": "Draft Green Belt review, where there is Green Belt", "must": false },
+          { "id": "g2-w-engagement", "text": "Evidence of engagement with infrastructure providers, neighbouring authorities and other bodies", "must": false },
+          { "id": "g2-w-sea", "text": "Progress on the SEA and Habitats Regulations assessments, how the statutory agencies are involved and how the assessments inform the plan", "must": false }
+        ]},
+        { "title": "After the report", "items": [
+          { "id": "g2-a-publish", "text": "The observations and advice and everything sent to the assessor are made available on the same day", "must": true },
+          { "id": "g2-a-notify", "text": "Everyone who asked to be notified is notified, and a copy goes to each person identified in the advice", "must": true },
+          { "id": "g2-a-timetable", "text": "The timetable is revised the same day", "must": true },
+          { "id": "g2-a-regard", "text": "The plan is revised having regard to the advice before the proposed plan consultation", "must": true }
+        ]}
+      ]
+    },
+    {
+      "id": "gateway-3-submission",
+      "title": "Gateway 3: documents and prescribed requirements",
+      "intro": "The gateway does not start until every submission document is provided, and the assessor must be satisfied on each of the twelve prescribed requirements in regulation 32.",
+      "ref": { "doc": "regulations-2026", "anchor": "reg-32", "label": "Regulation 32" },
+      "guidance": { "doc": "gateway-3", "label": "Gateway 3 for local plans: what you need to do" },
+      "groups": [
+        { "title": "Timing and approvals", "items": [
+          { "id": "g3-t-summary", "text": "The summary of consultation on the proposed local plan is published", "must": true },
+          { "id": "g3-t-approvals", "text": "Political approvals for submission are secured — passing obliges submission", "must": false },
+          { "id": "g3-t-notice", "text": "The Inspectorate was given three months' notice", "must": false }
+        ]},
+        { "title": "Gateway 3 submission documents (regulation 17)", "items": [
+          { "id": "g3-d-plan", "text": "The proposed local plan you intend to submit", "must": true },
+          { "id": "g3-d-map", "text": "Map of proposed local plan policies", "must": true },
+          { "id": "g3-d-soc", "text": "Statement of compliance", "must": true },
+          { "id": "g3-d-sos", "text": "Statement of soundness", "must": true },
+          { "id": "g3-d-engagement", "text": "Statement summarising all consultation and engagement activities", "must": true },
+          { "id": "g3-d-s1", "text": "Summary of scoping consultation", "must": true },
+          { "id": "g3-d-s2", "text": "Summary of consultation on proposed plan content and evidence", "must": true },
+          { "id": "g3-d-s3", "text": "Summary of consultation on the proposed local plan", "must": true },
+          { "id": "g3-d-sds", "text": "Copies of any SDS conformity representations (where regulation 28 applies)", "must": true },
+          { "id": "g3-d-ready", "text": "Statement of practical arrangements demonstrating readiness for examination", "must": true },
+          { "id": "g3-d-supp", "text": "Supplementary plans statement (where regulation 29 applies)", "must": true },
+          { "id": "g3-d-er", "text": "The environmental report — or the regulation 9 statement of reasons if no SEA is required", "must": true },
+          { "id": "g3-d-other", "text": "Anything else needed to support the assessment: representations on the prescribed requirements with responses, how Gateway 2 advice was addressed, a statement of any post-consultation changes", "must": false }
+        ]},
+        { "title": "The twelve prescribed requirements (regulation 32)", "items": [
+          { "id": "g3-r-a", "text": "(a) The plan sets out policies on the amount, type, location and timetable of development in the area", "must": true },
+          { "id": "g3-r-b", "text": "(b) It contains a vision relating to the area's characteristics, no more than ten measurable outcomes, and identifies superseded policies (or the statement of compliance explains why not)", "must": true },
+          { "id": "g3-r-c", "text": "(c) It is designed so that use and development of land contributes to mitigating and adapting to climate change", "must": true },
+          { "id": "g3-r-d", "text": "(d) It takes account of any local nature recovery strategy for the area", "must": true },
+          { "id": "g3-r-e", "text": "(e) It takes account of an assessment of the amount and type of housing needed, including affordable housing", "must": true },
+          { "id": "g3-r-f", "text": "(f) It includes nothing not permitted or required by section 15C(3) to (5) or (10) or regulation 11", "must": true },
+          { "id": "g3-r-g", "text": "(g) Observations and advice were sought at the times prescribed for Gateway 2 and Gateway 3", "must": true },
+          { "id": "g3-r-h", "text": "(h) The Gateway 2 observations and advice were published as required", "must": true },
+          { "id": "g3-r-i", "text": "(i) Regard has been had to the section 15CA(6) matters and the regulation 14 matters", "must": true },
+          { "id": "g3-r-j", "text": "(j) The examination submission documents in regulation 34(1)(a) and (c) to (i) are prepared", "must": true },
+          { "id": "g3-r-k", "text": "(k) The map of proposed policies accurately illustrates where the area-specific policies apply", "must": true },
+          { "id": "g3-r-l", "text": "(l) The authority is ready to proceed to independent examination", "must": true }
+        ]},
+        { "title": "Practical readiness (procedural guide 3.10.5)", "items": [
+          { "id": "g3-p-po", "text": "A suitably qualified programme officer is in post by the start of the gateway, with enough time for the whole examination", "must": false },
+          { "id": "g3-p-website", "text": "An examination website that complies with the Inspectorate's guidance will be available on submission", "must": false },
+          { "id": "g3-p-venue", "text": "A suitable hearing venue is available for the anticipated dates", "must": false },
+          { "id": "g3-p-video", "text": "Video-conferencing facilities can host virtual sessions if needed", "must": false },
+          { "id": "g3-p-staff", "text": "Staff, consultancy and specialist support are available for the examination's duration", "must": false },
+          { "id": "g3-p-after", "text": "The programme officer and staff are available for a focused period after the hearings for main modifications", "must": false }
+        ]},
+        { "title": "After the report", "items": [
+          { "id": "g3-a-publish", "text": "The observations and advice are made available as soon as reasonably practicable, those who asked are notified, and copies go to anyone identified", "must": true },
+          { "id": "g3-a-completion", "text": "On success: the gateway 3 completion statement and the submission documents are made available the same day", "must": true },
+          { "id": "g3-a-timetable", "text": "The timetable is revised the same day", "must": true },
+          { "id": "g3-a-repeat", "text": "On failure: the reasoned justification is addressed, updated documents are resubmitted, and the timetable records the resubmission date", "must": true }
+        ]}
+      ]
+    },
+    {
+      "id": "examination-submission",
+      "title": "Submission for examination",
+      "intro": "Regulation 34 lists what goes to the Secretary of State with the plan, and what must be published and notified afterwards.",
+      "ref": { "doc": "regulations-2026", "anchor": "reg-34", "label": "Regulation 34" },
+      "guidance": { "doc": "procedural-guide", "anchor": "4-submission", "label": "Procedural guide 4 — submission" },
+      "groups": [
+        { "title": "Documents submitted with the plan", "items": [
+          { "id": "ex-d-map", "text": "Map of proposed local plan policies", "must": true },
+          { "id": "ex-d-g3", "text": "Gateway 3 completion statement", "must": true },
+          { "id": "ex-d-engagement", "text": "Statement summarising consultation and engagement", "must": true },
+          { "id": "ex-d-summary", "text": "Summary of consultation on the proposed local plan", "must": true },
+          { "id": "ex-d-sds", "text": "Copies of SDS conformity representations, where any were made", "must": true },
+          { "id": "ex-d-soc", "text": "Statement of compliance", "must": true },
+          { "id": "ex-d-sos", "text": "Statement of soundness", "must": true },
+          { "id": "ex-d-er", "text": "Environmental report, or the regulation 9 statement of reasons", "must": true },
+          { "id": "ex-d-support", "text": "Supporting documents necessary to demonstrate soundness", "must": true },
+          { "id": "ex-d-changes", "text": "A statement of any changes since Gateway 3 and whether they were consulted on", "must": false }
+        ]},
+        { "title": "Publication and notification", "items": [
+          { "id": "ex-p-date", "text": "A statement of the submission date is published on the website", "must": true },
+          { "id": "ex-p-docs", "text": "The plan and every submitted document are made available, with a statement of where and when they can be inspected", "must": true },
+          { "id": "ex-p-notify", "text": "Everyone who asked to be notified of submission is notified", "must": true },
+          { "id": "ex-p-three-weeks", "text": "Submission was within three weeks of the Gateway 3 report, or the Inspectorate was told why not", "must": false }
+        ]},
+        { "title": "Ready for the Inspector", "items": [
+          { "id": "ex-r-po", "text": "The programme officer is in contact with the Inspector and the hearing dates and venue are being confirmed", "must": false },
+          { "id": "ex-r-website", "text": "The examination website is live with every submission document", "must": false },
+          { "id": "ex-r-hearing-notice", "text": "The process to publish hearing details at least six weeks before hearings open is ready", "must": true }
+        ]}
+      ]
+    },
+    {
+      "id": "adoption",
+      "title": "Adoption",
+      "intro": "What has to happen once the Inspector's report arrives and the plan is adopted.",
+      "ref": { "doc": "regulations-2026", "anchor": "reg-39", "label": "Regulation 39" },
+      "guidance": { "doc": "30-month-overview", "anchor": "month-30-to-31-adopt-plan-and-publish-policies-map", "label": "30-month overview: adopt plan and publish policies map" },
+      "groups": [
+        { "title": "The Inspector's report", "items": [
+          { "id": "ad-r-factcheck", "text": "The fact-check was returned within five days and the report and schedule of modifications are consistent", "must": false },
+          { "id": "ad-r-publish", "text": "The recommendations and reasons are published as soon as reasonably practicable, made available, and those who asked are notified", "must": true },
+          { "id": "ad-r-timetable", "text": "The timetable is revised the same day", "must": true }
+        ]},
+        { "title": "Adoption", "items": [
+          { "id": "ad-a-council", "text": "Full council has resolved to adopt the plan, with the recommended main modifications", "must": true },
+          { "id": "ad-a-plan", "text": "The adopted plan is made available in a searchable electronic format", "must": true },
+          { "id": "ad-a-statement", "text": "An adoption statement is made available with the date, modifications, inspection details, the date the next plan must begin, and the section 113 challenge right, grounds and period", "must": true },
+          { "id": "ad-a-notify", "text": "A copy of the adoption statement is sent to everyone who asked to be notified of adoption", "must": true },
+          { "id": "ad-a-pins", "text": "The Planning Inspectorate is told the plan is adopted", "must": false }
+        ]},
+        { "title": "Strategic Environmental Assessment", "items": [
+          { "id": "ad-s-publish", "text": "The plan, the environmental report and the SEA statement are published on a website that allows free download", "must": true },
+          { "id": "ad-s-statement", "text": "The SEA statement covers: how environmental considerations were integrated, how the report and opinions were taken into account, the reasons for choosing the plan over the reasonable alternatives, and the monitoring measures", "must": true },
+          { "id": "ad-s-inform", "text": "The consultation bodies and public consultees are informed of adoption and where the documents are", "must": true }
+        ]},
+        { "title": "Policies map", "items": [
+          { "id": "ad-m-prepare", "text": "The policies map is prepared immediately after adoption and no later than one month after", "must": true },
+          { "id": "ad-m-content", "text": "It is based on Ordnance Survey mapping, has a key, illustrates every area-specific policy in the development plan and lists every plan-wide policy", "must": true },
+          { "id": "ad-m-neighbourhood", "text": "It illustrates made neighbourhood plans as soon as reasonably practicable", "must": true },
+          { "id": "ad-m-available", "text": "It is made available, and each future revision is publicised the same day with the date and a description", "must": true }
+        ]},
+        { "title": "What comes next", "items": [
+          { "id": "ad-n-monitor", "text": "Annual monitoring and SEA monitoring arrangements are in place", "must": true },
+          { "id": "ad-n-five-years", "text": "The date the next plan must begin by (five years from adoption) is in the diary and the timetable", "must": true }
+        ]}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{# src/pages/about.njk #}
+{% extends "layouts/base.njk" %}
+{% block pageContent %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+<h1 class="govuk-heading-xl">About this prototype</h1>
+<p class="govuk-body-l">I built this to see whether the new local plan-making system could be made navigable: one place where the process, the three gateways, the 2026 Regulations, the SEA Regulations and the NPPF sit together and tell you what to do next.</p>
+<h2 class="govuk-heading-m">What it is</h2>
+<p class="govuk-body">A static website in the style of a GOV.UK service, built with GOV.UK Frontend and the same Nunjucks templating the GOV.UK Prototype Kit uses. Everything on it is generated from a small set of data files and the government's own published texts, so the process map, the stage pages, the planner and the diagrams cannot disagree with each other. The optional "describe a problem" feature runs a small language model inside your browser; nothing you type leaves your device.</p>
+<h2 class="govuk-heading-m">What it is not</h2>
+<p class="govuk-body">It is not a government service, it has no connection with the Ministry of Housing, Communities and Local Government or the Planning Inspectorate, and it is not advice. The GOV.UK crown, the royal coat of arms and the GDS Transport typeface are deliberately not used, because they belong to services on GOV.UK. The guidance and legislation are reproduced under the Open Government Licence and may be out of date the day after they were fetched; the <a class="govuk-link" href="{{ rel('/sources/') }}">sources page</a> says when each was checked.</p>
+<h2 class="govuk-heading-m">Who built it</h2>
+<p class="govuk-body">John Kelly, on <a class="govuk-link" href="https://strangeramblings.com/projects">strangeramblings.com</a>, with a good deal of help from Claude Code. The whole thing — templates, data, build and tests — is on <a class="govuk-link" href="{{ rel('/code/') }}">the code page</a> and on GitHub, and can be downloaded and rebuilt with Node.js in a couple of minutes.</p>
+<h2 class="govuk-heading-m">Feedback</h2>
+<p class="govuk-body">Corrections are welcome, especially where the guidance has moved on. Open an issue on the <a class="govuk-link" href="https://github.com/zerosumpain/local-plan-navigator/issues" rel="external">GitHub repository</a>.</p>
+</div></div>
+{% endblock %}

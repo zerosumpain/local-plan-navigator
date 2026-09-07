@@ -1,0 +1,58 @@
+{# src/pages/national-policy.njk — what the NPPF asks of a local plan. #}
+{% extends "layouts/base.njk" %}
+{% from "partials/macros.njk" import cite %}
+{% macro p(code, label) %}{{ cite(ref({ doc: "nppf", anchor: code, label: label or code }), base) }}{% endmacro %}
+{% block pageContent %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+<h1 class="govuk-heading-xl">What the National Planning Policy Framework asks of a local plan</h1>
+<p class="govuk-body-l">The August 2026 Framework is organised as coded policies. Chapter 2 sets the procedural policies for plan-making (PM1 to PM17); every thematic chapter then has its own plan-making policies, separated from the national decision-making policies that a plan must not duplicate. A plan-making policy is what an Inspector tests soundness against.</p>
+
+<h2 class="govuk-heading-l">A local plan must contain — {{ p("PM2", "policy PM2") }}</h2>
+<ul class="govuk-list govuk-list--bullet">
+  <li>a vision, supported by no more than ten measurable outcomes, that says how the area should change over the plan period, sets aspirational but realistic aims and objectives, reflects longer-term expectations where appropriate, and has particular regard to meeting development needs sustainably ({{ p("S1", "S1") }})</li>
+  <li>a spatial strategy, policies for the minimum amount of development, allocations and broad locations for growth, and designations ({{ p("S2", "S2") }}), for at least 10 years from adoption</li>
+  <li>the contributions expected from development towards affordable housing and infrastructure ({{ p("PM12", "PM12") }})</li>
+  <li>other policies only where they support specific allocated sites or address particular local issues ({{ p("PM6", "PM6") }})</li>
+</ul>
+<p class="govuk-body">It should be prepared and adopted within 30 months of publishing the Gateway 1 self-assessment, and the next one begun within five years of adoption, or earlier if an Inspector recommends it or circumstances change significantly.</p>
+
+<h2 class="govuk-heading-l">The tests of soundness — {{ p("PM15", "policy PM15") }}</h2>
+<p class="govuk-body">An Inspector examines whether the plan is sound. A sound plan is:</p>
+<dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Positive</dt><dd class="govuk-summary-list__value">It sets out a positive approach to delivering growth to meet the development needs of the area in accordance with policy S1, based on effective joint working on cross-boundary strategic matters.</dd></div>
+  <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Appropriate</dt><dd class="govuk-summary-list__value">It sets out an appropriate strategy to enable sustainable development, taking into account reasonable alternatives, based on proportionate evidence.</dd></div>
+  <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Effective</dt><dd class="govuk-summary-list__value">Its policies for development are effective and there is a reasonable prospect that its site allocations are deliverable when envisioned.</dd></div>
+  <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Consistent with national policy</dt><dd class="govuk-summary-list__value">It accords with the plan-making policies in the Framework and other national planning policy, and does not duplicate, substantively restate or contradict the national decision-making policies.</dd></div>
+  <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Conformity</dt><dd class="govuk-summary-list__value">It is in general conformity with any adopted spatial development strategy for the area.</dd></div>
+</dl>
+<p class="govuk-body">The tests are applied proportionately, taking account of the type and purpose of each policy.</p>
+
+<h2 class="govuk-heading-l">Preparing the plan — policies PM6 to PM13</h2>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>{{ p("PM6", "PM6 General principles") }}: only necessary and relevant policies; engage early and positively; use environmental assessment where required; use the Secretary of State's digital tools and templates; publish in a searchable digital format that meets the data standards.</li>
+  <li>{{ p("PM7", "PM7 Initiating plan-making") }}: design an approach that adopts within 30 months — realistic milestones in the timetable, expedient sign-off, a project initiation document, regular engagement with critical stakeholders; use the four-year plan evaluation report to decide what to carry forward.</li>
+  <li>{{ p("PM8", "PM8 Evidence") }}: a baseline understanding first; evidence that is relevant, proportionate and up to date; existing evidence before new; joint evidence with neighbours; no new evidence after submission unless the Inspector asks.</li>
+  <li>{{ p("PM9", "PM9 Identifying and assessing land") }}: a thorough site identification process; availability, suitability and achievability (including viability); capacity and timescales; sites chosen against the emerging vision and strategy.</li>
+  <li>{{ p("PM10", "PM10") }} and {{ p("PM11", "PM11 Cooperation") }}: engage proactively with infrastructure providers and neighbouring authorities on infrastructure, unmet needs and growth locations; publish statements of common ground; make pragmatic decisions rather than waiting for others' evidence.</li>
+  <li>{{ p("PM12", "PM12 Developer contributions") }}: set the contributions expected, at levels that keep planned sites deliverable, with affordable housing as a single figure.</li>
+  <li>{{ p("PM13", "PM13 Setting standards") }}: quantitative standards that are justified and proportionate, and do not cover matters already in the Building Regulations except accessibility, water efficiency and, with a costed rationale, energy.</li>
+</ul>
+
+<h2 class="govuk-heading-l">Housing — policies HO1 to HO6</h2>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>{{ p("HO1", "HO1 Assessing the need for homes") }}: a housing need assessment using the standard method in {{ p("annex-d", "Annex D") }} as a minimum; traveller accommodation needs; needs that cannot be met by neighbours; the needs of different groups.</li>
+  <li>{{ p("HO2", "HO2 Setting requirement figures") }}: the housing requirement reflects the needs that can be accommodated as a minimum, higher where appropriate; requirement figures for neighbourhood areas.</li>
+  <li>{{ p("HO3", "HO3 Providing land for homes") }}: five years of specific deliverable sites with a buffer, developable sites or broad locations for years 6 to 10, a trajectory, and windfall allowances only with compelling evidence.</li>
+  <li>{{ p("HO4", "HO4 Strategic sites") }}, {{ p("HO5", "HO5 Different groups") }} and {{ p("HO6", "HO6 A diverse mix of sites") }}: strategic locations with infrastructure and design expectations; affordable housing type and mix with a minimum Social Rent proportion; at least 40% of homes on major developments to M4(2); at least 10% of the requirement on sites of a hectare or less and a further 10% on sites of one to two and a half hectares.</li>
+</ul>
+
+<h2 class="govuk-heading-l">The other plan-making policies</h2>
+<p class="govuk-body">Every thematic chapter opens with its plan-making policies. The reference library has each chapter in full:</p>
+<ul class="govuk-list govuk-list--bullet">
+  {% for u in nppfChapters %}<li><a class="govuk-link" href="{{ rel(u.route) }}">{{ u.title }}</a></li>{% endfor %}
+</ul>
+
+<h2 class="govuk-heading-l">Which version applies — {{ p("annex-a", "Annex A") }}</h2>
+<p class="govuk-body">Local plans prepared under the 2004 Act as amended by the 2023 Act and the 2026 Regulations must be produced in accordance with this Framework, whose policies apply from 17 August 2026. Other plans follow the December 2024 Framework and its transitional arrangements.</p>
+</div></div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{# src/pages/result.njk — the tailored answer at the end of the question flow. #}
+{% extends "layouts/base.njk" %}
+{% from "partials/macros.njk" import citeList %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% block pageContent %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+{{ govukPanel({ titleText: result.title, classes: "lpn-panel" }) }}
+<p class="govuk-body-l">{{ result.summary }}</p>
+{% if result.now and result.now.length %}
+<h2 class="govuk-heading-l">What to do now</h2>
+<ol class="govuk-list govuk-list--number govuk-list--spaced">
+  {% for t in result.now %}
+  <li>{{ t.text }}{% if t.stageInfo %} — <a class="govuk-link" href="{{ rel('/process/' + t.stageInfo.id + '/') }}">{{ t.stageInfo.short }}</a>{% endif %}</li>
+  {% endfor %}
+</ol>
+{% endif %}
+{% if result.nextGatewayInfo %}
+<h2 class="govuk-heading-l">The next gateway</h2>
+<p class="govuk-body"><a class="govuk-link govuk-!-font-weight-bold" href="{{ rel('/process/' + result.nextGatewayInfo.stage.id + '/') }}">{{ result.nextGatewayInfo.stage.title }}</a></p>
+<p class="govuk-body">{{ result.nextGatewayInfo.stage.summary }}</p>
+{% if result.nextGatewayInfo.checklist %}<p class="govuk-body"><a class="govuk-link" href="{{ rel('/checklists/' + result.nextGatewayInfo.checklist.id + '/') }}">Checklist: {{ result.nextGatewayInfo.checklist.title }}</a></p>{% endif %}
+{% elif result.checklistInfo %}
+<h2 class="govuk-heading-l">Checklist</h2>
+<p class="govuk-body"><a class="govuk-link" href="{{ rel('/checklists/' + result.checklistInfo.id + '/') }}">{{ result.checklistInfo.title }}</a></p>
+{% endif %}
+{% if result.links and result.links.length %}
+<h2 class="govuk-heading-m">Read</h2>
+<ul class="govuk-list govuk-list--bullet">{% for l in result.links %}<li><a class="govuk-link" href="{{ l.href }}"{% if l.external %} rel="external"{% endif %}>{{ l.text }}</a></li>{% endfor %}</ul>
+{% endif %}
+{% if result.refs and result.refs.length %}
+<h2 class="govuk-heading-m">The law and guidance behind this</h2>
+{{ citeList(result.refs, base) }}
+{% endif %}
+<p class="govuk-body"><a class="govuk-link" href="{{ rel('/where-am-i/') }}">Start the questions again</a> · <a class="govuk-link" href="{{ rel('/planner/') }}">Turn a Gateway 1 date into a timetable</a></p>
+</div></div>
+{% endblock %}
