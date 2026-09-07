@@ -127,8 +127,26 @@ await tool('search finds regulation 32 for "prescribed requirements"', async (pa
   if (!/result/.test(status)) throw new Error('status wrong: ' + status);
 });
 
-await tool('ask page retrieves passages and streams a mock answer with citations', async (page) => {
+await tool('ask page streams a summary from the site endpoint (intercepted)', async (page) => {
+  await page.route('**/api/projects/local-plan-navigator/ask', async (route) => {
+    const body = JSON.parse(route.request().postData() ?? '{}');
+    if (!body.question || !Array.isArray(body.ids) || body.ids.length < 3) return route.fulfill({ status: 400, body: 'bad request' });
+    const frames = ['sources', 'token', 'token', 'token', 'done'].map((t, i) => `data: ${JSON.stringify(t === 'token' ? { type: 'token', token: ['The consultation must run for at least eight weeks [1]. ', 'A summary must follow [2]. ', 'Then Gateway 3 [3].'][i - 1] } : t === 'sources' ? { type: 'sources', sources: [] } : { type: 'done' })}\n\n`).join('');
+    return route.fulfill({ status: 200, headers: { 'content-type': 'text/event-stream' }, body: frames });
+  });
+  await page.goto(base + '/ask/', { waitUntil: 'networkidle' });
+  await page.fill('#question', 'How long is the consultation on the proposed local plan?');
+  await page.click('button:has-text("Find the guidance")');
+  await page.waitForFunction(() => document.querySelector('#ask-answer .lpn-answer[aria-busy="false"]'), null, { timeout: 20000 });
+  const links = await page.locator('#answer-text a[href^="#passage-"]').count();
+  if (links < 3) throw new Error(`server answer has ${links} citation links`);
+  const status = await page.textContent('#ask-status');
+  if (!/the website/.test(status)) throw new Error('status did not name the website: ' + status);
+});
+
+await tool('ask page retrieves passages and streams a mock local answer with citations', async (page) => {
   await page.goto(base + '/ask/?engine=mock', { waitUntil: 'networkidle' });
+  await page.check('input[name="mode"][value="local"]');
   await page.fill('#question', 'How long is the consultation on the proposed local plan?');
   await page.click('button:has-text("Find the guidance")');
   await page.waitForFunction(() => document.querySelectorAll('#ask-passages .lpn-result').length > 0, null, { timeout: 20000 });

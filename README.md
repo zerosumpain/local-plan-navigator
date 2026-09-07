@@ -20,8 +20,10 @@ service; no connection with MHCLG or the Planning Inspectorate.
   minimums checked, as a table, a chart and a CSV.
 - **Checklists** — Gateway 1 readiness, the Gateway 2 pack, the Gateway 3 documents and
   twelve prescribed requirements, submission, adoption; ticks persist in the browser.
-- **Search** and **Ask** — one index over all the sources; on the Ask page an optional
-  language model running in the visitor's browser writes a cited summary of the passages.
+- **Search** and **Ask** — one index over all the sources; on the Ask page a language
+  model writes a cited summary of the passages: the website's own model by default (a
+  small, rate-limited endpoint on strangeramblings.com), or one running in the visitor's
+  browser for a private, offline answer.
 - **Reference library** — the sources in full with an anchor on every regulation and policy.
 - **Code** — every file of this repository, rendered and commented, plus a zip.
 
