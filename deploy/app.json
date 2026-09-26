@@ -1,0 +1,34 @@
+{
+  "name": "local-plan-navigator",
+  "audience": "sr-local-plan-navigator",
+  "canonicalHost": "strangeramblings.com",
+  "wwwHost": "www.strangeramblings.com",
+  "paths": [
+    "/projects/local-plan-navigator",
+    "/api/projects/local-plan-navigator"
+  ],
+  "excludePaths": [],
+  "rootPaths": [],
+  "assetPrefix": "/_local_plan_navigator",
+  "publicPatterns": [],
+  "passthroughPatterns": [
+    "^/projects/local-plan-navigator(?:/.*)?$",
+    "^/api/projects/local-plan-navigator(?:/.*)?$"
+  ],
+  "identityHeader": "x-local-plan-navigator-identity",
+  "headerStripPrefixes": [
+    "x-local-plan-navigator-"
+  ],
+  "slots": {
+    "primary": 5372,
+    "candidate": 5373
+  },
+  "port": 5370,
+  "routingFile": "/etc/sr-local-plan-navigator/routing/routing.json",
+  "keyEnv": "LOCAL_PLAN_NAVIGATOR_GATEWAY_KEY",
+  "livenessPath": "/__alive",
+  "serviceTokenEnv": "LOCAL_PLAN_NAVIGATOR_SERVICE_TOKEN",
+  "servicePrincipal": null,
+  "releaseHeader": "x-local-plan-navigator-release",
+  "releaseProbe": "https://strangeramblings.com/projects/local-plan-navigator"
+}

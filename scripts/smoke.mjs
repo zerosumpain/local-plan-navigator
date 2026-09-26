@@ -8,12 +8,8 @@
 //
 //   BASE=http://localhost:5177/projects/local-plan-navigator node scripts/smoke.mjs
 //
-// Playwright is borrowed from the site's install rather than added here: it
-// is a 300 MB dependency and this script is the only thing that needs it.
 import { readFile } from 'node:fs/promises';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const { chromium } = require(process.env.PLAYWRIGHT_DIR ?? '/home/john/strange_rambling_svelte/node_modules/playwright');
+import { chromium } from 'playwright';
 
 const base = (process.env.BASE ?? 'http://localhost:5177/projects/local-plan-navigator').replace(/\/$/, '');
 const axeSource = await readFile(new URL('../node_modules/axe-core/axe.min.js', import.meta.url), 'utf8');

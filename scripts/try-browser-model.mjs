@@ -6,9 +6,7 @@
 // runtime files were fetched and any console errors. Slow (minutes); not part
 // of `npm test`, run by hand when the engine or its dependencies change.
 //   BASE=http://localhost:5177/projects/local-plan-navigator node scripts/try-browser-model.mjs
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const { chromium } = require(process.env.PLAYWRIGHT_DIR ?? '/home/john/strange_rambling_svelte/node_modules/playwright');
+import { chromium } from 'playwright';
 
 const base = (process.env.BASE ?? 'http://localhost:5177/projects/local-plan-navigator').replace(/\/$/, '');
 const browser = await chromium.launch();
