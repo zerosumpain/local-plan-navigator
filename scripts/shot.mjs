@@ -2,9 +2,7 @@
 // desktop and phone widths. A development aid, not part of the build.
 //   node scripts/shot.mjs /  /process/  ...
 import { mkdir } from 'node:fs/promises';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const { chromium } = require('/home/john/strange_rambling_svelte/node_modules/playwright');
+import { chromium } from 'playwright';
 
 const base = process.env.BASE ?? 'http://localhost:5177/projects/local-plan-navigator';
 const routes = process.argv.slice(2).length ? process.argv.slice(2) : ['/'];
