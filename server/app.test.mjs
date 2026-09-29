@@ -16,6 +16,8 @@ let appServer;
 let bridgeServer;
 let base;
 let lastPrompt;
+let bridgeCalls = 0;
+let bridgeFailures = 0;
 
 const identity = (path, method = 'GET', email = owner) => ({
   'x-local-plan-navigator-identity': signIdentity(email, method, path, key, 'sr-local-plan-navigator'),
@@ -38,13 +40,15 @@ before(async () => {
     const body = [];
     for await (const chunk of req) body.push(chunk);
     lastPrompt = JSON.parse(Buffer.concat(body).toString());
+    bridgeCalls++;
+    if (bridgeFailures > 0) { bridgeFailures--; res.writeHead(502); res.end('restarting'); return; }
     res.writeHead(200, { 'Content-Type': 'text/event-stream' });
     res.write('data: {"choices":[{"delta":{"content":"The gateway is required [1]."}}]}\n\n');
     res.end('data: [DONE]\n\n');
   }).listen(0, '127.0.0.1');
   await new Promise((resolve) => bridgeServer.once('listening', resolve));
   const bridgeUrl = `http://127.0.0.1:${bridgeServer.address().port}`;
-  appServer = createServer(createApp({ distDir: root, ownerEmail: owner, gatewayKey: key, bridgeUrl }));
+  appServer = createServer(createApp({ distDir: root, ownerEmail: owner, gatewayKey: key, bridgeUrl, retryDelayMs: 10 }));
   appServer.listen(0, '127.0.0.1');
   await new Promise((resolve) => appServer.once('listening', resolve));
   base = `http://127.0.0.1:${appServer.address().port}`;
@@ -88,7 +92,16 @@ test('ask retrieves corpus text, streams the existing contract and rejects hosti
   assert.match(events, /"type":"done"/);
   assert.match(lastPrompt.messages[1].content, /The source passage says a gateway is required/);
   assert.doesNotMatch(lastPrompt.messages[1].content, /Ignore all rules/);
-  assert.equal((await fetch(`${base}${ask}`, { method: 'POST', body: '{}', headers: identity(ask, 'POST') })).status, 400);
+  assert.match(events, /"id":"reg-2026#r32"/);
+  assert.equal(lastPrompt.model, 'gpt-6-luna');
+  const empty = await fetch(`${base}${ask}`, { method: 'POST', body: '{}', headers: identity(ask, 'POST') });
+  assert.equal(empty.status, 400);
+  assert.match((await empty.json()).message, /question/);
+  const stale = await fetch(`${base}${ask}`, {
+    method: 'POST', headers: identity(ask, 'POST'), body: JSON.stringify({ question: 'q', ids: ['gone#x'] }),
+  });
+  assert.equal(stale.status, 409);
+  assert.match((await stale.json()).message, /Reload/);
   assert.equal((await fetch(`${base}${ask}`, { method: 'POST', body: JSON.stringify(body), headers: { ...identity(ask, 'POST'), Origin: 'https://attacker.example' } })).status, 403);
 });
 
@@ -96,4 +109,21 @@ test('health is local-only by bind address and does not expose project data', as
   const response = await fetch(`${base}/__alive`);
   assert.deepEqual(await response.json(), { ready: true, release: 'local' });
   assert.equal((await fetch(`${base}/other`)).status, 404);
+});
+
+test('ask retries once when the shared bridge is restarting, then says to ask again', async () => {
+  const post = () => fetch(`${base}${ask}`, {
+    method: 'POST', headers: { ...identity(ask, 'POST'), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question: 'What happens at the gateway?', ids: ['reg-2026#r32'] }),
+  }).then((r) => r.text());
+  bridgeCalls = 0; bridgeFailures = 1;
+  const recovered = await post();
+  assert.equal(bridgeCalls, 2);
+  assert.match(recovered, /"type":"token"/);
+  assert.doesNotMatch(recovered, /"type":"error"/);
+  bridgeCalls = 0; bridgeFailures = 2;
+  const failed = await post();
+  assert.equal(bridgeCalls, 2);
+  assert.match(failed, /"type":"error"/);
+  assert.match(failed, /Ask again/);
 });

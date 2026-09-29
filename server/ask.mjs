@@ -30,6 +30,7 @@ export async function loadCorpus(distDir) {
 
 export function pickChunks(ids, byId, siteOrigin = 'https://strangeramblings.com') {
   return ids.map((id) => byId.get(id)).filter(Boolean).map((chunk) => ({
+    id: chunk.id,
     title: `${chunk.docTitle} — ${chunk.heading}`,
     text: chunk.text.slice(0, MAX_PASSAGE_CHARS),
     url: `${siteOrigin}/projects/local-plan-navigator${chunk.route}#${chunk.anchor}`,
