@@ -22,7 +22,7 @@
   <aside class="lpn-aside" aria-labelledby="model-heading">
     <h2 class="govuk-heading-m" id="model-heading">Who writes the summary?</h2>
     {{ govukRadios({ name: "mode", classes: "govuk-radios--small", fieldset: { legend: { text: "Who writes the summary?", classes: "govuk-visually-hidden" } }, items: [
-      { value: "server", text: "This website's model (recommended)", hint: { text: "Your question and the references of the passages found are sent to strangeramblings.com, which answers from its own copy of the same texts. Nothing is stored beyond the site's anonymous usage log." }, checked: true },
+      { value: "server", text: "This website's model (recommended)", hint: { text: "Your question and the references of the passages found are sent to the server this page came from, which answers from its own copy of the same texts. On strangeramblings.com only the site's owner can use it. The site keeps no copy; the model provider sees the question to answer it." }, checked: true },
       { value: "local", text: "A model on my device", hint: { text: "Downloads once (0.3 to 2 GB), then runs in your browser. Nothing you type leaves this page. Slower, and the smallest models are rough." } }
     ] }) }}
     <div id="local-model-controls" hidden>

@@ -18,6 +18,9 @@ function send(res, status, body, type = 'text/plain; charset=utf-8') {
   res.end(body);
 }
 
+/** The ask page reads `message` from a failed request and shows it as it is. */
+const sendError = (res, status, message) => send(res, status, JSON.stringify({ message }), 'application/json');
+
 async function readJson(req) {
   const chunks = [];
   let size = 0;
@@ -107,9 +110,10 @@ export function createApp({
   gatewayKey = process.env.LOCAL_PLAN_NAVIGATOR_GATEWAY_KEY,
   siteOrigin = 'https://strangeramblings.com',
   bridgeUrl = process.env.CODEX_BRIDGE_URL ?? 'http://127.0.0.1:5207',
-  model = process.env.LOCAL_PLAN_NAVIGATOR_MODEL ?? 'gpt-6-astra',
+  model = process.env.LOCAL_PLAN_NAVIGATOR_MODEL ?? 'gpt-6-luna',
   dailyCap = Number(process.env.LOCAL_PLAN_NAVIGATOR_DAILY_CAP ?? 400),
   release = process.env.APP_RELEASE_ID ?? 'local',
+  retryDelayMs = 4000,
 } = {}) {
   if (!ownerEmail || !gatewayKey || gatewayKey.length < 32) throw new Error('OWNER_EMAIL and a 32+ character gateway key are required');
   const owner = ownerEmail.trim().toLowerCase();
@@ -135,53 +139,65 @@ export function createApp({
       catch { if (!res.headersSent) send(res, 500, 'File unavailable'); else res.destroy(); }
       return;
     }
-    if (req.method !== 'POST') { send(res, 405, 'Method not allowed'); return; }
-    if (req.headers.origin && req.headers.origin !== siteOrigin) { send(res, 403, 'Invalid origin'); return; }
+    if (req.method !== 'POST') { sendError(res, 405, 'Method not allowed.'); return; }
+    if (req.headers.origin && req.headers.origin !== siteOrigin) { sendError(res, 403, 'Questions are only taken from pages this server sent.'); return; }
     let input;
     try { input = parseAskBody(await readJson(req)); }
-    catch { send(res, 400, 'Invalid request body'); return; }
-    if (!input.question || !input.ids.length) { send(res, 400, 'Question and passage ids required'); return; }
-    const address = String(req.headers['x-forwarded-for'] ?? req.socket.remoteAddress ?? 'unknown').split(',')[0].trim();
+    catch { sendError(res, 400, 'The question could not be read.'); return; }
+    if (!input.question || !input.ids.length) { sendError(res, 400, 'A question and at least one passage are needed.'); return; }
+    // Keyed on the signed identity, not the address: it cannot be chosen by the
+    // caller, and every request that reaches this line carries one.
     const now = Date.now();
-    const bucket = buckets.get(address) ?? { tokens: 20, at: now };
+    const bucket = buckets.get(assertion.email) ?? { tokens: 20, at: now };
     bucket.tokens = Math.min(20, bucket.tokens + (now - bucket.at) * (20 / 60_000));
     bucket.at = now;
-    if (bucket.tokens < 1) { send(res, 429, 'Too many requests'); return; }
+    if (bucket.tokens < 1) { sendError(res, 429, 'Too many questions in a short time. Wait a minute and try again.'); return; }
     bucket.tokens -= 1;
-    buckets.set(address, bucket);
+    buckets.set(assertion.email, bucket);
     const today = new Date(now).toISOString().slice(0, 10);
     if (today !== day) { day = today; usedToday = 0; }
-    if (usedToday >= dailyCap) { send(res, 503, 'Daily model allowance reached'); return; }
+    if (usedToday >= dailyCap) { sendError(res, 503, "Today's allowance of model answers has been used."); return; }
     let chunks;
     try { chunks = pickChunks(input.ids, await loadCorpus(distDir), siteOrigin); }
-    catch { send(res, 503, 'Guidance corpus unavailable'); return; }
-    if (!chunks.length) { send(res, 400, 'No matching passages'); return; }
+    catch { sendError(res, 503, 'The guidance texts could not be loaded.'); return; }
+    if (!chunks.length) { sendError(res, 409, 'The page is older than the guidance on the server. Reload it and ask again.'); return; }
     usedToday++;
     res.writeHead(200, {
       'Content-Type': 'text/event-stream', 'Cache-Control': 'private, no-store',
       Connection: 'keep-alive', 'X-Accel-Buffering': 'no',
     });
     const event = (value) => res.write(`data: ${JSON.stringify(value)}\n\n`);
+    // `id` lets the page number its citations by the passages the model was
+    // actually given, which is not always every passage the page asked for.
     event({ type: 'sources', sources: chunks.map((chunk, index) => ({
-      n: index + 1, title: chunk.title, sourceType: chunk.sourceType, url: chunk.url,
+      n: index + 1, id: chunk.id, title: chunk.title, sourceType: chunk.sourceType, url: chunk.url,
     })) });
     const abort = new AbortController();
     res.on('close', () => abort.abort());
+    const signal = AbortSignal.any([abort.signal, AbortSignal.timeout(60_000)]);
+    const ask = () => fetch(`${bridgeUrl.replace(/\/$/, '')}/v1/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer codex-bridge-local' },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: answerPrompt(input.question, chunks) }],
+        temperature: 0.3, max_tokens: 1000, stream: true,
+      }),
+      signal,
+    });
     try {
-      const response = await fetch(`${bridgeUrl.replace(/\/$/, '')}/v1/chat/completions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer codex-bridge-local' },
-        body: JSON.stringify({
-          model,
-          messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: answerPrompt(input.question, chunks) }],
-          temperature: 0.3, max_tokens: 1000, stream: true,
-        }),
-        signal: AbortSignal.any([abort.signal, AbortSignal.timeout(60_000)]),
-      });
+      // The bridge is shared and restarts with every SR-Main deploy (about ten
+      // seconds). One retry, before anything is streamed, rides that out.
+      let response = await ask().catch((err) => { if (signal.aborted) throw err; return null; });
+      if (!response?.ok || !response.body) {
+        response?.body?.cancel().catch(() => {});
+        await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
+        response = await ask();
+      }
       if (!response.ok || !response.body) throw new Error('model unavailable');
       await streamCompletion(response, res);
     } catch {
-      if (!res.destroyed) event({ type: 'error', message: 'The model could not answer just now.' });
+      if (!res.destroyed) event({ type: 'error', message: 'The model could not answer just now. Ask again in a minute.' });
     } finally {
       res.end();
     }

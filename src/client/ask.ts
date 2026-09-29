@@ -5,8 +5,9 @@
 // summary, from one of two places the visitor chooses between:
 //
 //  - the website's own model: the question and the ids of the passages go to
-//    strangeramblings.com, which answers from its copy of the same corpus and
-//    streams the summary back (the default — it is the good model);
+//    the server that sent the page (strangeramblings.com, or the local service
+//    preview), which answers from its copy of the same corpus and streams the
+//    summary back (the default — it is the good model);
 //  - a model on the visitor's device: WebLLM on WebGPU, or transformers.js on
 //    WebAssembly where there is no WebGPU. Nothing leaves the browser except
 //    the one-off download of the weights from Hugging Face.
@@ -19,13 +20,15 @@ import type { ToWorker, FromWorker } from './engines/protocol';
 
 type Engine = { send: (m: ToWorker) => void; onMessage: (fn: (m: FromWorker) => void) => void; kind: string };
 
-// The site's endpoint. It only answers same-origin requests — the site blocks
-// cross-origin state-changing requests as a matter of policy — so on a local
-// build or the downloaded zip the call fails and the page says to use a model
-// on your device instead.
+// Always the server that sent the page. It only answers same-origin requests
+// (the site blocks cross-origin state-changing ones as a matter of policy), so
+// production asks production, `npm run preview:service` asks itself, and a
+// copy opened from a file or served by the static `npm run serve` has no model
+// behind it and says to use one on your device instead.
 const SITE = 'https://strangeramblings.com';
-const ENDPOINT = (location.origin === SITE ? '' : SITE) + '/api/projects/local-plan-navigator/ask';
+const ENDPOINT = '/api/projects/local-plan-navigator/ask';
 const ON_SITE = location.origin === SITE;
+const SERVED = location.protocol === 'http:' || location.protocol === 'https:';
 
 export function init(): void {
   const form = document.querySelector<HTMLFormElement>('form.lpn-ask');
@@ -131,21 +134,21 @@ export function init(): void {
   // --- the site's model ----------------------------------------------------
   async function generateOnServer(q: string, hits: Hit[]) {
     answerText = '';
+    citeAs = null;
     answerBox.innerHTML = `<h2 class="govuk-heading-m">Plain-English summary</h2><div class="lpn-answer" aria-live="polite" aria-busy="true"><p class="govuk-body" id="answer-text"></p></div>`;
     answerP = answerBox.querySelector('#answer-text');
     status.textContent = "Asking the website's model…";
     const started = Date.now();
     let tokens = 0;
     try {
+      if (!SERVED) throw new Error('A copy opened from a file has no model behind it.');
       const res = await fetch(ENDPOINT, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ question: q, ids: hits.map((h) => h.id) }) });
-      if (!res.ok || !res.body) {
-        const detail = await res.text().catch(() => '');
-        throw new Error(res.status === 429 ? 'Too many questions in a short time. Wait a minute and try again.' : res.status === 503 ? (safeMessage(detail) || "The site's model is not available right now.") : res.status === 403 && !ON_SITE ? "The website's model only answers from strangeramblings.com itself." : `The site answered ${res.status}. ${safeMessage(detail)}`);
-      }
+      if (!res.ok || !res.body) throw new Error(failureMessage(res.status, await res.text().catch(() => '')));
       // Server-sent events over POST: "data: {json}\n\n" frames.
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
+      let finished = false;
       for (;;) {
         const { value, done } = await reader.read();
         if (done) break;
@@ -155,30 +158,68 @@ export function init(): void {
           const frame = buffer.slice(0, idx); buffer = buffer.slice(idx + 2);
           const line = frame.split('\n').find((l) => l.startsWith('data: '));
           if (!line) continue;
-          const msg = JSON.parse(line.slice(6)) as { type: string; token?: string; message?: string };
-          if (msg.type === 'token' && msg.token) { tokens++; appendToken(msg.token); }
+          const msg = JSON.parse(line.slice(6)) as { type: string; token?: string; message?: string; sources?: { n: number; id?: string }[] };
+          if (msg.type === 'sources') citeAs = citationMap(msg.sources ?? [], hits);
+          else if (msg.type === 'token' && msg.token) { tokens++; appendToken(msg.token); }
+          else if (msg.type === 'done') finished = true;
           else if (msg.type === 'error') throw new Error(msg.message || 'generation failed');
         }
       }
+      if (!finished) throw new Error('The connection closed before the summary was finished.');
       finishAnswer(tokens, Date.now() - started, 'the website');
     } catch (err) {
-      const message = err instanceof Error ? (err.message === 'Failed to fetch' && !ON_SITE ? "The website's model only answers from strangeramblings.com itself." : err.message) : String(err);
+      const message = err instanceof Error ? (err.message === 'Failed to fetch' ? "The website's model could not be reached." : err.message) : String(err);
       answerBox.querySelector('.lpn-answer')?.setAttribute('aria-busy', 'false');
-      status.textContent = `${message} The passages below are still the answer, or choose "a model on my device".`;
-      if (answerP && !answerText) answerP.textContent = 'No summary was written.';
+      if (answerText) {
+        // Part of a summary is worse than none if it reads as complete.
+        answerP?.insertAdjacentHTML('afterend', '<p class="govuk-body-s"><strong>The summary was cut off here.</strong> Ask again for the whole of it.</p>');
+        status.textContent = `${message} The passages below are the full answer.`;
+      } else {
+        status.textContent = `${message} The passages below are still the answer, or choose "a model on my device".`;
+        if (answerP) answerP.textContent = 'No summary was written.';
+      }
     }
   }
-  function safeMessage(detail: string): string {
-    try { const j = JSON.parse(detail); return String(j.message ?? '').slice(0, 200); } catch { return ''; }
+  // What went wrong, in words a visitor can act on. The server sends
+  // `{ message }`; the gateway in front of it sends `{ error }`.
+  function failureMessage(code: number, detail: string): string {
+    let said = '';
+    try { const j = JSON.parse(detail); said = String(j.message ?? j.error ?? '').slice(0, 200); } catch { /* not JSON */ }
+    // The service answers 404 to anyone it does not recognise as the owner, so
+    // on the site a 404 means the sign-in has lapsed; anywhere else, that there
+    // is no model behind the page at all.
+    if (code === 401 || code === 404) {
+      return ON_SITE || code === 401
+        ? 'Your sign-in has expired. Reload the page, sign in again, and ask again.'
+        : 'This server has no model behind it (run `npm run preview:service` for one).';
+    }
+    return said || `The site answered ${code}.`;
+  }
+  // The model cites [n] against the passages it was given, which the server
+  // lists by id. Point each [n] at the same passage on this page, whatever
+  // number the page gave it; a citation of nothing the page shows stays plain.
+  function citationMap(sources: { n: number; id?: string }[], hits: Hit[]): Map<number, number> | null {
+    // A server too old to name its passages numbered them as the page did.
+    if (!sources.some((s) => s.id)) return null;
+    const map = new Map<number, number>();
+    for (const s of sources) {
+      const index = hits.findIndex((h) => h.id === s.id);
+      if (index >= 0) map.set(s.n, index + 1);
+    }
+    return map;
   }
 
   // --- generation ------------------------------------------------------------
   let answerText = '';
   let answerP: HTMLElement | null = null;
+  // Only a server answer can number passages differently from the page; the
+  // on-device models are given the page's own list.
+  let citeAs: Map<number, number> | null = null;
   async function generate(q: string, hits: Hit[]) {
     if (!engine || !ready) return;
     const passages: Passage[] = fitPassages(hits.map((h, i) => ({ n: i + 1, source: h.docTitle, heading: h.heading, text: h.text })));
     answerText = '';
+    citeAs = null;
     answerBox.innerHTML = `<h2 class="govuk-heading-m">Plain-English summary</h2><div class="lpn-answer" aria-live="polite" aria-busy="true"><p class="govuk-body" id="answer-text"></p></div>`;
     answerP = answerBox.querySelector('#answer-text');
     status.textContent = 'Writing a summary from the passages…';
@@ -197,6 +238,9 @@ export function init(): void {
     status.textContent = `Summary written on ${where}: ${tokens} tokens in ${(ms / 1000).toFixed(1)} seconds (${rate} tokens a second). Check it against the passages.`;
   }
   function renderAnswer(text: string): string {
-    return escapeHtml(text).replace(/\[(\d)\]/g, (_, n) => `<a class="govuk-link" href="#passage-${n}">[${n}]</a>`);
+    return escapeHtml(text).replace(/\[(\d)\]/g, (whole, n) => {
+      const target = citeAs ? citeAs.get(Number(n)) : Number(n);
+      return target ? `<a class="govuk-link" href="#passage-${target}">[${target}]</a>` : whole;
+    });
   }
 }

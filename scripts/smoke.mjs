@@ -55,10 +55,12 @@ for (const route of only) {
 console.log(`pages: ${pagesChecked} checked, ${axeViolations} serious/critical axe violations`);
 
 // --- the tools -----------------------------------------------------------------
-async function tool(name, fn) {
+// `allow` names a console error the tool provokes on purpose, such as the
+// browser's own line for a request answered 404.
+async function tool(name, fn, { allow } = {}) {
   const page = await context.newPage();
   const errors = [];
-  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('console', (m) => { if (m.type() === 'error' && !allow?.test(m.text())) errors.push(m.text()); });
   page.on('pageerror', (e) => errors.push(String(e)));
   try { await fn(page); note(errors.length === 0, `${name}: console errors: ${errors.join(' | ').slice(0, 300)}`); console.log(`tool ok: ${name}`); }
   catch (e) { failures.push(`${name}: ${String(e).slice(0, 300)}`); }
@@ -123,8 +125,14 @@ await tool('search finds regulation 32 for "prescribed requirements"', async (pa
   if (!/result/.test(status)) throw new Error('status wrong: ' + status);
 });
 
-await tool('ask page streams a summary from the site endpoint (intercepted)', async (page) => {
-  await page.route('**/api/projects/local-plan-navigator/ask', async (route) => {
+await tool('ask page streams a summary from the endpoint on its own server (intercepted)', async (page) => {
+  // Only the page's own origin is intercepted. A page that asks any other
+  // server — as it did after the service moved out of SR-Main — reaches the
+  // network, gets no answer, and fails this check.
+  const origin = new URL(base).origin;
+  const asked = [];
+  page.on('request', (r) => { if (r.url().includes('/api/projects/local-plan-navigator/ask')) asked.push(new URL(r.url()).origin); });
+  await page.route(`${origin}/api/projects/local-plan-navigator/ask`, async (route) => {
     const body = JSON.parse(route.request().postData() ?? '{}');
     if (!body.question || !Array.isArray(body.ids) || body.ids.length < 3) return route.fulfill({ status: 400, body: 'bad request' });
     const frames = ['sources', 'token', 'token', 'token', 'done'].map((t, i) => `data: ${JSON.stringify(t === 'token' ? { type: 'token', token: ['The consultation must run for at least eight weeks [1]. ', 'A summary must follow [2]. ', 'Then Gateway 3 [3].'][i - 1] } : t === 'sources' ? { type: 'sources', sources: [] } : { type: 'done' })}\n\n`).join('');
@@ -138,7 +146,18 @@ await tool('ask page streams a summary from the site endpoint (intercepted)', as
   if (links < 3) throw new Error(`server answer has ${links} citation links`);
   const status = await page.textContent('#ask-status');
   if (!/the website/.test(status)) throw new Error('status did not name the website: ' + status);
+  if (asked.some((o) => o !== origin)) throw new Error('asked another server: ' + asked.join(', '));
 });
+
+await tool('ask page says the server has no model when the endpoint is missing', async (page) => {
+  await page.route(`${new URL(base).origin}/api/projects/local-plan-navigator/ask`, (route) => route.fulfill({ status: 404, body: 'Not found' }));
+  await page.goto(base + '/ask/', { waitUntil: 'networkidle' });
+  await page.fill('#question', 'How long is the consultation on the proposed local plan?');
+  await page.click('button:has-text("Find the guidance")');
+  await page.waitForFunction(() => /No summary was written/.test(document.querySelector('#answer-text')?.textContent ?? ''), null, { timeout: 20000 });
+  const status = await page.textContent('#ask-status');
+  if (!/no model behind it/.test(status)) throw new Error('404 was not explained: ' + status);
+}, { allow: /status of 404/ });
 
 await tool('ask page retrieves passages and streams a mock local answer with citations', async (page) => {
   await page.goto(base + '/ask/?engine=mock', { waitUntil: 'networkidle' });

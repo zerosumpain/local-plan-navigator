@@ -22,9 +22,9 @@ with MHCLG or the Planning Inspectorate.
 - **Checklists** — Gateway 1 readiness, the Gateway 2 pack, the Gateway 3 documents and
   twelve prescribed requirements, submission, adoption; ticks persist in the browser.
 - **Search** and **Ask** — one index over all the sources; on the Ask page a language
-  model writes a cited summary of the passages: the website's own model by default (a
-  small, rate-limited endpoint that only answers the page on strangeramblings.com), or
-  one running in the browser for a private, offline answer — the only option in a
+  model writes a cited summary of the passages: the website's own model by default (an
+  endpoint on the server that sent the page — owner-only on strangeramblings.com, and
+  `npm run preview:service` locally), or one running in the browser for a private, offline answer — the only option in a
   downloaded copy.
 - **Reference library** — the sources in full with an anchor on every regulation and policy.
 - **Code** — every file of this repository, rendered and commented, plus a zip.
@@ -75,7 +75,7 @@ The production setup uses `deploy/compose.yaml` and `deploy/app.json`. Set a
 32-character-or-longer `LOCAL_PLAN_NAVIGATOR_GATEWAY_KEY` to the same value in
 the gateway and app environment files, `AUTH_SECRET` in the gateway file, and
 `OWNER_EMAIL` in the app file. Set `CODEX_BRIDGE_URL` only if the bridge differs
-from `http://127.0.0.1:5207`. The default model is `gpt-6-astra`; override it
+from `http://127.0.0.1:5207`. The default model is `gpt-6-luna`; override it
 with `LOCAL_PLAN_NAVIGATOR_MODEL` if needed. Keep the repository's `PROBE_URL`
 variable unset while the project is private, because an anonymous public
 release probe cannot read an owner-only page. The release workflow remains
