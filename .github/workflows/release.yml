@@ -28,8 +28,50 @@ jobs:
   check:
     uses: ./.github/workflows/check.yml
 
-  release:
+  # The image is built HERE, on porkserv, and published to ghcr; the VPS only
+  # pulls it. Building on the production box filled its disk five times
+  # (2026-08-15 to 09-29), and a full disk crash-loops Postgres and 502s the
+  # whole site. Same guards as release: this runner may only ever run master.
+  image:
     needs: check
+    if: >-
+      !cancelled() &&
+      needs.check.result == 'success' &&
+      vars.RELEASE_ENABLED == 'true' &&
+      github.ref == 'refs/heads/master' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: [self-hosted, srlocalplannavigator-build]
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    env:
+      APP: local-plan-navigator
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and publish the immutable image
+        env:
+          GHCR_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # Per-job credentials: several runners share this user's ~/.docker.
+          export DOCKER_CONFIG="$RUNNER_TEMP/docker-config"
+          RELEASE="${GITHUB_SHA::12}"
+          echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/sr-${APP}:$RELEASE"
+          # A re-run of the same commit reuses what was published rather than
+          # pushing a second, different build under the same immutable tag.
+          if docker manifest inspect "$IMAGE" >/dev/null 2>&1; then
+            echo "::notice::$IMAGE is already published — reusing it"
+          else
+            docker build --build-arg RELEASE_ID="$RELEASE" -t "$IMAGE" .
+            docker push "$IMAGE"
+          fi
+          docker logout ghcr.io
+
+  release:
+    needs: [check, image]
     # The ref guard sits on BOTH arms on purpose. SR-Main learned this the hard
     # way: with the guard only on the push arm, `gh workflow run` against any
     # branch deployed that branch to production.
@@ -42,10 +84,14 @@ jobs:
     if: >-
       !cancelled() &&
       needs.check.result == 'success' &&
+      needs.image.result == 'success' &&
       vars.RELEASE_ENABLED == 'true' &&
       github.ref == 'refs/heads/master' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: [self-hosted, sr-local-plan-navigator]
+    permissions:
+      contents: read
+      packages: read
     timeout-minutes: 25
     env:
       APP: local-plan-navigator
@@ -70,13 +116,22 @@ jobs:
           echo "active=$ACTIVE" >> "$GITHUB_OUTPUT"
           echo "Releasing $RELEASE into the $TARGET slot (currently serving $ACTIVE)"
 
-      # An immutable tag per release. Never reuse a tag: a future worker restart
-      # would silently pick up a different image than the one that was verified.
-      - name: Build the immutable image
+      # Built and published by the image job on porkserv — nothing is built on
+      # this box. Retagged to the local name so compose, images.env, rollback and
+      # the VPS retention job see the same sr-<app>:<release> as before, and the
+      # registry tag dropped so retention's `docker rmi` really frees the image.
+      - name: Pull the immutable image
+        env:
+          GHCR_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          docker build --build-arg RELEASE_ID=${{ steps.plan.outputs.release }} \
-            -t sr-${APP}:${{ steps.plan.outputs.release }} .
+          export DOCKER_CONFIG="$RUNNER_TEMP/docker-config"
+          echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/sr-${APP}:${{ steps.plan.outputs.release }}"
+          docker pull --quiet "$IMAGE"
+          docker tag "$IMAGE" sr-${APP}:${{ steps.plan.outputs.release }}
+          docker rmi "$IMAGE" >/dev/null
+          docker logout ghcr.io
 
       - name: Stage the release directory
         run: |
