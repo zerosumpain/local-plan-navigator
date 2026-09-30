@@ -146,10 +146,22 @@ jobs:
         run: |
           set -euo pipefail
           DEST="$RELEASE_DIR/releases/${{ steps.plan.outputs.release }}"
+          # BOTH image variables: the candidate service reads APP_CANDIDATE_IMAGE,
+          # and images.env may pin it to an older release. Setting only
+          # APP_WEB_IMAGE restarted the candidate slot on its OLD image, switched
+          # traffic to it and reported success (2026-09-27).
           APP_WEB_IMAGE=sr-${APP}:${{ steps.plan.outputs.release }} \
+          APP_CANDIDATE_IMAGE=sr-${APP}:${{ steps.plan.outputs.release }} \
           docker compose --env-file "$CONFIG_DIR/images.env" -f "$DEST/compose.yaml" \
             --profile ${{ steps.plan.outputs.target }} \
             up -d --no-deps --wait web-${{ steps.plan.outputs.target }}
+          # Prove the slot runs THIS release before any traffic moves to it.
+          CID="$(docker compose --env-file "$CONFIG_DIR/images.env" -f "$DEST/compose.yaml" \
+            --profile ${{ steps.plan.outputs.target }} ps -q web-${{ steps.plan.outputs.target }})"
+          RUNNING="$(docker inspect --format '{{.Config.Image}}' "$CID")"
+          if [ "$RUNNING" != "sr-${APP}:${{ steps.plan.outputs.release }}" ]; then
+            echo "::error::web-${{ steps.plan.outputs.target }} runs $RUNNING, not this release"; exit 1
+          fi
 
       # PROBE_URL proves the PUBLIC path serves the release that was just started.
       # It is empty until the edge actually routes this app: probing a URL the
@@ -170,8 +182,16 @@ jobs:
       - name: Pin the verified image for restarts
         run: |
           set -euo pipefail
-          sudo sed -i "s|^APP_WEB_IMAGE=.*|APP_WEB_IMAGE=sr-${APP}:${{ steps.plan.outputs.release }}|" \
-            "$CONFIG_DIR/images.env"
+          # Pin the variable of the slot that was just started: primary reads
+          # APP_WEB_IMAGE, candidate reads APP_CANDIDATE_IMAGE. Pinning the wrong
+          # one would restart the retained slot onto the new image and lose the
+          # rollback.
+          if [ "${{ steps.plan.outputs.target }}" = primary ]; then VAR=APP_WEB_IMAGE; else VAR=APP_CANDIDATE_IMAGE; fi
+          if grep -q "^$VAR=" "$CONFIG_DIR/images.env"; then
+            sudo sed -i "s|^$VAR=.*|$VAR=sr-${APP}:${{ steps.plan.outputs.release }}|" "$CONFIG_DIR/images.env"
+          else
+            echo "$VAR=sr-${APP}:${{ steps.plan.outputs.release }}" | sudo tee -a "$CONFIG_DIR/images.env" >/dev/null
+          fi
 
       - name: Report
         run: |
