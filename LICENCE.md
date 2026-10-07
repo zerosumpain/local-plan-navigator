@@ -2,8 +2,10 @@
 
 ## Code
 
-Copyright (c) 2026 John Kelly. The prototype's own code (everything under `src/`,
-`scripts/`, `build.mjs` and `tests/`) is released under the MIT Licence:
+Copyright (c) 2026 John Kelly. All of the prototype's own code — everything in this
+repository except the government texts and GOV.UK Frontend described below, including
+`src/`, `scripts/`, `server/`, `gateway/`, `deploy/`, `tests/`, `docs/`, `.github/`,
+`build.mjs` and the `Dockerfile` — is released under the MIT Licence:
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
@@ -27,7 +29,8 @@ Everything under `content/sources/` is reproduced from GOV.UK and legislation.go
 It is Crown copyright and is reused under the
 [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/).
 The derived summaries in `content/*.json` are adapted from the same material under the
-same licence. The authoritative versions are the originals; this prototype is not a
+same licence, and may also be used under the MIT Licence above where they are the
+prototype's own words rather than the government's. The authoritative versions are the originals; this prototype is not a
 government service and is not affiliated with MHCLG or the Planning Inspectorate.
 
 ## GOV.UK Frontend

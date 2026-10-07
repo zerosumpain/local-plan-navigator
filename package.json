@@ -3,19 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Local Plan Navigator — a GOV.UK-styled prototype that helps local planning authorities find their way through the 30-month local plan process (England).",
+  "description": "Local Plan Navigator \u2014 a GOV.UK-styled prototype that helps local planning authorities find their way through the 30-month local plan process (England).",
   "scripts": {
     "build": "node build.mjs",
     "watch": "node build.mjs --watch",
     "serve": "node scripts/serve.mjs",
     "start": "node server/start.mjs",
     "preview:service": "node server/preview.mjs",
-    "check": "node --check server/app.mjs && node --check server/ask.mjs && node --check server/start.mjs && node scripts/verify-kit.mjs",
+    "check": "node --check server/app.mjs && node --check server/ask.mjs && node --check server/start.mjs && node --check server/settings.mjs && node --check server/llm.mjs && node --check server/admin.mjs && node --check server/access.mjs && node --check server/front.mjs && node scripts/verify-kit.mjs",
     "corpus": "node scripts/build-corpus.mjs",
     "fetch-sources": "node scripts/fetch-sources.mjs",
     "test": "node --test tests/*.test.mjs server/*.test.mjs && node scripts/check-links.mjs",
     "smoke": "node scripts/smoke.mjs",
-    "a11y": "node scripts/a11y.mjs"
+    "a11y": "node scripts/a11y.mjs",
+    "admin-passphrase": "node scripts/admin-passphrase.mjs"
   },
   "dependencies": {},
   "devDependencies": {

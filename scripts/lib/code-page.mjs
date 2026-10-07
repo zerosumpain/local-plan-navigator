@@ -9,7 +9,7 @@ import { readFile, readdir, stat, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { zipSync, strToU8 } from 'fflate';
 
-const INCLUDE_DIRS = ['src', 'scripts', 'server', 'gateway', 'deploy', '.github', 'content', 'tests', 'docs', 'public'];
+const INCLUDE_DIRS = ['src', 'scripts', 'server', 'deploy', '.github', 'content', 'tests', 'docs', 'public'];
 const INCLUDE_FILES = ['build.mjs', 'Dockerfile', '.dockerignore', 'package.json', 'package-lock.json', 'README.md', 'LICENCE.md', '.gitignore'];
 const SHOW_ON_PAGE = (p) => !p.startsWith('content/sources/') && !p.startsWith('public/') && p !== 'package-lock.json' && !p.endsWith('.png');
 
@@ -25,7 +25,6 @@ export const DEPENDENCIES = [
   { name: 'turndown', version: '7.2.4', licence: 'MIT', purpose: 'Converts GOV.UK content-API HTML to Markdown in the fetch-sources script.', dev: true },
   { name: 'axe-core', version: '4.13.0', licence: 'MPL-2.0', purpose: 'Accessibility checks in the smoke test.', dev: true },
   { name: 'playwright', version: '1.61.1', licence: 'Apache-2.0', purpose: 'Runs the browser smoke checks without relying on another repository.', dev: true },
-  { name: '@auth/core', version: '0.41.3', licence: 'MIT', purpose: 'Reads the Main session at the dedicated gateway.' },
   { name: 'minisearch', version: '7.2.0', licence: 'MIT', purpose: 'Full-text search over the corpus, bundled for the browser.', dev: true },
   { name: '@mlc-ai/web-llm', version: '0.2.84', licence: 'Apache-2.0', purpose: 'Runs a language model on WebGPU inside the browser (the Ask page, opt-in).', dev: true },
   { name: '@huggingface/transformers', version: '4.2.0', licence: 'Apache-2.0', purpose: 'Runs a small language model on WebAssembly where there is no WebGPU (the Ask page, opt-in).', dev: true },

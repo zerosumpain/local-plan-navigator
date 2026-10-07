@@ -1,0 +1,23 @@
+{# src/pages/sign-in.njk — the navigator's own administrator sign-in. It asks
+   no other site: the passphrase is checked by this server against the hash in
+   LOCAL_PLAN_NAVIGATOR_ADMIN_PASSWORD_HASH (server/access.mjs). #}
+{% extends "layouts/base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% block pageContent %}
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds">
+<div id="sign-in-errors" tabindex="-1"></div>
+<h1 class="govuk-heading-xl">Sign in as an administrator</h1>
+<p class="govuk-body">Administrators choose which model answers questions, and make and withdraw share links. Everyone else needs a share link, not a sign-in.</p>
+<form id="sign-in-form" novalidate>
+  <div class="govuk-form-group" id="passphrase-group">
+    <label class="govuk-label govuk-label--s" for="passphrase">Passphrase</label>
+    <p class="govuk-error-message" id="passphrase-error" hidden></p>
+    <input class="govuk-input govuk-!-width-two-thirds" id="passphrase" name="passphrase" type="password" autocomplete="current-password" spellcheck="false" required>
+  </div>
+  {{ govukButton({ text: "Sign in", attributes: { "data-action": "sign-in" } }) }}
+</form>
+<noscript><p class="govuk-body">Signing in needs JavaScript.</p></noscript>
+</div>
+</div>
+{% endblock %}

@@ -21,7 +21,7 @@
 
 {% block head %}
   <meta name="description" content="{{ description | default('A prototype that helps local planning authorities in England find their way through the 30-month local plan process.') }}">
-  <meta name="robots" content="index,follow">
+  <meta name="robots" content="noindex,nofollow">
   <link rel="stylesheet" href="{{ base }}assets/app.css">
   {% block pageHead %}{% endblock %}
 {% endblock %}
@@ -37,10 +37,12 @@
       logoHtml: '<span class="lpn-logotype">Local Plan Navigator</span><strong class="govuk-tag govuk-tag--yellow lpn-logotype-tag">Prototype</strong>',
       attributes: { "data-module": "lpn-header" }
     }) }}
+    {% if not hideNav %}
     {{ govukServiceNavigation({
       ariaLabel: "Service navigation",
       navigation: nav
     }) }}
+    {% endif %}
   </header>
 {% endblock %}
 

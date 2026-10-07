@@ -78,6 +78,11 @@ export async function siteMap({ root, corpus, code }) {
     { id: 'sources', route: '/sources/', template: 'sources', title: 'Sources, dates and licences', sources: corpus.sources, corpusMeta: corpus.meta },
     { id: 'code', route: '/code/', template: 'code', title: 'The code', code },
     { id: 'reference-home', route: '/reference/', template: 'reference-home', title: 'Reference library', sources: corpus.sources },
+    // Admin only: the server answers 404 for it to anyone else, and nothing links to it.
+    { id: 'admin', route: '/admin/', template: 'admin', title: 'Administration' },
+    // Open to everyone, so a visitor without a link is told what to do rather than "Not found".
+    { id: 'sign-in', route: '/sign-in/', template: 'sign-in', title: 'Sign in as an administrator', hideNav: true },
+    { id: 'private', route: '/private/', template: 'private', title: 'This prototype is private', hideNav: true },
   ];
 
   for (const s of resolvedStages) {

@@ -6,9 +6,10 @@ gateways, the 2026 Regulations, the SEA Regulations and the National Planning Po
 Framework, in one place, with tools that say what to do next.
 
 The deployment path is <https://strangeramblings.com/projects/local-plan-navigator/>.
-It is private by default: the owner sees it, and anyone else needs a share link minted
-with the Share button on its /projects card. This is not a government service; it has no
-connection with MHCLG or the Planning Inspectorate.
+It is private, and decides who may see it by itself: an administrator signs in with the
+navigator's own passphrase, and makes share links on its admin page for anyone else. It
+relies on nothing else on strangeramblings.com except its card on /projects. This is not
+a government service; it has no connection with MHCLG or the Planning Inspectorate.
 
 ## What is on it
 
@@ -29,6 +30,12 @@ connection with MHCLG or the Planning Inspectorate.
   downloaded copy.
 - **Reference library** — the sources in full with an anchor on every regulation and policy.
 - **Code** — every file of this repository, rendered and commented, plus a zip.
+- **Admin** (`/admin/`, owner only) — which model connection answers: the site's Codex
+  bridge, an Azure gateway such as MHCLG's AI Gateway (API Management subscription key,
+  Azure OpenAI key or Entra ID), or any OpenAI-compatible endpoint; test a connection,
+  switch to it, and see every model call logged (never its content).
+
+Taking it on to run yourselves? Start with [`docs/handover.md`](docs/handover.md).
 
 ## Build it
 
@@ -43,53 +50,61 @@ npm run fetch-sources  # refresh content/sources/ from GOV.UK and legislation.go
 
 Node 22 or later. `dist/` is static and works at any mount point because its links
 are relative. The standalone production server in `server/` serves that bundle and
-the Ask API. It requires a signed owner identity from the estate gateway. The
-downloadable bundle does not require the server.
+the APIs, with its own sign-in and share links. The downloadable bundle does not
+require the server.
 
-## Run the isolated service preview
-
-From `/home/john/docker/local`, run:
+## Run it locally
 
 ```bash
-docker compose -f compose.yaml -f compose.local-plan-navigator.yaml up -d --wait local-plan-navigator
+npm run preview:service   # http://127.0.0.1:5382/projects/local-plan-navigator/
 ```
 
-Open <http://127.0.0.1:5382/projects/local-plan-navigator/>. The preview uses
-a synthetic local identity and does not connect to the production Codex bridge.
-Use the browser model mode to test an answer locally. Run `npm run check`,
-`npm test`, and `npm run build` in this repository before packaging a change.
-For the optional browser smoke run, install a local Chromium with
-`npx playwright install chromium` and run `npm run smoke` while the static
-preview is serving.
+Sign in at `/sign-in/` with the preview passphrase it prints, then use the admin page
+to make a share link and open it in a private window to see what a recipient sees.
+The local pre-production stack on porkserv runs the same thing the way production
+does — the front in front of a web slot — from `~/docker/local/compose.lpn-mhclg-beta.yaml`.
+Run `npm run check`, `npm test` and `npm run build` before packaging a change. For the
+optional browser smoke run, install a local Chromium with `npx playwright install chromium`
+and run `npm run smoke` while the static preview is serving.
 
 ## Production boundary
 
-The dedicated gateway owns `/projects/local-plan-navigator` and
-`/api/projects/local-plan-navigator/ask`. On every request it asks Main's session
-authority who is calling and whether they may see this project — Main applies the
-project's visibility row on /projects, the owner preview and the /projects share
-links (`?t=`, then the `psh_local-plan-navigator` cookie) — and signs the answer
-into a request-bound assertion (`deploy/app.json` `sessionClaims: ["project"]`).
-The web process lets in the owner (`OWNER_EMAIL`, or Main's owner decision), a live
-share link, or a public project, and answers 404 to everyone else, on every page,
-asset and API call. A share recipient's token is kept in the per-project cookie,
-set for both the pages and the API, so links between pages keep working; their
-questions are rate-limited by address and count towards the daily cap.
-Both processes bind to loopback; ingress is defined in SR-Infra. The gateway
-server comes from SR-Infra's immutable `sr-gateway` image. This repository
-retains only the signed-identity contract required by its web process.
+The navigator decides who may see it without asking any other service, so it keeps
+working whatever the rest of strangeramblings.com is doing. Its only tie to the site
+is the card on /projects that links to it.
 
-The production setup uses `deploy/compose.yaml` and `deploy/app.json`. Set a
-32-character-or-longer `LOCAL_PLAN_NAVIGATOR_GATEWAY_KEY` to the same value in
-the gateway and app environment files, `AUTH_SECRET` in the gateway file, and
-`OWNER_EMAIL` in the app file. Set `CODEX_BRIDGE_URL` only if the bridge differs
-from `http://127.0.0.1:5207`. The default model is `gpt-6-luna`; override it
-with `LOCAL_PLAN_NAVIGATOR_MODEL` if needed. Keep the repository's `PROBE_URL`
-variable unset while the project is private, because an anonymous public
-release probe cannot read a private page. The release workflow remains
-gated by `RELEASE_ENABLED` until the production runner and service are ready.
-The shared gateway image is pinned separately in `APP_GATEWAY_IMAGE` and rolled
-per application with SR-Infra's `scripts/rollout-gateway.mjs`.
+- **The front** (`server/front.mjs`, the `gateway` service in `deploy/compose.yaml`,
+  from this app's own image) owns `/projects/local-plan-navigator` and
+  `/api/projects/local-plan-navigator` on the gateway port that ingress already routes
+  to. It reads `routing.json` on every request and proxies to the active web slot,
+  falls back to the previous slot for a page request if the active one is down, and
+  restates `x-forwarded-for` from Cloudflare's `cf-connecting-ip`. It holds no secrets.
+- **The web process** (`server/app.mjs`, `server/access.mjs`) lets in an administrator
+  signed in with the passphrase whose scrypt hash is `LOCAL_PLAN_NAVIGATOR_ADMIN_PASSWORD_HASH`
+  (make one with `npm run admin-passphrase`), or anyone holding a live share link made on
+  the admin page (only the token's SHA-256 is kept, in the state volume). Everyone else is
+  sent to a page saying the prototype is private and how to get a link; the APIs answer
+  401. Share recipients' requests are rate-limited by address and count towards the
+  daily cap. Admin sessions and share cookies last twelve hours.
+
+The app environment file needs `LOCAL_PLAN_NAVIGATOR_SECRET` (32+ random characters; it
+signs admin sessions and, unless `LOCAL_PLAN_NAVIGATOR_SETTINGS_KEY` is set, encrypts the
+saved model keys) and `LOCAL_PLAN_NAVIGATOR_ADMIN_PASSWORD_HASH`. `CODEX_BRIDGE_URL`
+(default `http://127.0.0.1:5207`) and `LOCAL_PLAN_NAVIGATOR_MODEL` (default `gpt-6-luna`)
+only seed the first connection: once the admin saves connections on the admin page, they
+live in the `state` volume (`/var/lib/local-plan-navigator/settings.json`, with
+`shares.json` and `usage.jsonl`). Keep the repository's `PROBE_URL` variable unset while
+the project is private, because an anonymous release probe cannot read a private page.
+The release workflow remains gated by `RELEASE_ENABLED`. It switches web slots only; the
+front is pinned separately in `APP_GATEWAY_IMAGE` to an image of this app and only needs
+recreating when `server/front.mjs` changes:
+
+```bash
+sudo sed -i 's|^APP_GATEWAY_IMAGE=.*|APP_GATEWAY_IMAGE=sr-local-plan-navigator:<release>|' /etc/sr-local-plan-navigator/images.env
+docker compose --env-file /etc/sr-local-plan-navigator/images.env \
+  -f /opt/sr-local-plan-navigator/releases/<release>/compose.yaml up -d --no-deps --force-recreate gateway
+curl -s -H 'Host: strangeramblings.com' http://127.0.0.1:5370/__gateway/health   # same active slot as before
+```
 
 ## How it is put together
 

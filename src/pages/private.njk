@@ -1,0 +1,14 @@
+{# src/pages/private.njk — what anyone without access sees, instead of a bare
+   "Not found": the server redirects every page they ask for to here. #}
+{% extends "layouts/base.njk" %}
+{% block pageContent %}
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds">
+<h1 class="govuk-heading-xl">This prototype is private</h1>
+<p class="govuk-body-l">You need a link to see the Local Plan Navigator.</p>
+<p class="govuk-body">If someone sent you a link, open it again from their message. Once opened, a link keeps working on your device for 12 hours; after that, opening it again lets you back in for as long as the link itself lasts.</p>
+<p class="govuk-body">If the link no longer works, it has expired or been withdrawn. Ask the person who sent it for a new one.</p>
+<p class="govuk-body govuk-!-margin-top-8">Running the prototype? <a class="govuk-link" href="{{ base }}sign-in/">Sign in as an administrator</a>.</p>
+</div>
+</div>
+{% endblock %}
