@@ -1,0 +1,1775 @@
+{
+  "$comment": "The plan checker rubric. Sections run in this order in every report; item ids are stable, and the report, the exports and the tests key on them. cites: [{ doc, anchor, label }], where doc is a source id in sources.json and anchor a passage anchor in the built corpus (dist/data/corpus.json); the build and tests/checker-rubric.test.mjs refuse an unknown one. assess: model (the language model answers it from extracts of the plan), rule (code decides from what it found in the plan; rule.type says how), derived (code combines the results of derive.from), officer (the evidence is outside the plan, so it is always not-assessable and carries officerAction). A model item has either judge (what met, partly and missing mean) or conditions (yes/no statements; code gives met when all are yes, not met when none is, partly otherwise). keywords and focus choose which parts of the plan the model reads for an item. statement places an item in the draft statement of compliance or of soundness. To add the model local plan when MHCLG publishes it: add its text to content/sources, write the model-plan section items with judge or conditions, keywords and citations to its passages, and set enabled to true.",
+  "version": "2026-10-07",
+  "statuses": [
+    {
+      "id": "met",
+      "label": "Met",
+      "tag": "green",
+      "meaning": "The draft shows this, and every passage quoted for it was found word for word in the draft."
+    },
+    {
+      "id": "partly",
+      "label": "Partly met",
+      "tag": "yellow",
+      "meaning": "The draft covers this, but thinly, incompletely or unclearly."
+    },
+    {
+      "id": "missing",
+      "label": "Not met",
+      "tag": "red",
+      "meaning": "The checker could not find this in the draft, or the draft does what national policy says a plan should not."
+    },
+    {
+      "id": "not-assessable",
+      "label": "Cannot assess",
+      "tag": "grey",
+      "meaning": "This cannot be judged from the plan document alone, or the check could not be completed. The authority needs to complete it."
+    }
+  ],
+  "sources": {
+    "regulations-2026": "The Town and Country Planning (Local Planning) (England) Regulations 2026",
+    "nppf": "National Planning Policy Framework (August 2026)",
+    "guidance": "MHCLG and Planning Inspectorate guidance",
+    "model-plan": "The model local plan (announced, not yet published)"
+  },
+  "findings": [
+    {
+      "id": "adds-local-detail",
+      "label": "Adds local detail"
+    },
+    {
+      "id": "partly-restates",
+      "label": "Partly restates national policy"
+    },
+    {
+      "id": "restates",
+      "label": "Duplicates or restates national policy"
+    },
+    {
+      "id": "inconsistent",
+      "label": "Inconsistent with national policy"
+    }
+  ],
+  "sections": [
+    {
+      "id": "structure",
+      "letter": "A",
+      "title": "Plan structure and contents",
+      "summary": "What regulation 11 and NPPF policy PM2 say a local plan must or should contain.",
+      "mode": "items",
+      "enabled": true,
+      "batchSize": 4,
+      "items": [
+        {
+          "id": "A1",
+          "title": "A vision for the area",
+          "source": "regulations-2026",
+          "assess": "model",
+          "focus": [
+            "vision"
+          ],
+          "requirement": "The plan must contain a vision for the area setting out how it is intended to change over the plan period, which relates to the area's particular characteristics or circumstances (regulation 11(1)(a) and (2); NPPF PM2(1)(a)).",
+          "judge": {
+            "met": "A clearly identified vision (however titled) says how the area will change over the plan period and refers to things particular to this area, such as named places, assets or issues.",
+            "partly": "A vision exists but is generic, does not say how the area will change over the plan period, or could describe almost any area.",
+            "missing": "No vision can be identified."
+          },
+          "keywords": [
+            "vision",
+            "our vision",
+            "will be",
+            "by 2040",
+            "change",
+            "plan period",
+            "ambition",
+            "aims"
+          ],
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-11",
+              "label": "Regulation 11(1)(a) and (2)"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(a)"
+            },
+            {
+              "doc": "preparing-a-vision",
+              "anchor": "local-plans-must-include-a-vision",
+              "label": "Preparing a local plan vision"
+            }
+          ],
+          "action": "Write a short vision that says how the area will change over the plan period and names the places, assets and issues particular to it."
+        },
+        {
+          "id": "A2",
+          "title": "No more than ten measurable outcomes",
+          "source": "regulations-2026",
+          "assess": "rule",
+          "focus": [
+            "outcomes"
+          ],
+          "rule": {
+            "type": "count-outcomes",
+            "max": 10
+          },
+          "requirement": "The plan must contain no more than ten measurable outcomes, designed to monitor progress towards meeting the vision (regulation 11(1)(b); NPPF PM2(1)(a)).",
+          "judge": {
+            "met": "List every measurable outcome the plan sets out, each as an exact quote of its opening words.",
+            "partly": "",
+            "missing": ""
+          },
+          "keywords": [
+            "measurable outcomes",
+            "outcome",
+            "outcomes",
+            "monitor",
+            "target"
+          ],
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-11",
+              "label": "Regulation 11(1)(b)"
+            },
+            {
+              "doc": "preparing-a-vision",
+              "anchor": "measurable-outcomes",
+              "label": "Preparing a local plan vision: measurable outcomes"
+            }
+          ],
+          "action": "Set out between one and ten measurable outcomes, numbered, directly after the vision."
+        },
+        {
+          "id": "A3",
+          "title": "Outcomes that can be measured",
+          "source": "guidance",
+          "assess": "model",
+          "focus": [
+            "outcomes"
+          ],
+          "requirement": "Outcomes should be tangible, locally specific and easy to monitor the plan against, linked to quantitative or qualitative targets where appropriate (preparing a local plan vision).",
+          "judge": {
+            "met": "Every outcome states something that can be counted or checked, with a target quantity, proportion or date.",
+            "partly": "Some outcomes have a target quantity, proportion or date, but at least one is an aspiration that cannot be measured.",
+            "missing": "No outcome has a target quantity, proportion or date, or there are no outcomes."
+          },
+          "keywords": [
+            "measurable outcomes",
+            "outcome",
+            "target",
+            "per cent",
+            "by 2042",
+            "increase",
+            "reduce"
+          ],
+          "cites": [
+            {
+              "doc": "preparing-a-vision",
+              "anchor": "measurable-outcomes",
+              "label": "Preparing a local plan vision: measurable outcomes"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-11",
+              "label": "Regulation 11(1)(b)"
+            }
+          ],
+          "action": "Give every outcome an indicator and a target quantity, proportion or date."
+        },
+        {
+          "id": "A4",
+          "title": "A plan period of at least 10 years from adoption",
+          "source": "nppf",
+          "assess": "model",
+          "rule": {
+            "type": "plan-period",
+            "years": 10
+          },
+          "requirement": "The spatial strategy, the amount of development, allocations and designations should cover a period of no less than 10 years from the point of adoption (NPPF PM2(1)(b)).",
+          "judge": {
+            "met": "Report the facts only; the checker compares them: met when the plan period ends at least 10 years after the expected adoption year.",
+            "partly": "The plan period ends less than 10 years after the expected adoption year.",
+            "missing": "No plan period can be found."
+          },
+          "keywords": [
+            "plan period",
+            "2027",
+            "2042",
+            "covers the period",
+            "years",
+            "trajectory"
+          ],
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(b)"
+            }
+          ],
+          "action": "State the plan period, ending at least 10 years after the expected adoption date."
+        },
+        {
+          "id": "A5",
+          "title": "A spatial strategy and the minimum amount of development",
+          "source": "nppf",
+          "assess": "model",
+          "requirement": "The plan should set out a spatial strategy and policies for the minimum amount of development to be provided, with land allocations, broad locations for growth and designations (NPPF PM2(1)(b) and S2).",
+          "keywords": [
+            "spatial strategy",
+            "settlement hierarchy",
+            "homes",
+            "dwellings",
+            "housing requirement",
+            "employment land",
+            "hectares",
+            "distribution",
+            "growth"
+          ],
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(b)"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "S2",
+              "label": "NPPF S2: producing a spatial strategy"
+            }
+          ],
+          "action": "Set out the spatial strategy and the minimum amount of each type of development it provides for.",
+          "conditions": [
+            "The plan sets out a spatial strategy saying where development will go, such as a settlement hierarchy or growth areas.",
+            "The plan states a minimum number of new homes.",
+            "The plan states a minimum amount of employment land or employment floorspace."
+          ]
+        },
+        {
+          "id": "A6",
+          "title": "Site allocations",
+          "source": "nppf",
+          "assess": "rule",
+          "rule": {
+            "type": "allocations-found"
+          },
+          "requirement": "The plan should allocate land for development, identified clearly enough to be checked against footnote 8 (NPPF PM2(1)(b)).",
+          "judge": {
+            "met": "",
+            "partly": "",
+            "missing": ""
+          },
+          "keywords": [],
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(b)"
+            }
+          ],
+          "action": "Allocate sites in policies headed with a site reference and name, such as \"Policy NW/H1: Land north of the town\"."
+        },
+        {
+          "id": "A7",
+          "title": "Contributions expected from development",
+          "source": "nppf",
+          "assess": "model",
+          "requirement": "The plan should set out the contributions expected from development towards affordable housing and the infrastructure needed, with affordable housing requirements expressed as a single figure rather than a range (NPPF PM2(1)(c) and PM12).",
+          "keywords": [
+            "affordable housing",
+            "contributions",
+            "infrastructure",
+            "section 106",
+            "planning obligations",
+            "viability",
+            "tenure",
+            "per cent"
+          ],
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(c)"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "PM12",
+              "label": "NPPF PM12: developer contributions"
+            }
+          ],
+          "action": "State each affordable housing requirement as a single figure and list the infrastructure contributions expected.",
+          "conditions": [
+            "The plan states the affordable housing it requires from development, as a percentage or a number.",
+            "Every affordable housing requirement in the plan is a single figure, not a range.",
+            "The plan names specific infrastructure that development must provide or contribute to, such as a school, a road junction or a bus service."
+          ]
+        },
+        {
+          "id": "A8",
+          "title": "How the outcomes will be monitored",
+          "source": "guidance",
+          "assess": "model",
+          "focus": [
+            "monitoring",
+            "outcomes"
+          ],
+          "requirement": "The plan should show how progress towards each outcome will be measured, with indicators and targets used in annual monitoring (regulation 11(1)(b); preparing a local plan vision).",
+          "keywords": [
+            "monitoring",
+            "indicator",
+            "target",
+            "annual monitoring",
+            "monitoring report",
+            "trigger",
+            "review",
+            "data source"
+          ],
+          "cites": [
+            {
+              "doc": "preparing-a-vision",
+              "anchor": "monitor-your-visions-success",
+              "label": "Preparing a local plan vision: monitoring"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-11",
+              "label": "Regulation 11(1)(b)"
+            }
+          ],
+          "action": "Add a monitoring table with an indicator, a target and a data source for every outcome.",
+          "conditions": [
+            "The plan has a monitoring framework, section or table.",
+            "Every measurable outcome has an indicator in the monitoring framework.",
+            "Every measurable outcome has a target.",
+            "The plan says where the monitoring data comes from or how often it is reported."
+          ]
+        },
+        {
+          "id": "A9",
+          "title": "Policies the plan supersedes",
+          "source": "regulations-2026",
+          "assess": "model",
+          "requirement": "Where a policy supersedes a policy in the development plan, the plan must say so and identify the superseded policy; if this is not engaged, the statement of compliance must explain why (regulation 11(4) and 32(b)(iii)).",
+          "judge": {
+            "met": "The plan identifies, policy by policy, which existing development plan policies it supersedes (for example in a schedule or table).",
+            "partly": "The plan says it replaces an earlier plan or its policies in general terms, without identifying each superseded policy.",
+            "missing": "The plan does not mention superseded policies or the existing development plan."
+          },
+          "keywords": [
+            "supersede",
+            "superseded",
+            "replace",
+            "replaces",
+            "saved policies",
+            "core strategy",
+            "existing local plan",
+            "development plan"
+          ],
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-11",
+              "label": "Regulation 11(4)"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-32",
+              "label": "Regulation 32(b)(iii)"
+            }
+          ],
+          "action": "Add a schedule listing each existing policy the plan supersedes and the new policy that replaces it."
+        }
+      ]
+    },
+    {
+      "id": "allocations",
+      "letter": "B",
+      "title": "Site allocations",
+      "summary": "Footnote 8 to NPPF policy PM2 lists what each allocation should include. Every allocation the checker found is checked for each item, and the result for an item is the result across all of them.",
+      "mode": "per-allocation",
+      "enabled": true,
+      "batchSize": 3,
+      "items": [
+        {
+          "id": "B1",
+          "title": "Site reference",
+          "source": "nppf",
+          "assess": "model",
+          "requirement": "Each allocation should include a site reference (NPPF PM2, footnote 8).",
+          "judge": {
+            "met": "The allocation has a reference that identifies it uniquely, such as NW/H1 or SA4.",
+            "partly": "",
+            "missing": "No reference is given."
+          },
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(b), footnote 8"
+            }
+          ],
+          "action": "Give every allocation a unique site reference."
+        },
+        {
+          "id": "B2",
+          "title": "Site name",
+          "source": "nppf",
+          "assess": "model",
+          "requirement": "Each allocation should include a site name (NPPF PM2, footnote 8).",
+          "judge": {
+            "met": "The allocation is named so the site can be identified (for example 'Land north of Wendbury').",
+            "partly": "",
+            "missing": "No name is given."
+          },
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(b), footnote 8"
+            }
+          ],
+          "action": "Give every allocation a name that identifies the site."
+        },
+        {
+          "id": "B3",
+          "title": "Site area",
+          "source": "nppf",
+          "assess": "model",
+          "requirement": "Each allocation should include the site area (NPPF PM2, footnote 8).",
+          "judge": {
+            "met": "The site area is stated as a number of hectares or acres.",
+            "partly": "",
+            "missing": "No site area is stated."
+          },
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(b), footnote 8"
+            }
+          ],
+          "action": "State the site area in hectares for every allocation."
+        },
+        {
+          "id": "B4",
+          "title": "Existing use",
+          "source": "nppf",
+          "assess": "model",
+          "requirement": "Each allocation should include a short description of the existing use or uses (NPPF PM2, footnote 8).",
+          "judge": {
+            "met": "The current use of the site is stated (for example agricultural land, a vacant maltings, a depot).",
+            "partly": "",
+            "missing": "The current use is not stated. A site name alone, such as \"Former Maltings\", does not state it."
+          },
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(b), footnote 8"
+            }
+          ],
+          "action": "Describe the current use of each allocated site."
+        },
+        {
+          "id": "B5",
+          "title": "Allocated use",
+          "source": "nppf",
+          "assess": "model",
+          "requirement": "Each allocation should include a short description of the allocated use or uses (NPPF PM2, footnote 8).",
+          "judge": {
+            "met": "The uses the site is allocated for are stated (for example homes and a primary school). A capacity given as a number of homes, or as floorspace for a use, states that use.",
+            "partly": "",
+            "missing": "The allocated use is not stated."
+          },
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(b), footnote 8"
+            }
+          ],
+          "action": "State what each site is allocated for."
+        },
+        {
+          "id": "B6",
+          "title": "Site capacity",
+          "source": "nppf",
+          "assess": "model",
+          "requirement": "Each allocation should include an indicative or specific site capacity for the development proposed (NPPF PM2, footnote 8).",
+          "judge": {
+            "met": "A capacity is given for the main use, as a number of homes, a floorspace or an area of employment land. Supporting uses such as schools, shops or open space do not need one.",
+            "partly": "The capacity of the main use is described only in general terms, for example \"a mix of homes\".",
+            "missing": "Nothing is said about how much development the site will take."
+          },
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(b), footnote 8"
+            }
+          ],
+          "action": "Give an indicative capacity for every use on every allocation."
+        },
+        {
+          "id": "B7",
+          "title": "Projected delivery timeframe",
+          "source": "nppf",
+          "assess": "model",
+          "requirement": "Each allocation should include the projected delivery timeframe (NPPF PM2, footnote 8).",
+          "judge": {
+            "met": "Delivery is given in years or periods of the plan (for example 2029 to 2035, or years 1 to 5).",
+            "partly": "Delivery is described in vague terms without years, for example 'in the medium term'.",
+            "missing": "No delivery timeframe is given."
+          },
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(b), footnote 8"
+            }
+          ],
+          "action": "Give the projected delivery years for every allocation, matching the housing trajectory."
+        },
+        {
+          "id": "B8",
+          "title": "Site-specific requirements, including infrastructure",
+          "source": "nppf",
+          "assess": "model",
+          "requirement": "Allocations should identify any site-specific expectations and requirements, including for on- and off-site infrastructure (NPPF PM2, footnote 8; PM12).",
+          "judge": {
+            "met": "Site-specific requirements are listed and include infrastructure needed on or off the site: access, transport, schools, health, utilities, drainage, or contributions to them. Landscaping, design and character requirements are not infrastructure.",
+            "partly": "Requirements are listed but none is about infrastructure.",
+            "missing": "No site-specific requirements are given."
+          },
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(b), footnote 8"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "PM12",
+              "label": "NPPF PM12(2)(b)"
+            }
+          ],
+          "action": "List the site-specific requirements for each allocation, including the on- and off-site infrastructure it must provide or fund."
+        }
+      ]
+    },
+    {
+      "id": "linkage",
+      "letter": "C",
+      "title": "From vision to outcomes to policies",
+      "summary": "The government's guidance on preparing a vision expects a thread from the vision's aims to the outcomes, and from each outcome to the policies and sites that deliver it.",
+      "mode": "items",
+      "enabled": true,
+      "batchSize": 4,
+      "items": [
+        {
+          "id": "C1",
+          "title": "Aims and objectives",
+          "source": "guidance",
+          "assess": "model",
+          "focus": [
+            "vision"
+          ],
+          "requirement": "The vision statement should be split into clear and focused aims and objectives, thematic or spatial, followed by the measurable outcomes it will deliver (preparing a local plan vision; regulation 11(3)).",
+          "judge": {
+            "met": "The vision is broken into distinct aims or objectives, each a short focused statement.",
+            "partly": "Aims are implied within a single paragraph, or objectives are listed without a clear connection to the vision.",
+            "missing": "No aims or objectives can be found."
+          },
+          "keywords": [
+            "aims",
+            "objectives",
+            "objective",
+            "vision",
+            "strategic objectives"
+          ],
+          "cites": [
+            {
+              "doc": "preparing-a-vision",
+              "anchor": "split-your-vision-statement-into-clear-aims-and-objectives",
+              "label": "Preparing a local plan vision: aims and objectives"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-11",
+              "label": "Regulation 11(3)"
+            }
+          ],
+          "action": "Break the vision into a short list of aims or objectives, thematic or by place."
+        },
+        {
+          "id": "C2",
+          "title": "Outcomes that flow from the vision",
+          "source": "guidance",
+          "assess": "model",
+          "focus": [
+            "vision",
+            "outcomes"
+          ],
+          "requirement": "Measurable outcomes should flow from the aims and objectives identified in the vision statement (preparing a local plan vision).",
+          "judge": {
+            "met": "Every outcome measures one of the aims or objectives, and every aim or objective is measured directly by at least one outcome. If any aim or objective has no outcome that measures it directly, the status is partly.",
+            "partly": "Some outcomes have no corresponding aim, or some aims have no outcome.",
+            "missing": "The outcomes and the vision are unrelated, or either is absent."
+          },
+          "keywords": [
+            "outcome",
+            "outcomes",
+            "vision",
+            "aims",
+            "objectives"
+          ],
+          "cites": [
+            {
+              "doc": "preparing-a-vision",
+              "anchor": "measurable-outcomes",
+              "label": "Preparing a local plan vision: measurable outcomes"
+            }
+          ],
+          "action": "Show which aim each outcome measures, and add an outcome for any aim without one."
+        },
+        {
+          "id": "C3",
+          "title": "Policies set against each outcome",
+          "source": "guidance",
+          "assess": "model",
+          "focus": [
+            "outcomes"
+          ],
+          "requirement": "The plan should set out how outcomes will be delivered by linking them to specific policies and site allocations, presenting the policies against each outcome (preparing a local plan vision).",
+          "judge": {
+            "met": "For every outcome the plan names the policies or allocations that deliver it (for example a table, or a 'delivered by' line).",
+            "partly": "Some outcomes are linked to named policies or allocations and others are not.",
+            "missing": "No outcome is linked to any named policy or allocation."
+          },
+          "keywords": [
+            "delivered by",
+            "policies",
+            "outcome",
+            "monitoring",
+            "linked",
+            "relevant policies"
+          ],
+          "cites": [
+            {
+              "doc": "preparing-a-vision",
+              "anchor": "measurable-outcomes",
+              "label": "Preparing a local plan vision: measurable outcomes"
+            }
+          ],
+          "action": "Add the policies and allocations that deliver each outcome, for example as a column in the outcomes table."
+        },
+        {
+          "id": "C4",
+          "title": "A locally distinctive vision",
+          "source": "guidance",
+          "assess": "model",
+          "focus": [
+            "vision"
+          ],
+          "requirement": "The vision should be grounded in place: describe the area's qualities, name specific places, and identify areas for growth and regeneration, new infrastructure and protection or enhancement (preparing a local plan vision).",
+          "judge": {
+            "met": "The vision names at least three specific places or features in the area and says what will happen in at least two of them (growth, regeneration, new infrastructure or protection).",
+            "partly": "The vision names places but says what will happen in only one of them, or names only one or two places.",
+            "missing": "The vision is generic, or there is none."
+          },
+          "keywords": [
+            "vision",
+            "town",
+            "village",
+            "growth",
+            "regeneration",
+            "protect",
+            "landscape",
+            "centre"
+          ],
+          "cites": [
+            {
+              "doc": "preparing-a-vision",
+              "anchor": "make-the-vision-locally-distinctive",
+              "label": "Preparing a local plan vision: make the vision locally distinctive"
+            }
+          ],
+          "action": "Name the places where growth, regeneration, new infrastructure and protection will happen."
+        }
+      ]
+    },
+    {
+      "id": "policies",
+      "letter": "D",
+      "title": "Locally specific policies",
+      "summary": "NPPF policy PM6(1)(c): plans should not include policies which duplicate, substantively restate or are inconsistent with the national decision-making policies. Every policy the checker found (other than site allocations) is compared, clause by clause, with the national decision-making policies closest to it. A clause is local when it names places, sites or features in the area or sets its own figure or standard, or when no national decision-making policy covers its matter. A policy is met when every clause is local and none contradicts national policy, not met when no clause is local, and partly met otherwise.",
+      "mode": "per-policy",
+      "enabled": true,
+      "batchSize": 3,
+      "candidates": 4,
+      "items": [
+        {
+          "id": "D1",
+          "title": "Does not duplicate, restate or contradict national decision-making policy",
+          "source": "nppf",
+          "assess": "model",
+          "requirement": "Plans should not include policies which duplicate, substantively restate or are inconsistent with the content of national decision-making policies, unless directed by other policies in the Framework (NPPF PM6(1)(c); PM15(1)(d)).",
+          "judge": {
+            "met": "local: true when the clause names places, sites or features in this area, or sets a figure, date or standard of its own (not one taken from national policy or legislation); otherwise false.",
+            "partly": "repeats: the clause says what that national policy already says, in the same or different words. Restating a statutory requirement that national policy also covers counts as repeating.",
+            "missing": "contradicts: on that matter, the clause applies a different test, threshold, list or weight (including a test from an earlier version of national policy), or rules out what that policy says should be allowed."
+          },
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM6",
+              "label": "NPPF PM6(1)(c)"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "PM15",
+              "label": "NPPF PM15(1)(d)"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "ch-3",
+              "label": "NPPF chapter 3: decision-making policies"
+            }
+          ],
+          "action": "Delete clauses that repeat national decision-making policy and keep only the local requirements, citing the national policy instead."
+        },
+        {
+          "id": "D2",
+          "title": "Addresses a local issue or supports an allocation",
+          "source": "nppf",
+          "assess": "model",
+          "requirement": "Policies other than those for the spatial strategy and allocations should be included only where they support the delivery of specific allocated sites or address particular local issues, where necessary and with a clear and justified reason (NPPF PM2(1)(d); PM6(1)(a) and (b)).",
+          "judge": {
+            "met": "The policy sets the plan's spatial strategy, amount of development, allocations or infrastructure (content the NPPF requires a plan to have); or it names places, sites or features in this area and gives a local reason for its requirements or names the local evidence, study or code they come from.",
+            "partly": "The policy names places, sites or features in this area but gives no local reason and names no local evidence, study or code.",
+            "missing": "The policy is not one of those the NPPF requires, and names no place, site or feature in this area: it could apply anywhere."
+          },
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM2",
+              "label": "NPPF PM2(1)(d)"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "PM6",
+              "label": "NPPF PM6(1)(a) and (b)"
+            }
+          ],
+          "action": "Explain the local issue the policy addresses and the evidence for it, or remove the policy."
+        }
+      ]
+    },
+    {
+      "id": "prescribed",
+      "letter": "E",
+      "title": "Prescribed requirements (regulation 32)",
+      "summary": "The twelve requirements the Gateway 3 assessor must be satisfied are met, and the other contents regulation 17 gives a statement of compliance. Some can only be shown by documents other than the plan; those are marked for the authority to complete.",
+      "mode": "items",
+      "enabled": true,
+      "batchSize": 4,
+      "statement": "compliance",
+      "items": [
+        {
+          "id": "E1",
+          "ref": "32(a)",
+          "title": "Policies on the amount, type, location and timetable of development",
+          "source": "regulations-2026",
+          "assess": "model",
+          "statement": "compliance",
+          "requirement": "The proposed local plan sets out policies on the amount, type and location of, and timetable for, development in the area (regulation 32(a); section 15C(3) of the Act).",
+          "keywords": [
+            "trajectory",
+            "phasing",
+            "homes",
+            "dwellings",
+            "per year",
+            "employment land",
+            "distribution",
+            "delivery",
+            "timetable"
+          ],
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-32",
+              "label": "Regulation 32(a)"
+            }
+          ],
+          "action": "Make sure the plan states the amount, type, location and timing (trajectory) of development.",
+          "conditions": [
+            "Policies state the amount of development, such as numbers of homes or hectares of employment land.",
+            "Policies state the types of development, such as kinds of homes or employment uses.",
+            "Policies state where development will go, through a spatial strategy, allocations or broad locations.",
+            "The plan sets out when development will happen across the plan period, as a trajectory or phasing by period."
+          ]
+        },
+        {
+          "id": "E2",
+          "ref": "32(b)",
+          "title": "Vision, measurable outcomes and superseded policies",
+          "source": "regulations-2026",
+          "assess": "derived",
+          "statement": "compliance",
+          "derive": {
+            "from": [
+              "A1",
+              "A2",
+              "A9"
+            ],
+            "rule": "worst"
+          },
+          "requirement": "The plan contains a vision relating to the area's particular characteristics, no more than ten measurable outcomes, and identifies superseded policies unless the statement of compliance explains why that is not engaged (regulation 32(b)).",
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-32",
+              "label": "Regulation 32(b)"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-11",
+              "label": "Regulation 11"
+            }
+          ],
+          "action": "See items A1, A2 and A9."
+        },
+        {
+          "id": "E3",
+          "ref": "32(c)",
+          "title": "Climate change mitigation and adaptation",
+          "source": "regulations-2026",
+          "assess": "model",
+          "statement": "compliance",
+          "requirement": "The plan is designed to secure that the use and development of land in the area contribute to the mitigation of, and adaptation to, climate change (regulation 32(c); section 15C(6) of the Act).",
+          "keywords": [
+            "climate change",
+            "carbon",
+            "net zero",
+            "energy",
+            "renewable",
+            "flood",
+            "adaptation",
+            "overheating",
+            "water efficiency",
+            "emissions"
+          ],
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-32",
+              "label": "Regulation 32(c)"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "CC1",
+              "label": "NPPF CC1: planning for climate change"
+            }
+          ],
+          "action": "Show how the strategy and policies secure both mitigation of and adaptation to climate change.",
+          "conditions": [
+            "Policies help mitigate climate change, for example by cutting carbon emissions or supporting renewable energy or sustainable transport.",
+            "Policies help adapt to climate change, for example by managing flood risk, overheating or water scarcity."
+          ]
+        },
+        {
+          "id": "E4",
+          "ref": "32(d)",
+          "title": "Local nature recovery strategy",
+          "source": "regulations-2026",
+          "assess": "model",
+          "statement": "compliance",
+          "requirement": "The plan takes account of any local nature recovery strategy for all or part of the area (regulation 32(d); section 15C(7) of the Act).",
+          "judge": {
+            "met": "The plan names the local nature recovery strategy and shows how it has shaped the plan (for example allocations, green infrastructure, policies or mapped areas).",
+            "partly": "The strategy is mentioned but its influence on the plan is not shown.",
+            "missing": "No local nature recovery strategy is mentioned."
+          },
+          "keywords": [
+            "local nature recovery strategy",
+            "nature recovery",
+            "LNRS",
+            "biodiversity",
+            "habitat",
+            "green infrastructure"
+          ],
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-32",
+              "label": "Regulation 32(d)"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "N1",
+              "label": "NPPF N1"
+            }
+          ],
+          "action": "Name the local nature recovery strategy and show where it shaped allocations and policies."
+        },
+        {
+          "id": "E5",
+          "ref": "32(e)",
+          "title": "Assessment of housing need, including affordable housing",
+          "source": "regulations-2026",
+          "assess": "model",
+          "statement": "compliance",
+          "requirement": "The plan takes account of an assessment of the amount and type of housing needed in the area, including the amount of affordable housing needed (regulation 32(e); section 15C(8) of the Act).",
+          "keywords": [
+            "housing need",
+            "standard method",
+            "needs assessment",
+            "affordable housing need",
+            "type",
+            "size",
+            "tenure",
+            "older people"
+          ],
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-32",
+              "label": "Regulation 32(e)"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "HO1",
+              "label": "NPPF HO1: assessing the need for homes"
+            }
+          ],
+          "action": "Refer to the housing needs assessment and show how it sets the amount, mix and affordable housing need.",
+          "conditions": [
+            "The plan refers to an assessment of housing need.",
+            "The plan states the amount of housing needed in the area: the need figure, not only the number of homes the plan provides for.",
+            "The plan states the types or sizes of housing needed, or the housing needs of particular groups.",
+            "The plan states the amount of affordable housing needed: the need figure, not only a target or a requirement on developers."
+          ]
+        },
+        {
+          "id": "E6",
+          "ref": "32(f)",
+          "title": "Nothing outside what the Act and regulation 11 allow",
+          "source": "regulations-2026",
+          "assess": "model",
+          "statement": "compliance",
+          "requirement": "The plan does not include anything that is not permitted or required by section 15C(3) to (5) or (10) of the Act or regulation 11 (regulation 32(f); section 15C(9)(a) of the Act).",
+          "judge": {
+            "met": "Every policy concerns the development and use of land in the area, or is content regulation 11 allows (vision, outcomes, aims and objectives, superseded policies). Standards that new development must meet, including energy, water and design standards, are about the development of land, and so are statements about how the plan will be delivered, monitored and reviewed. Requirements on developers to provide or fund infrastructure or services are about development too.",
+            "partly": "Some content is plainly not about the development and use of land: for example commitments about council services or operations, or duties placed on other bodies.",
+            "missing": "Substantial content is outside the plan's legal scope."
+          },
+          "keywords": [
+            "policy",
+            "the council will",
+            "corporate",
+            "building regulations",
+            "licensing",
+            "commitment"
+          ],
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-32",
+              "label": "Regulation 32(f)"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-11",
+              "label": "Regulation 11"
+            }
+          ],
+          "action": "Remove or move to supporting documents anything that is not about the development and use of land."
+        },
+        {
+          "id": "E7",
+          "ref": "32(g)",
+          "title": "Gateway 2 and Gateway 3 sought at the prescribed times",
+          "source": "regulations-2026",
+          "assess": "officer",
+          "statement": "compliance",
+          "requirement": "The authority sought observations and advice at the times prescribed by regulation 26 (Gateway 2), regulation 31 (Gateway 3) and, where it applies, regulation 33 (repeat of Gateway 3) (regulation 32(g)).",
+          "officerAction": "Record the dates Gateway 2 and Gateway 3 observations and advice were sought, and show that each met the timing in regulations 26 and 31.",
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-32",
+              "label": "Regulation 32(g)"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-26",
+              "label": "Regulation 26"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-31",
+              "label": "Regulation 31"
+            }
+          ],
+          "action": "Record the dates."
+        },
+        {
+          "id": "E8",
+          "ref": "32(h)",
+          "title": "Gateway 2 observations and advice published",
+          "source": "regulations-2026",
+          "assess": "officer",
+          "statement": "compliance",
+          "requirement": "The authority published the Gateway 2 observations and advice as section 15CA(5) of the Act and regulation 26(5)(a) require (regulation 32(h)).",
+          "officerAction": "Give the date the Gateway 2 observations and advice were made available, and where.",
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-32",
+              "label": "Regulation 32(h)"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-26",
+              "label": "Regulation 26(5)"
+            }
+          ],
+          "action": "Record the publication date."
+        },
+        {
+          "id": "E9",
+          "ref": "32(i)",
+          "title": "Regard to the section 15CA(6) and regulation 14 matters",
+          "source": "regulations-2026",
+          "assess": "model",
+          "statement": "compliance",
+          "requirement": "In preparing the plan the authority had regard to the matters in section 15CA(6) of the Act and in regulation 14: the self-assessment summary, responses to any extra consultation, local transport authority policies, the objectives of preventing major accidents and the safety distances around hazardous establishments, and the national waste management plan (regulation 32(i)).",
+          "keywords": [
+            "local transport plan",
+            "transport authority",
+            "major accident",
+            "hazard",
+            "COMAH",
+            "waste",
+            "self-assessment",
+            "consultation responses"
+          ],
+          "officerAction": "List the matters in section 15CA(6) of the Act and regulation 14, with where and how each was considered.",
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-32",
+              "label": "Regulation 32(i)"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-14",
+              "label": "Regulation 14"
+            }
+          ],
+          "action": "Show how each regulation 14 matter was considered, or why it does not apply.",
+          "conditions": [
+            "The plan refers to the authority's Gateway 1 self-assessment summary.",
+            "The plan refers to the policies of the local transport authority, such as a local transport plan.",
+            "The plan considers major-accident hazards and safety distances around hazardous establishments, or says there are none in the area.",
+            "The plan refers to the national waste management plan or to planning for waste."
+          ]
+        },
+        {
+          "id": "E10",
+          "ref": "32(j)",
+          "title": "Examination submission documents prepared",
+          "source": "regulations-2026",
+          "assess": "officer",
+          "statement": "compliance",
+          "requirement": "The authority has prepared the documents prescribed by regulation 34(1)(a) and (c) to (i): the policies map, the consultation statement and summary, any spatial development strategy representations, the statements of compliance and soundness, and the environmental report or regulation 9 statement (regulation 32(j)).",
+          "officerAction": "List each document in regulation 34(1)(a) and (c) to (i) with its status and where it is published.",
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-32",
+              "label": "Regulation 32(j)"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-34",
+              "label": "Regulation 34(1)"
+            }
+          ],
+          "action": "List the documents and their status."
+        },
+        {
+          "id": "E11",
+          "ref": "32(k)",
+          "title": "The policies map shows where area-specific policies apply",
+          "source": "regulations-2026",
+          "assess": "officer",
+          "statement": "compliance",
+          "requirement": "The map of proposed local plan policies accurately illustrates the geographical application of the policies which relate to part of the area (regulation 32(k)).",
+          "officerAction": "Check the map of proposed local plan policies shows each allocation and area-specific policy listed below, and record that it does.",
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-32",
+              "label": "Regulation 32(k)"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-25",
+              "label": "Regulation 25"
+            }
+          ],
+          "action": "Check the map against the list."
+        },
+        {
+          "id": "E12",
+          "ref": "32(l)",
+          "title": "Ready to proceed to independent examination",
+          "source": "regulations-2026",
+          "assess": "officer",
+          "statement": "compliance",
+          "requirement": "The authority is ready to proceed to independent examination (regulation 32(l)); the procedural guide lists the practical arrangements the Inspectorate expects.",
+          "officerAction": "Confirm the arrangements in procedural guide 3.10.5: a programme officer in post, an examination website, a hearing venue, video conferencing, and staff available for the examination and after the hearings.",
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-32",
+              "label": "Regulation 32(l)"
+            },
+            {
+              "doc": "procedural-guide",
+              "anchor": "3-10-preparation-for-gateway-3",
+              "label": "Procedural guide 3.10"
+            }
+          ],
+          "action": "Confirm the arrangements."
+        },
+        {
+          "id": "E13",
+          "ref": "Reg 17",
+          "title": "General conformity with any spatial development strategy",
+          "source": "regulations-2026",
+          "assess": "model",
+          "statement": "compliance",
+          "requirement": "Where a spatial development strategy is operative for the area, the statement of compliance says how the plan has been prepared to be in general conformity with it (regulation 17, definition of statement of compliance; section 15CA(2) of the Act).",
+          "judge": {
+            "met": "The plan says whether a spatial development strategy is operative for the area. If none is operative, saying so is enough, whether or not one is being prepared. If one is operative, the plan explains how it conforms with it.",
+            "partly": "The plan mentions an operative spatial development strategy but does not explain how the plan conforms with it.",
+            "missing": "The plan does not say whether a spatial development strategy applies."
+          },
+          "keywords": [
+            "spatial development strategy",
+            "strategic authority",
+            "general conformity",
+            "SDS",
+            "combined authority"
+          ],
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-17",
+              "label": "Regulation 17: statement of compliance"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-28",
+              "label": "Regulation 28"
+            }
+          ],
+          "action": "State whether a spatial development strategy applies and, if so, how the plan conforms with it."
+        },
+        {
+          "id": "E14",
+          "ref": "Reg 17",
+          "title": "Where the Gateway 2 advice can be inspected",
+          "source": "regulations-2026",
+          "assess": "officer",
+          "statement": "compliance",
+          "requirement": "The statement of compliance gives details of where the Gateway 2 observations and advice are available for inspection, and the places and times they can be inspected (regulation 17, definition of statement of compliance).",
+          "officerAction": "Give the web address, and the places and times, where the Gateway 2 observations and advice can be inspected.",
+          "cites": [
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-17",
+              "label": "Regulation 17: statement of compliance"
+            },
+            {
+              "doc": "regulations-2026",
+              "anchor": "reg-26",
+              "label": "Regulation 26(5)(a)"
+            }
+          ],
+          "action": "Add the details."
+        }
+      ]
+    },
+    {
+      "id": "soundness",
+      "letter": "F",
+      "title": "Tests of soundness (NPPF PM15)",
+      "summary": "A statement of soundness sets out the evidence for the plan and why it would be reasonable for the examiner to conclude that the plan is sound (regulation 17). The August 2026 NPPF's tests are: positive, appropriate, effective, consistent with national policy and, where there is a spatial development strategy, in conformity with it.",
+      "mode": "items",
+      "enabled": true,
+      "batchSize": 3,
+      "statement": "soundness",
+      "items": [
+        {
+          "id": "F1",
+          "ref": "PM15(1)(a)",
+          "title": "Positive",
+          "source": "nppf",
+          "assess": "model",
+          "statement": "soundness",
+          "requirement": "The plan sets out a positive approach to delivering growth to meet the development needs of the area in accordance with policy S1, and is based on effective joint working on cross-boundary strategic matters (NPPF PM15(1)(a)).",
+          "keywords": [
+            "need",
+            "housing requirement",
+            "standard method",
+            "unmet need",
+            "neighbouring",
+            "statement of common ground",
+            "cross-boundary",
+            "cooperation",
+            "jobs"
+          ],
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM15",
+              "label": "NPPF PM15(1)(a)"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "S1",
+              "label": "NPPF S1: positive plan-making"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "PM11",
+              "label": "NPPF PM11: statements of common ground"
+            }
+          ],
+          "action": "Set out the needs, how the plan meets them, and the joint working on cross-boundary matters.",
+          "conditions": [
+            "The plan states the area's housing need.",
+            "The plan provides for the housing need in full, or explains where any unmet need will be met.",
+            "The plan refers to joint working with neighbouring authorities or other bodies on cross-boundary matters, such as a statement of common ground."
+          ]
+        },
+        {
+          "id": "F2",
+          "ref": "PM15(1)(b)",
+          "title": "Appropriate",
+          "source": "nppf",
+          "assess": "model",
+          "statement": "soundness",
+          "requirement": "The plan sets out an appropriate strategy to enable the delivery of sustainable development, taking into account reasonable alternatives, and is based on proportionate evidence (NPPF PM15(1)(b)).",
+          "judge": {
+            "met": "The plan explains why its strategy was chosen over reasonable alternatives (for example through the sustainability appraisal or environmental report) and refers to the evidence behind its strategy and policies.",
+            "partly": "Evidence is referred to but alternatives are not, or the reverse.",
+            "missing": "Neither alternatives nor evidence are referred to."
+          },
+          "keywords": [
+            "alternatives",
+            "options",
+            "sustainability appraisal",
+            "environmental report",
+            "evidence",
+            "assessment",
+            "study",
+            "strategic flood risk"
+          ],
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM15",
+              "label": "NPPF PM15(1)(b)"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "PM8",
+              "label": "NPPF PM8: evidence for plan-making"
+            }
+          ],
+          "action": "Explain the reasonable alternatives considered and the evidence for the chosen strategy."
+        },
+        {
+          "id": "F3",
+          "ref": "PM15(1)(c)",
+          "title": "Effective",
+          "source": "nppf",
+          "assess": "model",
+          "statement": "soundness",
+          "requirement": "The plan sets out effective policies for development, and there is a reasonable prospect that its site allocations are capable of being deliverable at the time envisioned (NPPF PM15(1)(c)).",
+          "keywords": [
+            "trajectory",
+            "delivery",
+            "infrastructure delivery plan",
+            "viability",
+            "phasing",
+            "deliverable",
+            "funding",
+            "developable"
+          ],
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM15",
+              "label": "NPPF PM15(1)(c)"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "PM12",
+              "label": "NPPF PM12: developer contributions"
+            }
+          ],
+          "action": "Add the trajectory, the infrastructure and its funding, and the viability evidence for the allocations.",
+          "conditions": [
+            "Every allocation gives the years or periods in which it is expected to be delivered.",
+            "The plan includes a housing trajectory or phasing for the plan period.",
+            "The plan identifies the infrastructure needed for the plan as a whole, for example in an infrastructure schedule or a delivery plan it summarises.",
+            "The plan refers to viability testing of its policies or sites."
+          ]
+        },
+        {
+          "id": "F4",
+          "ref": "PM15(1)(d)",
+          "title": "Consistent with national policy",
+          "source": "nppf",
+          "assess": "derived",
+          "statement": "soundness",
+          "derive": {
+            "from": [
+              "A1",
+              "A5",
+              "A6",
+              "A7",
+              "D1"
+            ],
+            "rule": "worst"
+          },
+          "requirement": "The plan accords with the plan-making policies in the Framework and other statements of national planning policy where relevant, and does not include policies which duplicate, substantively restate or are inconsistent with the national decision-making policies (NPPF PM15(1)(d)).",
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM15",
+              "label": "NPPF PM15(1)(d)"
+            },
+            {
+              "doc": "nppf",
+              "anchor": "PM6",
+              "label": "NPPF PM6(1)(c)"
+            }
+          ],
+          "action": "See items A1, A5, A6, A7 and D1.",
+          "questions": [
+            "Which policies repeat or depart from the national decision-making policies, and why does the authority consider each one is needed?",
+            "How does the plan meet the content NPPF policy PM2 expects: a vision with measurable outcomes, a spatial strategy with minimum amounts of development, site allocations and the contributions expected from development?",
+            "Where the plan departs from national policy, what local evidence justifies it?"
+          ]
+        },
+        {
+          "id": "F5",
+          "ref": "PM15(1)(e)",
+          "title": "Conformity with the spatial development strategy",
+          "source": "nppf",
+          "assess": "derived",
+          "statement": "soundness",
+          "derive": {
+            "from": [
+              "E13"
+            ],
+            "rule": "worst"
+          },
+          "questions": [
+            "Is there an adopted or emerging spatial development strategy for the area, and when is it expected?",
+            "How has the plan been prepared to be in general conformity with it, and what will happen if the strategy changes the area's housing requirement?"
+          ],
+          "requirement": "The plan is in general conformity with any adopted spatial development strategy for the area; conformity with an emerging strategy should also be taken into consideration (NPPF PM15(1)(e)).",
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM15",
+              "label": "NPPF PM15(1)(e)"
+            }
+          ],
+          "action": "See item E13."
+        }
+      ]
+    },
+    {
+      "id": "model-plan",
+      "letter": "G",
+      "title": "The model local plan",
+      "summary": "The government has announced a model local plan and templates. NPPF PM6(1)(f) asks plan-makers to use the templates the Secretary of State publishes. These checks will be added when the model plan is published.",
+      "mode": "items",
+      "enabled": false,
+      "source": "model-plan",
+      "items": [
+        {
+          "id": "G1",
+          "title": "Follows the model plan's structure",
+          "source": "model-plan",
+          "assess": "model",
+          "requirement": "The plan follows the structure and section order of the model local plan.",
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM6",
+              "label": "NPPF PM6(1)(f)"
+            }
+          ]
+        },
+        {
+          "id": "G2",
+          "title": "Uses the model's standard policy wording where it is prescribed",
+          "source": "model-plan",
+          "assess": "model",
+          "requirement": "Where the model local plan gives standard wording, the plan uses it.",
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM6",
+              "label": "NPPF PM6(1)(f)"
+            }
+          ]
+        },
+        {
+          "id": "G3",
+          "title": "Published to the data standard",
+          "source": "model-plan",
+          "assess": "model",
+          "requirement": "The plan is published in a searchable digital format that complies with the defined data standards.",
+          "cites": [
+            {
+              "doc": "nppf",
+              "anchor": "PM6",
+              "label": "NPPF PM6(1)(g)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "nationalDecisionMakingPolicies": [
+    {
+      "code": "DM1",
+      "title": "Preparing development proposals"
+    },
+    {
+      "code": "DM2",
+      "title": "Information requirements"
+    },
+    {
+      "code": "DM3",
+      "title": "Determining development proposals"
+    },
+    {
+      "code": "DM4",
+      "title": "Emerging development plan proposals"
+    },
+    {
+      "code": "DM5",
+      "title": "Development viability"
+    },
+    {
+      "code": "DM6",
+      "title": "Use of planning conditions and obligations"
+    },
+    {
+      "code": "DM7",
+      "title": "Relationship with other regulatory regimes"
+    },
+    {
+      "code": "DM8",
+      "title": "Unauthorised development and enforcement"
+    },
+    {
+      "code": "DM9",
+      "title": "Use of development orders"
+    },
+    {
+      "code": "DM10",
+      "title": "Removal of national permitted development rights"
+    },
+    {
+      "code": "S3",
+      "title": "Presumption in favour of sustainable development"
+    },
+    {
+      "code": "S4",
+      "title": "Principle of development within settlements"
+    },
+    {
+      "code": "S5",
+      "title": "Principle of development outside settlements"
+    },
+    {
+      "code": "S6",
+      "title": "Neighbourhood plans and the presumption"
+    },
+    {
+      "code": "CC2",
+      "title": "Mitigation of climate change"
+    },
+    {
+      "code": "CC3",
+      "title": "Adaptation to climate change"
+    },
+    {
+      "code": "HO7",
+      "title": "Meeting the need for homes"
+    },
+    {
+      "code": "HO8",
+      "title": "Providing affordable homes"
+    },
+    {
+      "code": "HO9",
+      "title": "Specialist forms of accommodation"
+    },
+    {
+      "code": "HO10",
+      "title": "Exception sites"
+    },
+    {
+      "code": "HO11",
+      "title": "Isolated homes in the countryside"
+    },
+    {
+      "code": "HO12",
+      "title": "Traveller sites"
+    },
+    {
+      "code": "HO13",
+      "title": "Build out of residential and strategic sites"
+    },
+    {
+      "code": "E2",
+      "title": "Meeting the need for business land and premises"
+    },
+    {
+      "code": "E3",
+      "title": "Freight and logistics"
+    },
+    {
+      "code": "E4",
+      "title": "Rural business development"
+    },
+    {
+      "code": "TC2",
+      "title": "Development in town centres"
+    },
+    {
+      "code": "TC3",
+      "title": "Main town centre uses outside town centres"
+    },
+    {
+      "code": "TC4",
+      "title": "Assessing the impact of development on town centres"
+    },
+    {
+      "code": "CO1",
+      "title": "Proposals for telecommunications infrastructure"
+    },
+    {
+      "code": "CO2",
+      "title": "Supporting information for telecommunications infrastructure proposals"
+    },
+    {
+      "code": "W3",
+      "title": "Renewable and low carbon energy development and electricity network"
+    },
+    {
+      "code": "W4",
+      "title": "Water infrastructure"
+    },
+    {
+      "code": "M3",
+      "title": "Assessing the benefits of mineral development"
+    },
+    {
+      "code": "M4",
+      "title": "Considering the impacts of mineral development"
+    },
+    {
+      "code": "M5",
+      "title": "Development involving peat, coal or onshore oil and gas"
+    },
+    {
+      "code": "M6",
+      "title": "Safeguarding mineral resources and infrastructure through decision-making"
+    },
+    {
+      "code": "L2",
+      "title": "Making effective use of land"
+    },
+    {
+      "code": "L3",
+      "title": "Achieving appropriate densities"
+    },
+    {
+      "code": "GB6",
+      "title": "Control of development in the Green Belt"
+    },
+    {
+      "code": "GB7",
+      "title": "Development which is not inappropriate in the Green Belt"
+    },
+    {
+      "code": "GB8",
+      "title": "The Golden Rules"
+    },
+    {
+      "code": "DP3",
+      "title": "Key principles for well-designed places"
+    },
+    {
+      "code": "DP4",
+      "title": "The design process"
+    },
+    {
+      "code": "TR3",
+      "title": "Locating development in sustainable locations"
+    },
+    {
+      "code": "TR4",
+      "title": "Street design, access and parking"
+    },
+    {
+      "code": "TR5",
+      "title": "Roadside facilities"
+    },
+    {
+      "code": "TR6",
+      "title": "Assessing transport impacts"
+    },
+    {
+      "code": "TR7",
+      "title": "Marine ports, airports and other aviation facilities"
+    },
+    {
+      "code": "TR8",
+      "title": "Public rights of way"
+    },
+    {
+      "code": "HC3",
+      "title": "Community facilities and public service infrastructure serving new development"
+    },
+    {
+      "code": "HC4",
+      "title": "Proposals for new and improved community facilities, public service"
+    },
+    {
+      "code": "HC5",
+      "title": "Hot food takeaways"
+    },
+    {
+      "code": "HC6",
+      "title": "Retention of key community facilities and public service infrastructure"
+    },
+    {
+      "code": "HC7",
+      "title": "Development affecting existing recreational land and facilities"
+    },
+    {
+      "code": "HC8",
+      "title": "Development affecting Local Green Space"
+    },
+    {
+      "code": "P2",
+      "title": "Ground conditions"
+    },
+    {
+      "code": "P3",
+      "title": "Living conditions and pollution"
+    },
+    {
+      "code": "P4",
+      "title": "Impact of development on existing activities"
+    },
+    {
+      "code": "P5",
+      "title": "Maintaining public safety and security"
+    },
+    {
+      "code": "P6",
+      "title": "Land and operations for defence and public safety"
+    },
+    {
+      "code": "F4",
+      "title": "Assessing flood risk for decision-making"
+    },
+    {
+      "code": "F5",
+      "title": "The sequential test"
+    },
+    {
+      "code": "F6",
+      "title": "Development in areas at risk of flooding from rivers or the sea"
+    },
+    {
+      "code": "F7",
+      "title": "Ensuring development is safe from flooding"
+    },
+    {
+      "code": "F8",
+      "title": "Sustainable drainage systems and watercourses"
+    },
+    {
+      "code": "F9",
+      "title": "Development in Coastal Change Management Areas"
+    },
+    {
+      "code": "N2",
+      "title": "Improving the natural environment"
+    },
+    {
+      "code": "N3",
+      "title": "Trees in new development"
+    },
+    {
+      "code": "N4",
+      "title": "Protected Landscapes"
+    },
+    {
+      "code": "N5",
+      "title": "Maintaining the character of the coast"
+    },
+    {
+      "code": "N6",
+      "title": "Areas of particular importance for biodiversity and geodiversity"
+    },
+    {
+      "code": "HE4",
+      "title": "Securing the conservation of heritage assets"
+    },
+    {
+      "code": "HE5",
+      "title": "Assessing effects on heritage assets"
+    },
+    {
+      "code": "HE6",
+      "title": "Proposals affecting designated heritage assets"
+    },
+    {
+      "code": "HE7",
+      "title": "Decisions on non-designated heritage assets"
+    },
+    {
+      "code": "HE8",
+      "title": "World Heritage Sites"
+    },
+    {
+      "code": "HE9",
+      "title": "Conservation areas"
+    },
+    {
+      "code": "HE10",
+      "title": "Loss or removal of heritage assets"
+    }
+  ]
+}
