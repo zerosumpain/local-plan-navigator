@@ -1,7 +1,7 @@
 {
-  "version": "2.0.0",
+  "version": "2.2.0",
   "files": {
-    "gateway/identity.mjs": "c46121e6eccaaf05edfcfc96130f887c2a57c267ea1cc3e9ec3d7649be5e65c0",
+    "gateway/identity.mjs": "3c088a527057e5dfbbf43ae817ebc28f6361330cf3232968a8f3bd64fb78b6ce",
     "scripts/release.mjs": "ef6bc5d315fa4cfd2e87d54f7c137b7d03e5add437729f56bbaedfb7289ecc84",
     "scripts/verify-kit.mjs": "3fcb40ff4649b67e8d8f58cc4450218133d8333d2daf4b3abf284d6b1a54334e",
     "scripts/verify-self-contained.mjs": "ebf3539067ae8a00a8b895ad5b89dd2c3ebe7e08a5d15c101f13439b334b785e"

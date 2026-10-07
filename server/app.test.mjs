@@ -19,9 +19,12 @@ let lastPrompt;
 let bridgeCalls = 0;
 let bridgeFailures = 0;
 
-const identity = (path, method = 'GET', email = owner) => ({
-  'x-local-plan-navigator-identity': signIdentity(email, method, path, key, 'sr-local-plan-navigator'),
+const identity = (path, method = 'GET', email = owner, claims = undefined) => ({
+  'x-local-plan-navigator-identity': signIdentity(email, method, path, key, 'sr-local-plan-navigator', Date.now(), claims),
 });
+// What the gateway signs for someone with no session: Main's project decision only.
+const decided = (path, access, method = 'GET', projectKey = 'local-plan-navigator') =>
+  identity(path, method, null, { project: { key: projectKey, access } });
 
 before(async () => {
   root = await mkdtemp(join(tmpdir(), 'lpn-server-test-'));
@@ -77,6 +80,45 @@ test('only a signed owner can read the packaged pages', async () => {
   })).status, 403);
   assert.equal((await fetch(`${base}${mount}/about/`, {
     headers: identity(`${mount}/`),
+  })).status, 404);
+});
+
+test('a /projects share link opens the pages without a sign-in, and nothing else does', async () => {
+  assert.equal((await fetch(`${base}${mount}/`, { headers: decided(`${mount}/`, 'none') })).status, 404);
+  assert.equal((await fetch(`${base}${mount}/`, { headers: decided(`${mount}/`, 'share', 'GET', 'policy-engine') })).status, 404);
+  const shared = await fetch(`${base}${mount}/?t=${'a'.repeat(43)}`, {
+    headers: { ...decided(`${mount}/?t=${'a'.repeat(43)}`, 'share'), 'x-forwarded-proto': 'https' },
+  });
+  assert.equal(shared.status, 200);
+  assert.equal(shared.headers.get('cache-control'), 'private, no-store');
+  const cookies = shared.headers.getSetCookie();
+  assert.equal(cookies.length, 2);
+  for (const path of [mount, '/api/projects/local-plan-navigator']) {
+    assert.ok(cookies.some((c) => c.startsWith(`psh_local-plan-navigator=${'a'.repeat(43)}; Path=${path};`) &&
+      /HttpOnly/.test(c) && /Secure/.test(c) && /SameSite=Lax/.test(c)), `cookie for ${path}`);
+  }
+  // Navigating on, the cookie carries the link: nothing more to set.
+  const next = await fetch(`${base}${mount}/about/`, { headers: decided(`${mount}/about/`, 'share') });
+  assert.equal(next.status, 200);
+  assert.deepEqual(next.headers.getSetCookie(), []);
+  // A token that cannot be one is never echoed into a cookie.
+  const odd = await fetch(`${base}${mount}/?t=x;Path=/`, { headers: decided(`${mount}/?t=x;Path=/`, 'share') });
+  assert.deepEqual(odd.headers.getSetCookie(), []);
+  assert.equal((await fetch(`${base}${mount}/`, { headers: decided(`${mount}/`, 'public') })).status, 200);
+  assert.equal((await fetch(`${base}${mount}/`, { headers: decided(`${mount}/`, 'owner') })).status, 200);
+});
+
+test('a share recipient can ask, keyed by address rather than identity', async () => {
+  const response = await fetch(`${base}${ask}`, {
+    method: 'POST',
+    headers: { ...decided(ask, 'share', 'POST'), 'Content-Type': 'application/json', 'x-forwarded-for': '203.0.113.9' },
+    body: JSON.stringify({ question: 'What happens at the gateway?', ids: ['reg-2026#r32'] }),
+  });
+  assert.equal(response.status, 200);
+  assert.match(await response.text(), /"type":"done"/);
+  assert.equal((await fetch(`${base}${ask}`, {
+    method: 'POST', headers: { ...decided(ask, 'none', 'POST'), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question: 'q', ids: ['reg-2026#r32'] }),
   })).status, 404);
 });
 

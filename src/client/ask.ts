@@ -185,12 +185,12 @@ export function init(): void {
   function failureMessage(code: number, detail: string): string {
     let said = '';
     try { const j = JSON.parse(detail); said = String(j.message ?? j.error ?? '').slice(0, 200); } catch { /* not JSON */ }
-    // The service answers 404 to anyone it does not recognise as the owner, so
-    // on the site a 404 means the sign-in has lapsed; anywhere else, that there
-    // is no model behind the page at all.
+    // The service answers 404 to anyone it does not recognise — not the owner,
+    // and no live share link — so on the site a 404 means the sign-in or the
+    // link has lapsed; anywhere else, that there is no model behind the page.
     if (code === 401 || code === 404) {
       return ON_SITE || code === 401
-        ? 'Your sign-in has expired. Reload the page, sign in again, and ask again.'
+        ? 'Your sign-in or share link has expired. Open the link you were sent again (or sign in), then ask again.'
         : 'This server has no model behind it (run `npm run preview:service` for one).';
     }
     return said || `The site answered ${code}.`;
