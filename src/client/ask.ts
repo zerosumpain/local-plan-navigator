@@ -131,6 +131,14 @@ export function init(): void {
     else if (ready) void generate(q, hits);
   });
 
+  // A suggested question (or a shared link) arrives as ?question=…, which is
+  // also what the form sends without JavaScript: fill it in and ask it.
+  const asked = new URLSearchParams(location.search).get('question')?.trim();
+  if (asked) {
+    (form.elements.namedItem('question') as HTMLTextAreaElement).value = asked.slice(0, 600);
+    form.requestSubmit();
+  }
+
   // --- the site's model ----------------------------------------------------
   async function generateOnServer(q: string, hits: Hit[]) {
     answerText = '';

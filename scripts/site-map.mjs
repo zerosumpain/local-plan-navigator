@@ -71,6 +71,7 @@ export async function siteMap({ root, corpus, code }) {
     { id: 'ask', route: '/ask/', template: 'ask', title: 'Describe a problem', sources: corpus.sources, corpusMeta: corpus.meta },
     { id: 'where-am-i', route: '/where-am-i/', template: 'where-am-i', title: 'Where is my plan?', navigator },
     { id: 'environmental-assessment', route: '/environmental-assessment/', template: 'environmental-assessment', title: 'Strategic Environmental Assessment and the environmental report', ref },
+    { id: 'site-allocations', route: '/site-allocations/', template: 'site-allocations', title: 'Site allocations', description: 'What a local plan\'s site allocations must contain, the four-stage site selection process, the evidence expected and where sites come up in the 30-month process.', ref },
     { id: 'national-policy', route: '/national-policy/', template: 'national-policy', title: 'What the National Planning Policy Framework asks of a local plan', ref, nppfChapters: corpus.pages.filter((p) => p.template === 'reference-index' && p.source.id === 'nppf')[0]?.units ?? [] },
     { id: 'examination', route: '/examination/', template: 'examination', title: 'The examination', stage: resolvedStages.find((s) => s.id === 'examination'), submission: resolvedStages.find((s) => s.id === 'submission'), report: resolvedStages.find((s) => s.id === 'report'), ref },
     { id: 'about', route: '/about/', template: 'about', title: 'About this prototype' },
@@ -104,6 +105,7 @@ export async function siteMap({ root, corpus, code }) {
   const nav = [
     { text: 'Process', href: 'process/' },
     { text: 'Gateways', href: 'gateways/' },
+    { text: 'Site allocations', href: 'site-allocations/' },
     { text: 'Where am I?', href: 'where-am-i/' },
     { text: 'Planner', href: 'planner/' },
     { text: 'Checklists', href: 'checklists/' },

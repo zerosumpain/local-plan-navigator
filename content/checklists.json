@@ -216,6 +216,65 @@
           { "id": "ad-n-five-years", "text": "The date the next plan must begin by (five years from adoption) is in the diary and the timetable", "must": true }
         ]}
       ]
+    },
+    {
+      "id": "site-allocations",
+      "title": "Site allocations",
+      "intro": "From the first call for sites to the policies map: the four stages of site selection in MHCLG's guidance, what NPPF footnote 8 says each allocation should contain, the evidence behind them, and where the law requires something of your sites along the way.",
+      "ref": { "doc": "nppf", "anchor": "PM9", "label": "NPPF policy PM9" },
+      "guidance": { "doc": "site-selection", "anchor": "the-4-stages", "label": "Identifying, assessing and selecting sites: the 4 stages" },
+      "groups": [
+        { "title": "Stage 1: identifying sites", "items": [
+          { "id": "sa-s1-audit", "text": "A thorough audit of available land has been carried out, not limited by the amount of development needed", "must": false },
+          { "id": "sa-s1-sources", "text": "Existing sources have been checked: current allocations, the brownfield land register, planning applications, land availability assessments, public land, and vacant and derelict land", "must": false },
+          { "id": "sa-s1-sizes", "text": "A range of site sizes and types has been identified, and any minimum size threshold is justified", "must": false },
+          { "id": "sa-s1-call", "text": "A call for sites was issued as widely as possible and collected the standard information on each site, including location, mapping, size, current use, constraints and likely viability", "must": false },
+          { "id": "sa-s1-respondents", "text": "Respondents were told their submission was received and when it would be assessed, and their data is held in line with data protection principles", "must": false },
+          { "id": "sa-s1-publish", "text": "Any published list of sites says they have not been assessed, and leaves out personal data", "must": false }
+        ]},
+        { "title": "Stage 2: assessing sites", "items": [
+          { "id": "sa-s2-categories", "text": "Sites are sorted into a small number of categories, with a clear rationale for them", "must": false },
+          { "id": "sa-s2-sift", "text": "Only sites with constraints that make development wholly inappropriate were sifted out, each with a recorded rationale", "must": false },
+          { "id": "sa-s2-saa", "text": "Every remaining site has been assessed for suitability, availability and achievability, including whether it is likely to be viable", "must": false },
+          { "id": "sa-s2-capacity", "text": "Development potential has been estimated for each site, without counting a site twice where it sits in more than one category", "must": false },
+          { "id": "sa-s2-rag", "text": "Each site has red, amber or green scores for suitability, availability, achievability and overall, with a short justification", "must": false },
+          { "id": "sa-s2-deliverable", "text": "Housing sites are classed as deliverable or developable and given a five-year delivery band", "must": false }
+        ]},
+        { "title": "Stages 3 and 4: choosing and recording", "items": [
+          { "id": "sa-s3-judgement", "text": "Draft allocations were chosen against the proposed vision and spatial strategy, seeking to meet development needs in full", "must": false },
+          { "id": "sa-s3-engage", "text": "Engagement with landowners, developers and promoters is recorded, particularly for large or strategic sites", "must": false },
+          { "id": "sa-s3-shortfall", "text": "If there were not enough sites, the options in the guidance were tried and the reasons for any shortfall are documented", "must": false },
+          { "id": "sa-s4-methodology", "text": "The site selection methodology is described, including any departures from the guidance and the reasons for them", "must": false },
+          { "id": "sa-s4-table", "text": "A summary table covers every site considered, selected and rejected, with its scores and reasons, cross-referenced to the detailed assessments", "must": false }
+        ]},
+        { "title": "Each allocation (NPPF footnote 8)", "items": [
+          { "id": "sa-a-ref", "text": "Each allocation has a site reference, name and area", "must": false },
+          { "id": "sa-a-use", "text": "Each allocation has a short description of its existing and allocated uses", "must": false },
+          { "id": "sa-a-capacity", "text": "Each allocation gives an indicative or specific capacity for the development proposed", "must": false },
+          { "id": "sa-a-timeframe", "text": "Each allocation gives its projected delivery timeframe", "must": false },
+          { "id": "sa-a-requirements", "text": "Each allocation sets out its site-specific expectations and requirements, including on- and off-site infrastructure", "must": false },
+          { "id": "sa-a-map", "text": "Each allocation is shown on the map of proposed local plan policies", "must": true }
+        ]},
+        { "title": "Evidence", "items": [
+          { "id": "sa-e-housing-need", "text": "The plan takes account of an assessment of the amount and type of housing needed, including affordable housing", "must": true },
+          { "id": "sa-e-supply", "text": "There are five years of specific deliverable housing sites from the intended adoption date with a buffer, developable sites or broad locations for years 6 to 10, and a trajectory", "must": false },
+          { "id": "sa-e-small", "text": "At least 10% of the housing requirement is on sites of one hectare or less and a further 10% on sites of one to two and a half hectares, or there are strong reasons why not", "must": false },
+          { "id": "sa-e-windfall", "text": "Any windfall allowance is backed by compelling evidence", "must": false },
+          { "id": "sa-e-viability", "text": "Plan viability evidence covers the site typologies, with site-specific testing of the strategic sites the plan relies on", "must": false },
+          { "id": "sa-e-flood", "text": "An up-to-date strategic flood risk assessment informs the plan, and the sequential test (and the exception test where needed) has been applied to the allocations", "must": false },
+          { "id": "sa-e-infrastructure", "text": "Infrastructure needs have been identified with providers and neighbouring authorities, and statements of common ground are published", "must": false },
+          { "id": "sa-e-greenbelt", "text": "Where Green Belt is involved, an Annex E assessment identifies grey belt, and exceptional circumstances for any release are fully evidenced", "must": false },
+          { "id": "sa-e-sea", "text": "The environmental report assesses the likely significant effects of the preferred sites and of the reasonable alternatives", "must": true }
+        ]},
+        { "title": "Through the 30 months", "items": [
+          { "id": "sa-p-content", "text": "The content and evidence consultation summarises the proposed approach to the location of development", "must": true },
+          { "id": "sa-p-g2", "text": "The site selection methodology and evidence on key sites are ready for the Gateway 2 assessor", "must": false },
+          { "id": "sa-p-plan", "text": "The proposed plan consultation includes the map of proposed local plan policies, and the housing requirement data is published the same day", "must": true },
+          { "id": "sa-p-g3", "text": "The plan sets out policies on the amount, type, location and timetable of development, and the map illustrates them accurately", "must": true },
+          { "id": "sa-p-exam", "text": "Each allocation, and the method used to select it, can be defended at the hearings", "must": false },
+          { "id": "sa-p-policies-map", "text": "The policies map will be published no later than one month after adoption", "must": true }
+        ]}
+      ]
     }
   ]
 }

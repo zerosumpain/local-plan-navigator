@@ -68,8 +68,11 @@ function sectionise(body, kind, prefix = 'reg') {
     const m = line.match(/^(#{1,4})\s+(.+?)\s*$/);
     if (m) {
       sections.push(cur);
-      const heading = m[2].replace(/\\\./g, '.').replace(/\t/g, ' ').replace(/\s+/g, ' ').trim();
-      cur = { level: m[1].length, heading, id: sectionId(heading, kind, prefix), lines: [] };
+      // A heading that is a link ("## [Methodology - flowchart](…pdf)") keeps
+      // its words as the heading and its link as the section's first line.
+      const link = m[2].match(/^\[([^\]]+)\]\(([^)\s]+)\)$/);
+      const heading = (link ? link[1] : m[2]).replace(/\\\./g, '.').replace(/\t/g, ' ').replace(/\s+/g, ' ').trim();
+      cur = { level: m[1].length, heading, id: sectionId(heading, kind, prefix), lines: link ? [`[${heading}](${link[2]})`, ''] : [] };
     } else cur.lines.push(line);
   }
   sections.push(cur);
