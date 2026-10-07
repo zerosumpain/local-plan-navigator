@@ -44,6 +44,7 @@ export function parseNppf(text) {
   let lastBody = null;     // the last block of text that is not a footnote
   let pageTurned = false;  // a page number has passed since the open footnote began
   let lastFootnote = 0;    // footnotes are numbered in sequence through the whole document
+  let lastLetter = null;   // the last lettered item, to tell "i." the letter from "i." the numeral
   const push = () => {
     if (!block) return;
     // A block resumed after a page's footnotes is already in the list.
@@ -82,7 +83,7 @@ export function parseNppf(text) {
       push();
       chapter = { id: ch.annex ? `annex-${ch.annex.toLowerCase()}` : `ch-${ch.num}`, num: ch.num ?? null, annex: ch.annex ?? null, title: ch.title, heading: trimmed, blocks: [], footnotes: [] };
       out.push(chapter);
-      policy = null; paraNo = 0; lastBody = null;
+      policy = null; paraNo = 0; lastBody = null; lastLetter = null;
       continue;
     }
     if (!chapter) continue;
@@ -91,7 +92,7 @@ export function parseNppf(text) {
     let m = trimmed.match(/^([A-Z]{1,2}\d{1,2}):\s+(.+)$/);
     if (m && t === trimmed) {
       push();
-      policy = m[1]; paraNo = 0;
+      policy = m[1]; paraNo = 0; lastLetter = null;
       chapter.blocks.push({ type: 'policy', code: m[1], title: clean(m[2]) });
       continue;
     }
@@ -119,13 +120,15 @@ export function parseNppf(text) {
     m = t.match(/^(\d{1,3})\.\s+(.+)$/);
     if (m) {
       push();
-      paraNo = Number(m[1]);
+      paraNo = Number(m[1]); lastLetter = null;
       block = { type: 'para', n: paraNo, scope: policy, text: clean(m[2]) };
       continue;
     }
-    // Lettered / roman sub-items and bullets (indented)
+    // Lettered / roman sub-items and bullets (indented). "i.", "v." and "x."
+    // are roman numerals unless they follow h, u and w in a lettered list.
     m = trimmed.match(/^([a-z])\.\s+(.+)$/);
-    if (m) { push(); block = { type: 'item', level: 1, marker: m[1], text: clean(m[2]) }; continue; }
+    if (m && 'ivx'.includes(m[1]) && lastLetter !== String.fromCharCode(m[1].charCodeAt(0) - 1)) m = null;
+    if (m) { push(); block = { type: 'item', level: 1, marker: m[1], text: clean(m[2]) }; lastLetter = m[1]; continue; }
     m = trimmed.match(/^(i|ii|iii|iv|v|vi|vii|viii|ix|x|xi|xii)\.\s+(.+)$/);
     if (m) { push(); block = { type: 'item', level: 2, marker: m[1], text: clean(m[2]) }; continue; }
     m = trimmed.match(/^•\s+(.+)$/);
@@ -169,7 +172,11 @@ function markerPattern(numbers, flags = '') {
   return new RegExp(`(?<=[a-z’”)])(${alt})(?=[\\s.,;:)’”]|$)`, flags);
 }
 
-/** Set f.at ("PM2(1)(b)") and f.target (the anchor of that paragraph) on each footnote of a chapter. */
+/**
+ * Set f.at ("PM2(1)(b)"), f.target (the anchor of that paragraph) and f.on
+ * (the words the marker is attached to: "land allocations") on each footnote
+ * of a chapter.
+ */
 function locateFootnotes(c) {
   if (!c.footnotes.length) return;
   const waiting = new Map(c.footnotes.map((f) => [f.n, f]));
@@ -180,7 +187,10 @@ function locateFootnotes(c) {
     if (b.type === 'item') { if (b.level === 1) { item1 = b.marker; item2 = null; } else item2 = b.marker; }
     if (!b.text || !waiting.size) continue;
     for (const [n, f] of waiting) {
-      if (!markerPattern([n]).test(b.text)) continue;
+      const hit = markerPattern([n]).exec(b.text);
+      if (!hit) continue;
+      // Up to four words before the marker, within its clause.
+      f.on = b.text.slice(0, hit.index).split(/[,;:(]/).pop().trim().split(/\s+/).slice(-4).join(' ').replace(/[’”)]+$/, '') || null;
       f.policy = policy?.code ?? null;
       f.policyTitle = policy?.title ?? null;
       f.at = policy ? `${policy.code}${para != null ? `(${para})` : ''}${item1 ? `(${item1})` : ''}${item2 ? `(${item2})` : ''}` : null;
@@ -258,8 +268,8 @@ export function chunkNppfChapter(c) {
   for (const f of c.footnotes) {
     chunks.push({
       anchor: `fn-${f.n}`,
-      heading: `${c.heading} › ${f.policy ? `${f.policy}: ${f.policyTitle} › ` : ''}footnote ${f.n}`,
-      text: `Footnote ${f.n}${f.at ? ` to policy ${f.at}` : ''}: ${f.text}`,
+      heading: `${c.heading} › ${f.policy ? `${f.policy}: ${f.policyTitle} › ` : ''}footnote ${f.n}${f.on ? ` on “${f.on}”` : ''}`,
+      text: `Footnote ${f.n}${f.at ? ` to policy ${f.at}` : ''}${f.on ? `, on “${f.on}”` : ''}: ${f.text}`,
     });
   }
   return chunks;
