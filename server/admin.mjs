@@ -4,6 +4,9 @@
 //   PUT  …/admin/settings   save the connections and which one is in use
 //   POST …/admin/test       send one short prompt through a connection as the form has it
 //   GET  …/admin/models     the models a Codex or OpenAI-compatible endpoint offers
+//   GET  …/admin/shares     the share links (never their tokens)
+//   POST …/admin/shares     mint one: { label, days } — the link is shown once
+//   DELETE …/admin/shares/<id>  revoke one
 //
 // Owner only: app.mjs answers 404 to anyone else before it gets here, exactly as
 // it does for a page the visitor may not see. Every write must come from a page
@@ -27,7 +30,7 @@ async function readBody(req, limit = 32_768) {
   return JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}');
 }
 
-export function createAdmin({ settings, llm, siteOrigin, fetchImpl = fetch }) {
+export function createAdmin({ settings, llm, siteOrigin, shares = null, mount = '/projects/local-plan-navigator', fetchImpl = fetch }) {
   return async function admin(req, res, sub) {
     if (req.method !== 'GET' && req.method !== 'HEAD') {
       if (req.headers.origin && req.headers.origin !== siteOrigin) return json(res, 403, { message: 'Changes are only taken from pages this server sent.' });
@@ -40,7 +43,32 @@ export function createAdmin({ settings, llm, siteOrigin, fetchImpl = fetch }) {
         kinds: Object.fromEntries(Object.entries(KINDS).map(([k, v]) => [k, { label: v.label, secrets: v.secrets }])),
         recent: llm.recent().slice(0, 50),
         stored: Boolean(settings.path),
+        sharing: shares ? { enabled: shares.canShare, links: await shares.listShares() } : null,
       });
+    }
+
+    if (sub === '/shares' && req.method === 'GET') {
+      if (!shares) return json(res, 404, { message: 'Share links are not used in this access mode.' });
+      return json(res, 200, { links: await shares.listShares() });
+    }
+
+    if (sub === '/shares' && req.method === 'POST') {
+      if (!shares) return json(res, 404, { message: 'Share links are not used in this access mode.' });
+      let body;
+      try { body = await readBody(req, 4096); } catch { return json(res, 400, { message: 'The request could not be read.' }); }
+      try {
+        const { share, token } = await shares.createShare({ label: body?.label, days: body?.days });
+        // The only time the token exists outside the visitor's browser: it is not stored.
+        return json(res, 201, { share, url: `${siteOrigin}${mount}/?share=${token}` });
+      } catch (err) {
+        return json(res, 409, { message: err.message });
+      }
+    }
+
+    if (sub.startsWith('/shares/') && req.method === 'DELETE') {
+      if (!shares) return json(res, 404, { message: 'Share links are not used in this access mode.' });
+      const share = await shares.revokeShare(sub.slice('/shares/'.length));
+      return share ? json(res, 200, { share }) : json(res, 404, { message: 'No such link.' });
     }
 
     if (sub === '/settings' && req.method === 'PUT') {

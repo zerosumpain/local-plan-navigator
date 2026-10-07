@@ -13,7 +13,9 @@ copyright texts under the Open Government Licence; see `LICENCE.md`.
 | Corpus | `content/sources/` → `dist/data/corpus.json` | The government texts, chunked with an anchor per passage. `npm run fetch-sources` refreshes them. |
 | Server | `server/` | Node 22, no runtime dependencies. Serves `dist/`, the Ask API, the plan checker and the admin API. |
 | Model client | `server/llm.mjs`, `server/settings.mjs` | One place every model call goes through. Connections are chosen on the admin page. |
-| strangeramblings.com glue | `gateway/`, `deploy/`, `.github/workflows/release.yml`, `scripts/release.mjs`, `scripts/verify-*.mjs` | Specific to the original host's gateway and release lanes. You can delete all of it — see below. |
+| Access | `server/access.mjs` | Its own administrator sign-in (a passphrase) and share links. Or, behind your own sign-in, `ACCESS_MODE=trusted-proxy`. |
+| Front | `server/front.mjs` | Routes to the active one of two web slots, for zero-downtime releases. Optional. |
+| strangeramblings.com glue | `deploy/`, `.github/workflows/release.yml`, `scripts/release.mjs`, `scripts/verify-*.mjs` | The original host's release lanes. You can delete all of it — see below. |
 
 ## Run it locally
 
@@ -24,14 +26,30 @@ npm test
 npm run preview:service   # http://127.0.0.1:5382/projects/local-plan-navigator/ as the owner
 ```
 
-The preview signs every request as the owner, so the admin page at `/admin/` works.
-Set `LOCAL_PLAN_NAVIGATOR_STATE_DIR` to a writable folder if you want the
-connections you save there to persist.
+Sign in at `/sign-in/` with the passphrase the preview prints; the admin page is at
+`/admin/`. Set `LOCAL_PLAN_NAVIGATOR_STATE_DIR` to a writable folder if you want the
+connections and share links you make there to persist.
+
+## Run it with its own sign-in
+
+This is how it runs on strangeramblings.com (`ACCESS_MODE=standalone`, the default):
+
+| Variable | Meaning |
+|---|---|
+| `LOCAL_PLAN_NAVIGATOR_SECRET` | 32+ random characters. Signs admin sessions; encrypts saved keys unless `LOCAL_PLAN_NAVIGATOR_SETTINGS_KEY` is set. |
+| `LOCAL_PLAN_NAVIGATOR_ADMIN_PASSWORD_HASH` | `npm run admin-passphrase` makes a passphrase and this hash. Changing it signs every admin out. |
+| `LOCAL_PLAN_NAVIGATOR_STATE_DIR` | Writable, persistent folder: saved connections, share links, usage log. |
+| `ORIGIN` | The site's own origin. Writes from any other origin are refused. |
+
+Administrators make share links on the admin page — who each is for, and 7, 30 or
+90 days or until withdrawn. Anyone with a live link can read, search, ask and run the
+plan checker without an account; nobody without one sees anything but a page saying
+the prototype is private.
 
 ## Run it behind your own sign-in
 
 Set `ACCESS_MODE=trusted-proxy`. The server then takes the signed-in person from a
-header your proxy sets, and does not need the original gateway at all:
+header your proxy sets, and its own passphrase sign-in and share links are switched off:
 
 | Variable | Meaning |
 |---|---|
@@ -92,11 +110,11 @@ cover. Retrieval does not involve the model and should not change.
 
 ## Removing the original host's parts
 
-If you are not deploying to strangeramblings.com you can delete `gateway/`,
-`deploy/`, `.github/workflows/release.yml`, `scripts/release.mjs`,
-`scripts/verify-kit.mjs`, `scripts/verify-self-contained.mjs` and
-`server/preview.mjs`'s identity signing, and remove `verify-kit` from the `check`
-script. With `ACCESS_MODE=trusted-proxy` the server never reads the gateway key.
+If you are not deploying to strangeramblings.com you can delete `deploy/`,
+`.github/workflows/release.yml`, `scripts/release.mjs`, `scripts/verify-kit.mjs` and
+`scripts/verify-self-contained.mjs`, and remove `verify-kit` from the `check` script.
+Keep `server/front.mjs` only if you want two slots and zero-downtime releases; a
+single container running `node server/start.mjs` is enough otherwise.
 
 ## Before real users
 

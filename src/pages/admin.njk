@@ -8,18 +8,49 @@
 {% block pageContent %}
 <div class="govuk-grid-row">
 <div class="govuk-grid-column-two-thirds">
-<span class="govuk-caption-l">Administration</span>
-<h1 class="govuk-heading-xl">Model connections</h1>
-<p class="govuk-body-l">Choose which model writes the Ask summaries and runs the plan checker. The pages never know which one it is: switching here changes it for everyone at once.</p>
-{{ govukInsetText({ html: "Keys and client secrets are stored encrypted on this server and are never shown again — leave a key blank to keep the one already saved. Every call is logged below with its connection, model, time and outcome, but never the question, the document or the answer." }) }}
+<h1 class="govuk-heading-xl">Administration</h1>
+<p class="govuk-body-l">Who can see the navigator, and which model answers for it.</p>
+<p class="govuk-body"><a class="govuk-link" href="#" data-action="sign-out">Sign out</a></p>
 </div>
 </div>
 
 <div id="admin-errors" tabindex="-1"></div>
-<div id="admin-status" class="govuk-body" aria-live="polite">Loading the connections…</div>
+<div id="admin-status" class="govuk-body" aria-live="polite">Loading…</div>
 <noscript><p class="govuk-body">This page needs JavaScript.</p></noscript>
 
-<h2 class="govuk-heading-l">Connections</h2>
+<section id="sharing" aria-labelledby="sharing-heading">
+<h2 class="govuk-heading-l" id="sharing-heading">Share links</h2>
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+<p class="govuk-body">Anyone with a live link can read the navigator, search, ask and use the plan checker — but not this page. Nobody needs an account. A link is shown once, when you make it; keep it somewhere safe or make another.</p>
+<form id="share-form" novalidate>
+  <div class="govuk-form-group">
+    <label class="govuk-label govuk-label--s" for="share-label">Who it is for</label>
+    <div class="govuk-hint" id="share-label-hint">Only you see this. For example: MHCLG SLT, 8 October.</div>
+    <input class="govuk-input" id="share-label" name="label" type="text" maxlength="80" aria-describedby="share-label-hint" autocomplete="off">
+  </div>
+  <div class="govuk-form-group">
+    <fieldset class="govuk-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">How long it lasts</legend>
+      <div class="govuk-radios govuk-radios--small govuk-radios--inline">
+        <div class="govuk-radios__item"><input class="govuk-radios__input" id="share-days-7" name="days" type="radio" value="7"><label class="govuk-label govuk-radios__label" for="share-days-7">7 days</label></div>
+        <div class="govuk-radios__item"><input class="govuk-radios__input" id="share-days-30" name="days" type="radio" value="30" checked><label class="govuk-label govuk-radios__label" for="share-days-30">30 days</label></div>
+        <div class="govuk-radios__item"><input class="govuk-radios__input" id="share-days-90" name="days" type="radio" value="90"><label class="govuk-label govuk-radios__label" for="share-days-90">90 days</label></div>
+        <div class="govuk-radios__item"><input class="govuk-radios__input" id="share-days-0" name="days" type="radio" value="0"><label class="govuk-label govuk-radios__label" for="share-days-0">Until I withdraw it</label></div>
+      </div>
+    </fieldset>
+  </div>
+  {{ govukButton({ text: "Make a share link", attributes: { "data-action": "share-create" } }) }}
+</form>
+<div id="share-new" aria-live="polite"></div>
+</div></div>
+<div id="share-links"></div>
+</section>
+
+<h2 class="govuk-heading-l">Model connections</h2>
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+<p class="govuk-body">Choose which model writes the Ask summaries and runs the plan checker. The pages never know which one it is: switching here changes it for everyone at once.</p>
+{{ govukInsetText({ html: "Keys and client secrets are stored encrypted on this server and are never shown again — leave a key blank to keep the one already saved. Every call is logged below with its connection, model, time and outcome, but never the question, the document or the answer." }) }}
+</div></div>
 <div id="admin-connections"></div>
 {{ govukButton({ text: "Add a connection", classes: "govuk-button--secondary", attributes: { "data-action": "add" } }) }}
 

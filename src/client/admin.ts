@@ -16,6 +16,7 @@ interface Connection {
   apiKey?: string; clientSecret?: string;
 }
 interface Settings { active: string; connections: Connection[] }
+interface Share { id: string; label: string; createdAt: string; expiresAt: string | null; revokedAt: string | null; lastUsedAt: string | null; useCount: number; status: 'live' | 'expired' | 'revoked' }
 interface Recent { at: string; feature: string; connection: string; model: string; ms: number; ok: boolean; error?: string; tokensIn?: number | null; tokensOut?: number | null }
 
 const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
@@ -84,13 +85,49 @@ function renderRecent(recent: Recent[]) {
     <td class="govuk-table__cell">${r.ok ? '<strong class="govuk-tag govuk-tag--green">Worked</strong>' : `<strong class="govuk-tag govuk-tag--red">Failed</strong> ${esc(r.error ?? '')}`}</td></tr>`).join('')}</tbody></table>`;
 }
 
+const day = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—');
+
+function renderShares(sharing: { enabled: boolean; links: Share[] } | null) {
+  const section = document.getElementById('sharing')!;
+  if (!sharing) { section.hidden = true; return; }
+  if (!sharing.enabled) {
+    $('#share-links').innerHTML = '<p class="govuk-body">This server has no state directory, so it cannot keep share links.</p>';
+    ($('#share-form') as HTMLFormElement).hidden = true;
+    return;
+  }
+  const tag = { live: '<strong class="govuk-tag govuk-tag--green">Live</strong>', expired: '<strong class="govuk-tag govuk-tag--grey">Expired</strong>', revoked: '<strong class="govuk-tag govuk-tag--red">Withdrawn</strong>' };
+  if (!sharing.links.length) { $('#share-links').innerHTML = '<p class="govuk-body">No links yet.</p>'; return; }
+  $('#share-links').innerHTML = `<table class="govuk-table"><caption class="govuk-table__caption govuk-table__caption--s">Links made so far</caption><thead class="govuk-table__head"><tr class="govuk-table__row">
+    <th class="govuk-table__header" scope="col">For</th><th class="govuk-table__header" scope="col">Status</th><th class="govuk-table__header" scope="col">Made</th>
+    <th class="govuk-table__header" scope="col">Expires</th><th class="govuk-table__header" scope="col">Last used</th><th class="govuk-table__header govuk-table__header--numeric" scope="col">Requests</th><th class="govuk-table__header" scope="col"><span class="govuk-visually-hidden">Action</span></th></tr></thead>
+    <tbody class="govuk-table__body">${sharing.links.map((l) => `<tr class="govuk-table__row"><td class="govuk-table__cell">${esc(l.label)}</td><td class="govuk-table__cell">${tag[l.status]}</td>
+    <td class="govuk-table__cell">${day(l.createdAt)}</td><td class="govuk-table__cell">${l.expiresAt ? day(l.expiresAt) : 'Never'}</td><td class="govuk-table__cell">${day(l.lastUsedAt)}</td>
+    <td class="govuk-table__cell govuk-table__cell--numeric">${l.useCount}</td><td class="govuk-table__cell">${l.status === 'live' ? `<a class="govuk-link" href="#" data-action="share-revoke" data-id="${esc(l.id)}">Withdraw<span class="govuk-visually-hidden"> the link for ${esc(l.label)}</span></a>` : ''}</td></tr>`).join('')}</tbody></table>`;
+}
+
 async function load() {
   const { ok, body } = await api('/settings');
   if (!ok) { status('The settings could not be loaded. Reload the page.'); return; }
   settings = body.settings; kinds = body.kinds;
   status(body.stored ? '' : 'This server has no state directory, so changes cannot be saved here.');
+  renderShares(body.sharing ?? null);
   renderConnections();
   renderRecent(body.recent ?? []);
+}
+
+async function createShare() {
+  const label = ($('#share-label') as HTMLInputElement).value.trim();
+  const days = Number((document.querySelector('input[name="days"]:checked') as HTMLInputElement | null)?.value ?? 30);
+  const { ok, body } = await api('/shares', { method: 'POST', body: JSON.stringify({ label, days }) });
+  if (!ok) { showErrors([body.message ?? 'The link was not made.']); return; }
+  showErrors([]);
+  $('#share-new').innerHTML = `<div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left govuk-!-padding-6"><h3 class="govuk-panel__title govuk-!-font-size-27">Link made for ${esc(body.share.label)}</h3>
+    <div class="govuk-panel__body govuk-!-font-size-19"><p>Copy it now — it is not shown again. ${body.share.expiresAt ? `It works until ${esc(day(body.share.expiresAt))}.` : 'It works until you withdraw it.'}</p>
+    <p><input class="govuk-input" id="share-url" type="text" readonly value="${esc(body.url)}" aria-label="The share link"></p>
+    <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" type="button" data-action="share-copy">Copy the link</button></div></div>`;
+  ($('#share-label') as HTMLInputElement).value = '';
+  ($('#share-url') as HTMLInputElement).select();
+  load().catch(() => {});
 }
 
 async function saveAll(next: Settings, done: string) {
@@ -186,6 +223,7 @@ async function test(c: Connection, el: HTMLElement) {
 
 export function init() {
   load().catch(() => status('The settings could not be loaded. Reload the page.'));
+  ($('#share-form') as HTMLFormElement).addEventListener('submit', (e) => { e.preventDefault(); createShare().catch(() => {}); });
   document.addEventListener('change', (e) => { if ((e.target as HTMLElement).closest('#admin-form')) applyVisibility(); });
   document.addEventListener('click', async (e) => {
     const target = (e.target as HTMLElement).closest<HTMLElement>('[data-action]');
@@ -194,6 +232,24 @@ export function init() {
     const id = target.dataset.id ?? '';
     const c = settings.connections.find((x) => x.id === id) ?? null;
     switch (target.dataset.action) {
+      case 'share-create': await createShare(); break;
+      case 'share-copy': {
+        const input = $('#share-url') as HTMLInputElement;
+        input.select();
+        try { await navigator.clipboard.writeText(input.value); target.textContent = 'Copied'; } catch { document.execCommand?.('copy'); }
+        break;
+      }
+      case 'share-revoke': {
+        if (!confirm('Withdraw this link? Anyone using it loses access at once.')) break;
+        const { ok, body } = await api(`/shares/${encodeURIComponent(id)}`, { method: 'DELETE' });
+        if (!ok) showErrors([body.message ?? 'The link was not withdrawn.']);
+        else { status('Link withdrawn.'); load().catch(() => {}); }
+        break;
+      }
+      case 'sign-out':
+        await fetch('/api/projects/local-plan-navigator/session', { method: 'DELETE', headers: { 'content-type': 'application/json' } });
+        location.href = '../private/';
+        break;
       case 'add': await openEditor(null); break;
       case 'edit': if (c) await openEditor(c); break;
       case 'cancel': $('#admin-editor').hidden = true; editing = null; break;

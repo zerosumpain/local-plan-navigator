@@ -37,10 +37,12 @@
       logoHtml: '<span class="lpn-logotype">Local Plan Navigator</span><strong class="govuk-tag govuk-tag--yellow lpn-logotype-tag">Prototype</strong>',
       attributes: { "data-module": "lpn-header" }
     }) }}
+    {% if not hideNav %}
     {{ govukServiceNavigation({
       ariaLabel: "Service navigation",
       navigation: nav
     }) }}
+    {% endif %}
   </header>
 {% endblock %}
 

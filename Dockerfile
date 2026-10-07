@@ -1,4 +1,5 @@
-# Immutable image for the static site, ask endpoint and its gateway.
+# Immutable image for the static site and the web process — and, run with
+# `node server/front.mjs`, for the front in front of the two web slots.
 #
 # The release id is baked in at build time and reported by the liveness path, which is what
 # lets scripts/release.mjs prove that the traffic switch actually took effect
@@ -21,7 +22,6 @@ ENV APP_RELEASE_ID=$RELEASE_ID
 COPY --from=build --chown=node:node /app/package.json ./
 COPY --from=build --chown=node:node /app/dist ./dist
 COPY --from=build --chown=node:node /app/server ./server
-COPY --from=build --chown=node:node /app/gateway/identity.mjs ./gateway/identity.mjs
 # The model connections the admin page saves, and the usage log. A volume in
 # production (deploy/compose.yaml); created here, owned by node, so a new named
 # volume starts with the right owner.
