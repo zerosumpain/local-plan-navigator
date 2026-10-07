@@ -13,6 +13,7 @@
     "check": "node --check server/app.mjs && node --check server/ask.mjs && node --check server/start.mjs && node scripts/verify-kit.mjs",
     "corpus": "node scripts/build-corpus.mjs",
     "fetch-sources": "node scripts/fetch-sources.mjs",
+    "eval:answers": "node scripts/eval-answers.mjs",
     "test": "node --test tests/*.test.mjs server/*.test.mjs && node scripts/check-links.mjs",
     "smoke": "node scripts/smoke.mjs",
     "a11y": "node scripts/a11y.mjs"
