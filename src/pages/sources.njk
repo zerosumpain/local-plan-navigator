@@ -3,23 +3,35 @@
 {% block pageContent %}
 <div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
 <h1 class="govuk-heading-xl">Sources, dates and licences</h1>
-<p class="govuk-body-l">Every quotation and every citation on this site comes from one of the documents below, fetched from GOV.UK and legislation.gov.uk on the date shown and rendered in the <a class="govuk-link" href="{{ rel('/reference/') }}">reference library</a>. Guidance changes; the originals win.</p>
+<p class="govuk-body-l">Every quotation and every citation on this site comes from one of the {{ corpusMeta.sourceCount }} documents below, fetched from GOV.UK and legislation.gov.uk and rendered in the <a class="govuk-link" href="{{ rel('/reference/') }}">reference library</a>. Guidance changes; the originals win.</p>
+
+<h2 class="govuk-heading-m">What is and is not included</h2>
+<ul class="govuk-list govuk-list--bullet">
+  <li>Legislation is included only where it is about plan-making. From the Planning and Compulsory Purchase Act 2004 that is the new local plan sections, 15B to 15LH, inserted by the Levelling-up and Regeneration Act 2023; from the 2023 Act it is sections 92 to 100. Neither Act is here in full, and the Town and Country Planning Act 1990 is not included.</li>
+  <li>Where legislation.gov.uk marks a section as prospective (enacted but not yet in force), its heading here says so.</li>
+  <li>Planning Practice Guidance is included for site allocations only, and none of it has been rewritten for the new system. Each chapter's note below says how far it applies to a plan prepared under the new system.</li>
+  <li>The National Planning Policy Framework is extracted from the published PDF, so its layout can differ from the original.</li>
+</ul>
+
+{% for kind, label in { legislation: "Legislation", policy: "National policy", guidance: "Guidance for the new plan-making system", "practice-guidance": "Planning Practice Guidance" } %}
+<h2 class="govuk-heading-m">{{ label }}</h2>
 <div class="lpn-table-scroll">
 <table class="govuk-table">
-  <caption class="govuk-table__caption govuk-visually-hidden">The source documents</caption>
+  <caption class="govuk-table__caption govuk-visually-hidden">{{ label }}: the source documents</caption>
   <thead class="govuk-table__head"><tr class="govuk-table__row"><th scope="col" class="govuk-table__header">Document</th><th scope="col" class="govuk-table__header">Publisher</th><th scope="col" class="govuk-table__header">Version used</th></tr></thead>
   <tbody class="govuk-table__body">
-  {% for s in sources %}
+  {% for s in sources %}{% if s.kind == kind %}
     <tr class="govuk-table__row">
       <th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel(s.route) }}">{{ s.title }}</a><br><a class="govuk-link govuk-body-s" href="{{ s.url }}" rel="external">Original</a></th>
       <td class="govuk-table__cell">{{ s.publisher }}</td>
       <td class="govuk-table__cell">{{ s.updated }}{% if s.note %}<br><span class="govuk-body-s">{{ s.note }}</span>{% endif %}</td>
     </tr>
-  {% endfor %}
+  {% endif %}{% endfor %}
   </tbody>
 </table>
 </div>
-<p class="govuk-body">Fetched on {{ corpusMeta.built | default(built) }}. The corpus holds {{ corpusMeta.chunkCount }} passages.</p>
+{% endfor %}
+<p class="govuk-body">Corpus built on {{ corpusMeta.built | default(built) }}. It holds {{ corpusMeta.chunkCount }} passages from {{ corpusMeta.sourceCount }} documents. <code>npm run fetch-sources</code> fetches every document again from the addresses above.</p>
 <h2 class="govuk-heading-m">Licences</h2>
 <p class="govuk-body">The government texts are Crown copyright, reproduced under the <a class="govuk-link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>. GOV.UK Frontend is used under the MIT Licence; its crown logo, coat of arms and typeface are not used. The prototype's own code is MIT licensed. Models offered on the Ask page are downloaded by your browser from Hugging Face under their own licences: Qwen 2.5 (Apache 2.0), Llama 3.2 (Llama 3.2 Community Licence), SmolLM2 (Apache 2.0).</p>
 </div></div>

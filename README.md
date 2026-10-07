@@ -2,8 +2,8 @@
 
 A prototype, in the style of a GOV.UK service, that helps local planning authorities in
 England find their way through the 30-month local plan process: the stages, the three
-gateways, the 2026 Regulations, the SEA Regulations and the National Planning Policy
-Framework, in one place, with tools that say what to do next.
+gateways, site allocations, the plan-making law, the National Planning Policy Framework
+and the government's guidance, in one place, with tools that say what to do next.
 
 The deployment path is <https://strangeramblings.com/projects/local-plan-navigator/>.
 It is currently owner-only. This is not a government service; it has no connection
@@ -15,18 +15,27 @@ with MHCLG or the Planning Inspectorate.
   sequence, and a page per stage with what you must, should and could do, timings, and
   the regulation or guidance each comes from.
 - **Gateways** — the three checkpoints compared, with process-flow diagrams.
+- **Site allocations** — what each allocation should contain (NPPF policy PM2 and its
+  footnote 8, field by field), the four stages of site selection, the evidence expected,
+  where sites come up in the 30 months, and the pitfalls the guidance names.
 - **Where is my plan?** — a one-question-per-page flow that ends in a tailored "what to do
   next" page.
 - **Timeline planner** — a Gateway 1 date becomes every milestone, with the statutory
-  minimums checked, as a table, a chart and a CSV.
+  minimums checked, as a table, a chart, a CSV, and the plan-timetable dataset the
+  Planning Data (England) Regulations 2026 require.
 - **Checklists** — Gateway 1 readiness, the Gateway 2 pack, the Gateway 3 documents and
-  twelve prescribed requirements, submission, adoption; ticks persist in the browser.
+  twelve prescribed requirements, submission, adoption, site allocations; ticks persist in
+  the browser.
 - **Search** and **Ask** — one index over all the sources; on the Ask page a language
   model writes a cited summary of the passages: the website's own model by default (an
   endpoint on the server that sent the page — owner-only on strangeramblings.com, and
   `npm run preview:service` locally), or one running in the browser for a private, offline answer — the only option in a
   downloaded copy.
-- **Reference library** — the sources in full with an anchor on every regulation and policy.
+- **Reference library** — the sources with an anchor on every section, regulation, policy
+  and NPPF footnote: the plan-making sections of the PCPA 2004 (as amended by LURA 2023)
+  and of LURA 2023, the 2026 Regulations, the SEA and Planning Data Regulations, the NPPF,
+  the procedural guide, MHCLG's new-system guidance including site selection, and the
+  plan-making parts of the land availability, viability and flood risk practice guidance.
 - **Code** — every file of this repository, rendered and commented, plus a zip.
 
 ## Build it
@@ -38,7 +47,14 @@ npm run serve        # http://localhost:5177/projects/local-plan-navigator/
 npm test             # data integrity, schedule maths, and every internal link
 npm run smoke        # Playwright + axe-core over every page and the tools (needs Playwright)
 npm run fetch-sources  # refresh content/sources/ from GOV.UK and legislation.gov.uk
+node scripts/eval-retrieval.mjs  # does search find the right passage? (after a build)
+npm run eval:answers   # are the Ask answers cited and grounded? (calls a model; see below)
 ```
+
+`npm run eval:answers` sends eight fixed questions through the page's retrieval and the
+server's prompt to an OpenAI-compatible chat endpoint and checks every answer for
+citations, the expected sources and declines. It defaults to the local Codex bridge;
+point it elsewhere with `LPN_EVAL_BASE_URL`, `LPN_EVAL_MODEL` and `LPN_EVAL_API_KEY`.
 
 Node 22 or later. `dist/` is static and works at any mount point because its links
 are relative. The standalone production server in `server/` serves that bundle and
