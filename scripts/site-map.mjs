@@ -78,6 +78,8 @@ export async function siteMap({ root, corpus, code }) {
     { id: 'sources', route: '/sources/', template: 'sources', title: 'Sources, dates and licences', sources: corpus.sources, corpusMeta: corpus.meta },
     { id: 'code', route: '/code/', template: 'code', title: 'The code', code },
     { id: 'reference-home', route: '/reference/', template: 'reference-home', title: 'Reference library', sources: corpus.sources },
+    // Owner only: the server answers 404 for it to anyone else, and nothing links to it.
+    { id: 'admin', route: '/admin/', template: 'admin', title: 'Model connections' },
   ];
 
   for (const s of resolvedStages) {

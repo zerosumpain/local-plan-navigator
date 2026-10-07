@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
-import { mkdtemp, mkdir, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, before, test } from 'node:test';
 import { signIdentity } from '../gateway/identity.mjs';
 import { createApp } from './app.mjs';
+import { createSettingsStore } from './settings.mjs';
 
 const key = 'local-plan-navigator-test-key-long-enough-1234';
 const owner = 'owner@example.test';
@@ -51,7 +52,9 @@ before(async () => {
   }).listen(0, '127.0.0.1');
   await new Promise((resolve) => bridgeServer.once('listening', resolve));
   const bridgeUrl = `http://127.0.0.1:${bridgeServer.address().port}`;
-  appServer = createServer(createApp({ distDir: root, ownerEmail: owner, gatewayKey: key, bridgeUrl, retryDelayMs: 10 }));
+  const stateDir = join(root, 'state');
+  const settings = createSettingsStore({ dir: stateDir, secret: key, env: { CODEX_BRIDGE_URL: bridgeUrl } });
+  appServer = createServer(createApp({ distDir: root, ownerEmail: owner, gatewayKey: key, settings, stateDir, retryDelayMs: 10 }));
   appServer.listen(0, '127.0.0.1');
   await new Promise((resolve) => appServer.once('listening', resolve));
   base = `http://127.0.0.1:${appServer.address().port}`;
@@ -168,4 +171,65 @@ test('ask retries once when the shared bridge is restarting, then says to ask ag
   assert.equal(bridgeCalls, 2);
   assert.match(failed, /"type":"error"/);
   assert.match(failed, /Ask again/);
+});
+
+const admin = '/api/projects/local-plan-navigator/admin';
+const adminJson = (path, method, body) => fetch(`${base}${path}`, {
+  method, headers: { ...identity(path, method), 'Content-Type': 'application/json' }, body: body && JSON.stringify(body),
+});
+
+test('the admin page and API exist only for the owner', async () => {
+  await mkdir(join(root, 'admin'), { recursive: true });
+  await writeFile(join(root, 'admin/index.html'), '<h1>Admin</h1>');
+  const page = `${mount}/admin/`;
+  assert.equal((await fetch(`${base}${page}`, { headers: identity(page) })).status, 200);
+  assert.equal((await fetch(`${base}${page}`, { headers: decided(page, 'share') })).status, 404);
+  assert.equal((await fetch(`${base}${page}`, { headers: decided(page, 'public') })).status, 404);
+  assert.equal((await fetch(`${base}${admin}/settings`, { headers: decided(`${admin}/settings`, 'share') })).status, 404);
+  const settings = await fetch(`${base}${admin}/settings`, { headers: identity(`${admin}/settings`) });
+  assert.equal(settings.status, 200);
+  const body = await settings.json();
+  assert.equal(body.settings.active, 'codex');
+  assert.equal(body.settings.connections[0].model, 'gpt-6-luna');
+});
+
+test('the owner can add an Azure connection; its key is encrypted on disk and never sent back', async () => {
+  const current = (await (await fetch(`${base}${admin}/settings`, { headers: identity(`${admin}/settings`) })).json()).settings;
+  const azure = {
+    id: 'mhclg-ai-gateway', label: 'MHCLG AI Gateway', kind: 'azure', baseUrl: 'https://apim.example.test/ai',
+    apiStyle: 'azure-openai', deployment: 'gpt-x', apiVersion: '2024-10-21', auth: 'subscription-key',
+    keyHeader: 'Ocp-Apim-Subscription-Key', apiKey: 'super-secret-subscription-key-9f3a',
+  };
+  // Not usable yet as the active one without a key.
+  const refused = await adminJson(`${admin}/settings`, 'PUT', {
+    active: 'mhclg-ai-gateway', connections: [current.connections[0], { ...azure, apiKey: '' }],
+  });
+  assert.equal(refused.status, 422);
+  assert.match((await refused.json()).errors.join(' '), /no key/);
+  const saved = await adminJson(`${admin}/settings`, 'PUT', { active: 'codex', connections: [current.connections[0], azure] });
+  assert.equal(saved.status, 200);
+  const shown = (await saved.json()).settings.connections.find((c) => c.id === 'mhclg-ai-gateway');
+  assert.equal(shown.apiKey, undefined);
+  assert.equal(shown.apiKeyHint, 'set, ending …9f3a');
+  const onDisk = await readFile(join(root, 'state/settings.json'), 'utf8');
+  assert.doesNotMatch(onDisk, /super-secret/);
+  // Saving again with the key left blank keeps it.
+  const again = await adminJson(`${admin}/settings`, 'PUT', { active: 'codex', connections: [current.connections[0], { ...azure, apiKey: '' }] });
+  assert.equal((await again.json()).settings.connections[1].apiKeyHint, 'set, ending …9f3a');
+  // A write from another site is refused.
+  const cross = await fetch(`${base}${admin}/settings`, {
+    method: 'PUT', headers: { ...identity(`${admin}/settings`, 'PUT'), 'Content-Type': 'application/json', Origin: 'https://attacker.example' }, body: '{}',
+  });
+  assert.equal(cross.status, 403);
+});
+
+test('the owner can test a connection before using it', async () => {
+  const current = (await (await fetch(`${base}${admin}/settings`, { headers: identity(`${admin}/settings`) })).json()).settings;
+  const result = await (await adminJson(`${admin}/test`, 'POST', { connection: current.connections[0] })).json();
+  assert.equal(result.ok, true);
+  assert.equal(result.model, 'gpt-6-luna');
+  assert.equal(lastPrompt.model, 'gpt-6-luna');
+  const recent = (await (await fetch(`${base}${admin}/settings`, { headers: identity(`${admin}/settings`) })).json()).recent;
+  assert.ok(recent.some((r) => r.feature === 'admin-test' && r.ok));
+  assert.ok(recent.every((r) => !('prompt' in r)));
 });

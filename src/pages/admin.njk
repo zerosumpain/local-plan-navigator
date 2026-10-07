@@ -1,0 +1,128 @@
+{# src/pages/admin.njk — the owner's page for choosing which model answers.
+   The server answers 404 for this page to anyone but the owner (or, behind a
+   trusted proxy, ADMIN_EMAILS); everything on it is drawn by src/client/admin.ts
+   from the admin API. #}
+{% extends "layouts/base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% block pageContent %}
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds">
+<span class="govuk-caption-l">Administration</span>
+<h1 class="govuk-heading-xl">Model connections</h1>
+<p class="govuk-body-l">Choose which model writes the Ask summaries and runs the plan checker. The pages never know which one it is: switching here changes it for everyone at once.</p>
+{{ govukInsetText({ html: "Keys and client secrets are stored encrypted on this server and are never shown again — leave a key blank to keep the one already saved. Every call is logged below with its connection, model, time and outcome, but never the question, the document or the answer." }) }}
+</div>
+</div>
+
+<div id="admin-errors" tabindex="-1"></div>
+<div id="admin-status" class="govuk-body" aria-live="polite">Loading the connections…</div>
+<noscript><p class="govuk-body">This page needs JavaScript.</p></noscript>
+
+<h2 class="govuk-heading-l">Connections</h2>
+<div id="admin-connections"></div>
+{{ govukButton({ text: "Add a connection", classes: "govuk-button--secondary", attributes: { "data-action": "add" } }) }}
+
+<div id="admin-editor" hidden>
+  <h2 class="govuk-heading-l" id="admin-editor-heading" tabindex="-1">Change connection</h2>
+  <form id="admin-form" novalidate>
+    <div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <label class="govuk-label govuk-label--s" for="f-label">Name</label>
+        <input class="govuk-input" id="f-label" name="label" type="text" maxlength="60" autocomplete="off">
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label govuk-label--s" for="f-id">Short id</label>
+        <div class="govuk-hint" id="f-id-hint">Lowercase letters, numbers and hyphens. It cannot change once saved.</div>
+        <input class="govuk-input govuk-input--width-20" id="f-id" name="id" type="text" maxlength="40" aria-describedby="f-id-hint" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Type</legend>
+          <div class="govuk-radios govuk-radios--small" id="f-kind"></div>
+        </fieldset>
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label govuk-label--s" for="f-baseUrl">Address</label>
+        <div class="govuk-hint" id="f-baseUrl-hint"></div>
+        <input class="govuk-input" id="f-baseUrl" name="baseUrl" type="url" aria-describedby="f-baseUrl-hint" autocomplete="off" spellcheck="false">
+      </div>
+      <div data-show="azure">
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">How the address is used</legend>
+            <div class="govuk-radios govuk-radios--small">
+              <div class="govuk-radios__item"><input class="govuk-radios__input" id="f-style-azure" name="apiStyle" type="radio" value="azure-openai"><label class="govuk-label govuk-radios__label" for="f-style-azure">Azure OpenAI deployment<div class="govuk-hint govuk-radios__hint">…/openai/deployments/<em>name</em>/chat/completions?api-version=… — the usual shape behind Azure API Management</div></label></div>
+              <div class="govuk-radios__item"><input class="govuk-radios__input" id="f-style-openai" name="apiStyle" type="radio" value="openai"><label class="govuk-label govuk-radios__label" for="f-style-openai">OpenAI-style<div class="govuk-hint govuk-radios__hint">…/chat/completions with the model named in the request — for a gateway that offers several providers' models</div></label></div>
+            </div>
+          </fieldset>
+        </div>
+        <div class="govuk-form-group" data-show-style="azure-openai">
+          <label class="govuk-label govuk-label--s" for="f-deployment">Deployment name</label>
+          <input class="govuk-input govuk-input--width-20" id="f-deployment" name="deployment" type="text" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="govuk-form-group" data-show-style="azure-openai">
+          <label class="govuk-label govuk-label--s" for="f-apiVersion">API version</label>
+          <input class="govuk-input govuk-input--width-10" id="f-apiVersion" name="apiVersion" type="text" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+      <div class="govuk-form-group" data-show-model>
+        <label class="govuk-label govuk-label--s" for="f-model">Model</label>
+        <div class="govuk-hint" id="f-model-hint"></div>
+        <input class="govuk-input govuk-input--width-20" id="f-model" name="model" type="text" list="f-model-list" aria-describedby="f-model-hint" autocomplete="off" spellcheck="false">
+        <datalist id="f-model-list"></datalist>
+      </div>
+      <div data-show="azure">
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">How it signs in</legend>
+            <div class="govuk-radios govuk-radios--small">
+              <div class="govuk-radios__item"><input class="govuk-radios__input" id="f-auth-sub" name="auth" type="radio" value="subscription-key"><label class="govuk-label govuk-radios__label" for="f-auth-sub">API Management subscription key</label></div>
+              <div class="govuk-radios__item"><input class="govuk-radios__input" id="f-auth-key" name="auth" type="radio" value="api-key"><label class="govuk-label govuk-radios__label" for="f-auth-key">Azure OpenAI API key</label></div>
+              <div class="govuk-radios__item"><input class="govuk-radios__input" id="f-auth-entra" name="auth" type="radio" value="entra-id"><label class="govuk-label govuk-radios__label" for="f-auth-entra">Microsoft Entra ID (client credentials)</label></div>
+            </div>
+          </fieldset>
+        </div>
+        <div class="govuk-form-group" data-show-auth="key">
+          <label class="govuk-label govuk-label--s" for="f-keyHeader">Header the key goes in</label>
+          <input class="govuk-input govuk-input--width-20" id="f-keyHeader" name="keyHeader" type="text" autocomplete="off" spellcheck="false">
+        </div>
+        <div data-show-auth="entra-id">
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="f-tenantId">Directory (tenant) id</label>
+            <input class="govuk-input govuk-input--width-30" id="f-tenantId" name="tenantId" type="text" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="f-clientId">Application (client) id</label>
+            <input class="govuk-input govuk-input--width-30" id="f-clientId" name="clientId" type="text" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="f-scope">Scope</label>
+            <input class="govuk-input" id="f-scope" name="scope" type="text" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="f-clientSecret">Client secret</label>
+            <div class="govuk-hint" id="f-clientSecret-hint"></div>
+            <input class="govuk-input govuk-input--width-30" id="f-clientSecret" name="clientSecret" type="password" aria-describedby="f-clientSecret-hint" autocomplete="new-password">
+          </div>
+        </div>
+      </div>
+      <div class="govuk-form-group" data-show-key>
+        <label class="govuk-label govuk-label--s" for="f-apiKey">Key</label>
+        <div class="govuk-hint" id="f-apiKey-hint"></div>
+        <input class="govuk-input govuk-input--width-30" id="f-apiKey" name="apiKey" type="password" aria-describedby="f-apiKey-hint" autocomplete="new-password">
+      </div>
+      <div class="govuk-button-group">
+        {{ govukButton({ text: "Save connection", attributes: { "data-action": "save" } }) }}
+        {{ govukButton({ text: "Test it", classes: "govuk-button--secondary", attributes: { "data-action": "test-form" } }) }}
+        <a class="govuk-link" href="#" data-action="cancel">Cancel</a>
+      </div>
+      <div id="admin-test-result" aria-live="polite"></div>
+    </div></div>
+  </form>
+</div>
+
+<h2 class="govuk-heading-l">Recent model calls</h2>
+<p class="govuk-body">The latest calls since this server started, newest first. The full log is kept on the server as <code>usage.jsonl</code>.</p>
+<div id="admin-recent"></div>
+{% endblock %}

@@ -29,6 +29,12 @@ connection with MHCLG or the Planning Inspectorate.
   downloaded copy.
 - **Reference library** — the sources in full with an anchor on every regulation and policy.
 - **Code** — every file of this repository, rendered and commented, plus a zip.
+- **Admin** (`/admin/`, owner only) — which model connection answers: the site's Codex
+  bridge, an Azure gateway such as MHCLG's AI Gateway (API Management subscription key,
+  Azure OpenAI key or Entra ID), or any OpenAI-compatible endpoint; test a connection,
+  switch to it, and see every model call logged (never its content).
+
+Taking it on to run yourselves? Start with [`docs/handover.md`](docs/handover.md).
 
 ## Build it
 
@@ -84,7 +90,10 @@ The production setup uses `deploy/compose.yaml` and `deploy/app.json`. Set a
 the gateway and app environment files, `AUTH_SECRET` in the gateway file, and
 `OWNER_EMAIL` in the app file. Set `CODEX_BRIDGE_URL` only if the bridge differs
 from `http://127.0.0.1:5207`. The default model is `gpt-6-luna`; override it
-with `LOCAL_PLAN_NAVIGATOR_MODEL` if needed. Keep the repository's `PROBE_URL`
+with `LOCAL_PLAN_NAVIGATOR_MODEL` if needed. Both only seed the first connection:
+once the owner saves connections on the admin page, they live in the `state` volume
+(`/var/lib/local-plan-navigator/settings.json`, keys encrypted under a key derived
+from `LOCAL_PLAN_NAVIGATOR_SETTINGS_KEY`, or the gateway key if that is unset). Keep the repository's `PROBE_URL`
 variable unset while the project is private, because an anonymous public
 release probe cannot read a private page. The release workflow remains
 gated by `RELEASE_ENABLED` until the production runner and service are ready.

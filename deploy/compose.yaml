@@ -26,6 +26,13 @@ x-app-base: &app-base
   mem_limit: 1g
   cpus: 1.5
   security_opt: ['no-new-privileges:true']
+  # Both slots share the admin page's saved model connections and the usage
+  # log, so a release or a switch of slot keeps them.
+  volumes:
+    - state:/var/lib/local-plan-navigator
+
+volumes:
+  state: {}
 
 services:
   gateway:

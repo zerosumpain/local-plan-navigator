@@ -18,6 +18,7 @@ const loaders: Record<string, () => Promise<{ init: () => void }>> = {
   question: () => import('./where-am-i'),
   result: () => import('./where-am-i'),
   code: () => import('./code'),
+  admin: () => import('./admin'),
 };
 
 const page = document.body.dataset.page ?? '';
