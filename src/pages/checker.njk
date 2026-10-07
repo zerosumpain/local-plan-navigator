@@ -1,0 +1,101 @@
+{# src/pages/checker.njk — check a draft local plan and draft the Gateway statements.
+
+   The form, the progress and the report are driven by src/client/checker.ts;
+   the rubric at the foot of the page is rendered here, at build time, from
+   content/checker-rubric.json, so what the page says it checks is what the
+   server checks. #}
+{% extends "layouts/base.njk" %}
+{% from "partials/macros.njk" import cite %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% block pageContent %}
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds">
+  <div id="checker-errors"></div>
+  <h1 class="govuk-heading-xl">Check a draft local plan</h1>
+  <p class="govuk-body-l">Upload a draft local plan. The checker reads it against the 2026 Regulations, the National Planning Policy Framework and the government's guidance, and tells you what it covers, what is missing and where it is thin. It also drafts the statement of compliance and the statement of soundness the Planning Inspectorate asks for at Gateway 2 and Gateway 3.</p>
+  {{ govukWarningText({ text: "This is a prototype. Its report is not an assessment by the Planning Inspectorate or MHCLG, and it can be wrong. Use it as a first read and a starting point for officers.", iconFallbackText: "Warning" }) }}
+
+  <h2 class="govuk-heading-m">What it checks</h2>
+  <p class="govuk-body">{{ checkCount }} checks in {{ enabledCount }} parts, each citing the regulation, policy or guidance it comes from:</p>
+  <ol class="govuk-list govuk-list--number">
+    {% for s in rubric.sections %}{% if s.enabled !== false %}<li><a class="govuk-link" href="#rubric-{{ s.id }}">{{ s.title }}</a> ({{ s.items | length }} checks)</li>{% endif %}{% endfor %}
+  </ol>
+  <p class="govuk-body">The model local plan the government has announced is not published yet. Its templates will be added to the checks when it is.</p>
+
+  <h2 class="govuk-heading-m">What happens to your document</h2>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>It is sent to the server this page came from and read there, in memory. It is not stored, and nothing from it is written to the server's logs.</li>
+    <li>The parts of it each check needs are sent to the language model this website uses. The model provider sees those parts.</li>
+    <li>The report stays in your browser until you download it. Close the page and it is gone.</li>
+    <li>Do not upload anything you would not share with the model provider, such as personal data.</li>
+  </ul>
+
+  <form id="checker-form" class="lpn-checker-form" method="post" action="" enctype="multipart/form-data" novalidate>
+    {{ govukFileUpload({
+      id: "plan-file",
+      name: "plan",
+      label: { text: "Upload a draft local plan", classes: "govuk-label--m" },
+      hint: { text: "A Word document (.docx), PowerPoint presentation (.pptx), Markdown file (.md) or text file (.txt), smaller than 15MB" },
+      attributes: { accept: ".docx,.pptx,.md,.markdown,.txt,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/markdown,text/plain" }
+    }) }}
+    {{ govukButton({ text: "Check the plan", type: "submit", attributes: { id: "checker-submit" } }) }}
+  </form>
+  <noscript><p class="govuk-body">The checker needs JavaScript. Without it, use the <a class="govuk-link" href="{{ base }}checklists/gateway-3-submission/">Gateway 3 checklist</a>.</p></noscript>
+
+  <h2 class="govuk-heading-m">Try it with the sample plan</h2>
+  <p class="govuk-body">The sample is a fictional draft plan for an invented council, Northwold District Council, with gaps written in for the checker to find. There is a short summary deck of it too.</p>
+  <div class="govuk-button-group">
+    {{ govukButton({ text: "Check the sample plan (Word)", classes: "govuk-button--secondary", attributes: { "data-sample": "northwold-draft-local-plan.docx" } }) }}
+    {{ govukButton({ text: "Check the sample deck (PowerPoint)", classes: "govuk-button--secondary", attributes: { "data-sample": "northwold-summary-deck.pptx" } }) }}
+  </div>
+  <p class="govuk-body-s">Download the sample: <a class="govuk-link" href="{{ base }}samples/northwold-draft-local-plan.docx" download>plan as Word</a>, <a class="govuk-link" href="{{ base }}samples/northwold-draft-local-plan.md" download>plan as Markdown</a>, <a class="govuk-link" href="{{ base }}samples/northwold-summary-deck.pptx" download>summary deck as PowerPoint</a>.</p>
+
+  <div id="checker-progress" class="lpn-checker-progress" hidden>
+    <h2 class="govuk-heading-m" id="checker-progress-heading">Checking the plan</h2>
+    <progress id="checker-progress-bar" class="lpn-checker-progress__bar" max="100" aria-labelledby="checker-progress-heading"></progress>
+    <p class="govuk-body" id="checker-progress-text" role="status" aria-live="polite"></p>
+    <p class="govuk-body-s">A check usually takes one to three minutes. Keep this page open.</p>
+  </div>
+</div>
+<div class="govuk-grid-column-one-third">
+  <aside class="lpn-aside" aria-labelledby="statuses-heading">
+    <h2 class="govuk-heading-s" id="statuses-heading">What the results mean</h2>
+    <dl class="lpn-statuses">
+      {% for st in rubric.statuses %}
+      <dt><strong class="govuk-tag govuk-tag--{{ st.tag }}">{{ st.label }}</strong></dt>
+      <dd class="govuk-body-s">{{ st.meaning }}</dd>
+      {% endfor %}
+    </dl>
+    <h2 class="govuk-heading-s">How it stays consistent</h2>
+    <p class="govuk-body-s">The same rubric, in the same order, every time. The model reads only the parts of the plan each check needs and answers in a fixed form; anything it quotes is shown only if it is found word for word in your document. Counts, combined results and the draft statements are worked out in code.</p>
+  </aside>
+</div>
+</div>
+
+<div id="checker-report" class="lpn-checker-report" tabindex="-1"></div>
+
+<h2 class="govuk-heading-l govuk-!-margin-top-6" id="rubric">The checks</h2>
+<p class="govuk-body">Rubric version {{ rubric.version }}. Each check links to the passage it comes from.</p>
+{% for s in rubric.sections %}
+<details class="govuk-details" id="rubric-{{ s.id }}">
+  <summary class="govuk-details__summary"><span class="govuk-details__summary-text">{{ s.letter }}. {{ s.title }}{% if s.enabled === false %} (to come){% endif %}</span></summary>
+  <div class="govuk-details__text">
+    <p class="govuk-body">{{ s.summary }}</p>
+    <dl class="govuk-summary-list">
+      {% for i in s.items %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">{{ i.id }}{% if i.ref and i.ref.startsWith('32') %} ({{ i.ref }}){% endif %} {{ i.title }}</dt>
+        <dd class="govuk-summary-list__value">
+          <p class="govuk-body-s">{{ i.requirement }}</p>
+          {% if i.assess == 'officer' %}<p class="govuk-body-s"><strong>For the authority to complete:</strong> {{ i.officerAction }}</p>{% endif %}
+          <p class="govuk-body-s">{% for c in i.cites %}{{ cite({ href: c.href, title: c.label }, base) }}{% if not loop.last %} · {% endif %}{% endfor %}</p>
+        </dd>
+      </div>
+      {% endfor %}
+    </dl>
+  </div>
+</details>
+{% endfor %}
+{% endblock %}

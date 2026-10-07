@@ -362,3 +362,34 @@
 @media print {
   .lpn-viz__replay, .v-runner { display: none; }
 }
+
+// ---------------------------------------------------------------------------
+// Plan checker: progress, quoted evidence, result cards and the allocation grid.
+// Status is always a tag with words in it, never colour alone.
+// ---------------------------------------------------------------------------
+.lpn-checker-progress__bar {
+  display: block;
+  width: 100%;
+  height: 16px;
+  margin-bottom: govuk.govuk-spacing(2);
+  accent-color: govuk.$govuk-brand-colour;
+}
+.lpn-evidence {
+  @include govuk.govuk-font($size: 16);
+  margin: 0 0 govuk.govuk-spacing(3);
+  padding: govuk.govuk-spacing(1) 0 govuk.govuk-spacing(1) govuk.govuk-spacing(3);
+  border-left: 4px solid govuk.$govuk-border-colour;
+}
+.lpn-evidence p { margin: 0 0 govuk.govuk-spacing(1); }
+.lpn-evidence__where, .lpn-requirement, .lpn-muted { color: govuk.$govuk-secondary-text-colour; }
+.lpn-check .govuk-summary-card__title-wrapper { align-items: center; }
+.lpn-conditions li { margin-bottom: govuk.govuk-spacing(2); }
+.lpn-conditions .govuk-tag, .lpn-matrix .govuk-tag, .lpn-instances .govuk-tag { white-space: nowrap; }
+.lpn-matrix { @include govuk.govuk-font($size: 16); }
+.lpn-clause-label { font-weight: bold; }
+.lpn-statuses dt { margin-top: govuk.govuk-spacing(3); }
+.lpn-statuses dd { margin: govuk.govuk-spacing(1) 0 0; }
+.lpn-report-section { margin-top: govuk.govuk-spacing(6); }
+@media print {
+  .lpn-checker-form, .lpn-checker-progress, [data-export] { display: none; }
+}

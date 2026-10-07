@@ -25,6 +25,7 @@ import { answerPrompt, loadCorpus, parseAskBody, pickChunks, SYSTEM_PROMPT } fro
 import { createAccess } from './access.mjs';
 // ./sr-projects.mjs is imported on demand, below.
 import { createAdmin } from './admin.mjs';
+import { createCheckerRoutes } from './checker/http.mjs';
 import { createLlm } from './llm.mjs';
 import { createSettingsStore } from './settings.mjs';
 
@@ -184,7 +185,9 @@ export function createApp({
   })();
   gate.catch(() => {});
   const admin = createAdmin({ settings: store, llm: model, siteOrigin, gate });
-  const check = checker?.({ complete: (req) => model.complete({ ...req, feature: req.feature ?? 'checker' }), distDir, siteOrigin }) ?? null;
+  // The plan checker calls whichever model connection is in use, like Ask.
+  const complete = (req) => model.complete({ ...req, feature: req.feature ?? 'checker' });
+  const check = checker ? checker({ complete, distDir, siteOrigin }) : createCheckerRoutes({ complete, distDir });
   const signInPerAddress = attempts(5, 15 * 60_000);
   const signInOverall = attempts(30, 60 * 60_000);
   const buckets = new Map();
@@ -302,7 +305,8 @@ export function createApp({
         const refused = allow(req, who, 5);
         if (refused) { sendError(res, refused.status, refused.message); return; }
       }
-      try { await check(req, res, { access, sub }); }
+      // Its own limits are per caller (`user`): the signed-in person, or a link holder's address.
+      try { await check(req, res, { access, sub, user: who, siteOrigin }); }
       catch { if (!res.headersSent) sendError(res, 500, 'The check failed.'); else res.end(); }
       return;
     }

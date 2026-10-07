@@ -13,6 +13,7 @@ import path from 'node:path';
 import { timelineSvg, flowSvg, mermaidText } from './lib/diagrams.mjs';
 import { exampleSchedule } from '../src/lib/schedule.ts';
 import { ganttSvg } from '../src/lib/gantt.ts';
+import { resolveRubric } from '../server/checker/rubric.mjs';
 
 /** doc#anchor -> route for every reference the schedule can cite (they are fixed in code). */
 function plannerRefRoutes(schedule, anchors) {
@@ -27,6 +28,9 @@ export async function siteMap({ root, corpus, code }) {
     content('stages.json'), content('navigator.json'), content('checklists.json'), content('glossary.json'), content('flows.json'), content('sources.json'),
   ]);
   const { phases, stages } = stagesData;
+  // The plan checker's rubric, citations resolved (an unknown anchor fails the build).
+  const rubric = resolveRubric(await content('checker-rubric.json'), corpus);
+  const enabledSections = rubric.sections.filter((s) => s.enabled !== false);
   const flows = flowsData.flows;
   const sourceById = Object.fromEntries(corpus.sources.map((s) => [s.id, s]));
 
@@ -69,6 +73,7 @@ export async function siteMap({ root, corpus, code }) {
     { id: 'planner', route: '/planner/', template: 'planner', title: 'Timeline planner', example: exampleSchedule(), ganttSvg: ganttSvg(exampleSchedule(), { id: 'gantt-example' }), corpusAnchors: corpus.anchors, isExample: true, refRoutes: plannerRefRoutes(exampleSchedule(), corpus.anchors), ref },
     { id: 'search', route: '/search/', template: 'search', title: 'Search the guidance', sources: corpus.sources, corpusMeta: corpus.meta },
     { id: 'ask', route: '/ask/', template: 'ask', title: 'Describe a problem', sources: corpus.sources, corpusMeta: corpus.meta },
+    { id: 'checker', route: '/checker/', template: 'checker', title: 'Check a draft local plan', rubric, enabledCount: enabledSections.length, checkCount: enabledSections.reduce((n, s) => n + s.items.length, 0) },
     { id: 'where-am-i', route: '/where-am-i/', template: 'where-am-i', title: 'Where is my plan?', navigator },
     { id: 'environmental-assessment', route: '/environmental-assessment/', template: 'environmental-assessment', title: 'Strategic Environmental Assessment and the environmental report', ref },
     { id: 'site-allocations', route: '/site-allocations/', template: 'site-allocations', title: 'Site allocations', description: 'What a local plan\'s site allocations must contain, the four-stage site selection process, the evidence expected and where sites come up in the 30-month process.', ref },
@@ -114,6 +119,7 @@ export async function siteMap({ root, corpus, code }) {
     { text: 'Where am I?', href: 'where-am-i/' },
     { text: 'Planner', href: 'planner/' },
     { text: 'Checklists', href: 'checklists/' },
+    { text: 'Plan checker', href: 'checker/' },
     { text: 'Search', href: 'search/' },
     { text: 'Ask', href: 'ask/' },
     { text: 'Code', href: 'code/' },
