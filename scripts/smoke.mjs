@@ -4,7 +4,8 @@
 // uncaught exception, check the page has a title, one h1, one main landmark
 // and a skip link, and run axe-core, failing on serious or critical
 // violations. Then drive the interactive pages: the planner, a checklist, the
-// question flow, search, and the Ask page against its mock engine.
+// question flow, search, the Ask page against its mock engine, and the plan
+// checker against an intercepted endpoint.
 //
 //   BASE=http://localhost:5177/projects/local-plan-navigator node scripts/smoke.mjs
 //
@@ -173,6 +174,38 @@ await tool('ask page retrieves passages and streams a mock local answer with cit
   if (links < 2) throw new Error(`answer has ${links} citation links`);
   const status = await page.textContent('#ask-status');
   if (!/tokens/.test(status)) throw new Error('status did not report tokens: ' + status);
+});
+
+await tool('plan checker checks the sample plan and renders the report (endpoint intercepted)', async (page) => {
+  // A real report, from the real pipeline on the sample plan, with the fake
+  // model the unit tests use: the page is exercised, not the model.
+  const { runCheck } = await import('../server/checker/pipeline.mjs');
+  const { readDocument } = await import('../server/checker/read-document.mjs');
+  const { fakeComplete } = await import('../tests/checker-helpers.mjs');
+  const dist = new URL('../dist/', import.meta.url);
+  const [rubric, corpus] = await Promise.all(['data/checker-rubric.json', 'data/corpus.json'].map(async (f) => JSON.parse(await readFile(new URL(f, dist), 'utf8'))));
+  const report = await runCheck({ document: readDocument({ name: 'northwold-draft-local-plan.docx', bytes: await readFile(new URL('samples/northwold-draft-local-plan.docx', dist)) }), rubric, corpus, complete: fakeComplete() });
+  const origin = new URL(base).origin;
+  let uploaded = 0;
+  await page.route(`${origin}/api/projects/local-plan-navigator/check`, async (route) => {
+    uploaded = route.request().postDataBuffer()?.length ?? 0;
+    const frames = [{ type: 'progress', step: 1, total: 3, message: 'Read the document' }, { type: 'report', report }].map((e) => `event: ${e.type}\ndata: ${JSON.stringify(e)}\n\n`).join('');
+    return route.fulfill({ status: 200, headers: { 'content-type': 'text/event-stream' }, body: frames });
+  });
+  await page.goto(base + '/checker/', { waitUntil: 'networkidle' });
+  await page.click('#checker-submit');
+  if (!(await page.textContent('.govuk-error-summary')).includes('Select a draft local plan to check')) throw new Error('no error summary for an empty upload');
+  await page.click('[data-sample="northwold-draft-local-plan.docx"]');
+  await page.waitForSelector('#report-heading', { timeout: 20000 });
+  if (uploaded < 5000) throw new Error(`the sample was not uploaded (${uploaded} bytes)`);
+  const cards = await page.locator('.lpn-check').count();
+  if (cards !== report.summary.total) throw new Error(`${cards} check cards for ${report.summary.total} checks`);
+  const tags = await page.$$eval('#checker-report .govuk-tag', (els) => els.map((e) => e.textContent.trim()));
+  if (!tags.length || tags.some((t) => !t)) throw new Error('a status tag without its words');
+  if (await page.evaluate(() => document.activeElement?.id) !== 'report-heading') throw new Error('focus did not move to the report');
+  await page.addScriptTag({ content: axeSource });
+  const axe = await page.evaluate(async () => (await window.axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] } })).violations.filter((v) => v.impact === 'serious' || v.impact === 'critical').map((v) => v.id));
+  if (axe.length) throw new Error('axe on the report: ' + axe.join(', '));
 });
 
 await tool('reference anchors resolve and highlight', async (page) => {

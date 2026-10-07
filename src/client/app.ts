@@ -13,6 +13,7 @@ initAll();
 const loaders: Record<string, () => Promise<{ init: () => void }>> = {
   search: () => import('./search'),
   ask: () => import('./ask'),
+  checker: () => import('./checker'),
   planner: () => import('./planner'),
   checklist: () => import('./checklists'),
   question: () => import('./where-am-i'),
