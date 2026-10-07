@@ -19,6 +19,9 @@
   "headerStripPrefixes": [
     "x-local-plan-navigator-"
   ],
+  "sessionClaims": [
+    "project"
+  ],
   "slots": {
     "primary": 5372,
     "candidate": 5373

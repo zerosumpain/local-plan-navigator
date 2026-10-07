@@ -9,7 +9,7 @@ import { readFile, readdir, stat, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { zipSync, strToU8 } from 'fflate';
 
-const INCLUDE_DIRS = ['src', 'scripts', 'server', 'deploy', '.github', 'content', 'tests', 'docs', 'public'];
+const INCLUDE_DIRS = ['src', 'scripts', 'server', 'gateway', 'deploy', '.github', 'content', 'tests', 'docs', 'public'];
 const INCLUDE_FILES = ['build.mjs', 'Dockerfile', '.dockerignore', 'package.json', 'package-lock.json', 'README.md', 'LICENCE.md', '.gitignore'];
 const SHOW_ON_PAGE = (p) => !p.startsWith('content/sources/') && !p.startsWith('public/') && p !== 'package-lock.json' && !p.endsWith('.png');
 

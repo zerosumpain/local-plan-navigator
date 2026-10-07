@@ -10,7 +10,7 @@
     "serve": "node scripts/serve.mjs",
     "start": "node server/start.mjs",
     "preview:service": "node server/preview.mjs",
-    "check": "node --check server/app.mjs && node --check server/ask.mjs && node --check server/start.mjs && node --check server/settings.mjs && node --check server/llm.mjs && node --check server/admin.mjs && node --check server/access.mjs && node --check server/front.mjs && node scripts/verify-kit.mjs",
+    "check": "node --check server/app.mjs && node --check server/ask.mjs && node --check server/start.mjs && node --check server/settings.mjs && node --check server/llm.mjs && node --check server/admin.mjs && node --check server/access.mjs && node --check server/front.mjs && node --check server/sr-projects.mjs && node scripts/verify-kit.mjs",
     "corpus": "node scripts/build-corpus.mjs",
     "fetch-sources": "node scripts/fetch-sources.mjs",
     "eval:answers": "node scripts/eval-answers.mjs",

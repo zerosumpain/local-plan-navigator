@@ -87,9 +87,17 @@ function renderRecent(recent: Recent[]) {
 
 const day = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—');
 
-function renderShares(sharing: { enabled: boolean; links: Share[] } | null) {
+function renderShares(sharing: { enabled?: boolean; links?: Share[]; elsewhere?: string; note?: string } | null) {
   const section = document.getElementById('sharing')!;
   if (!sharing) { section.hidden = true; return; }
+  if (sharing.elsewhere) {
+    // Made and withdrawn on the hosting site's own page (on strangeramblings.com, /projects).
+    ($('#share-form') as HTMLFormElement).hidden = true;
+    section.querySelector('.govuk-grid-column-two-thirds > p')?.remove();
+    $('#share-links').innerHTML = `<p class="govuk-body">${esc(sharing.note ?? '')}</p><p class="govuk-body"><a class="govuk-link" href="${esc(sharing.elsewhere)}">Go to ${esc(sharing.elsewhere)}</a></p>`;
+    return;
+  }
+  sharing.links ??= [];
   if (!sharing.enabled) {
     $('#share-links').innerHTML = '<p class="govuk-body">This server has no state directory, so it cannot keep share links.</p>';
     ($('#share-form') as HTMLFormElement).hidden = true;
@@ -111,6 +119,8 @@ async function load() {
   settings = body.settings; kinds = body.kinds;
   status(body.stored ? '' : 'This server has no state directory, so changes cannot be saved here.');
   renderShares(body.sharing ?? null);
+  // Signing out is the navigator's own only in standalone mode; elsewhere it is the site's.
+  document.querySelectorAll<HTMLElement>('[data-action="sign-out"]').forEach((el) => { el.closest('p')!.hidden = body.mode !== 'standalone'; });
   renderConnections();
   renderRecent(body.recent ?? []);
 }

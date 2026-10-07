@@ -30,8 +30,12 @@ async function readBody(req, limit = 32_768) {
   return JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}');
 }
 
-export function createAdmin({ settings, llm, siteOrigin, shares = null, mount = '/projects/local-plan-navigator', fetchImpl = fetch }) {
+export function createAdmin({ settings, llm, siteOrigin, gate, mount = '/projects/local-plan-navigator', fetchImpl = fetch }) {
   return async function admin(req, res, sub) {
+    // Share links live here only in standalone mode; on strangeramblings.com they
+    // are made on /projects, and behind a trusted proxy there are none.
+    const doors = await gate;
+    const shares = doors.mode === 'standalone' ? doors : null;
     if (req.method !== 'GET' && req.method !== 'HEAD') {
       if (req.headers.origin && req.headers.origin !== siteOrigin) return json(res, 403, { message: 'Changes are only taken from pages this server sent.' });
       if (!/^application\/json\b/i.test(req.headers['content-type'] ?? '')) return json(res, 415, { message: 'Send JSON.' });
@@ -43,7 +47,8 @@ export function createAdmin({ settings, llm, siteOrigin, shares = null, mount = 
         kinds: Object.fromEntries(Object.entries(KINDS).map(([k, v]) => [k, { label: v.label, secrets: v.secrets }])),
         recent: llm.recent().slice(0, 50),
         stored: Boolean(settings.path),
-        sharing: shares ? { enabled: shares.canShare, links: await shares.listShares() } : null,
+        mode: doors.mode,
+        sharing: shares ? { enabled: shares.canShare, links: await shares.listShares() } : doors.sharing ?? null,
       });
     }
 
