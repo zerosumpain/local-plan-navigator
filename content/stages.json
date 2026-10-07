@@ -786,6 +786,10 @@
       ],
       "next": [
         "content-consultation"
+      ],
+      "clock": [
+        1,
+        6
       ]
     },
     {
@@ -978,6 +982,10 @@
       ],
       "next": [
         "gateway-2"
+      ],
+      "clock": [
+        9,
+        14
       ]
     },
     {

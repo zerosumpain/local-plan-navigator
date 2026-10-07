@@ -60,7 +60,7 @@ export async function siteMap({ root, corpus, code }) {
     { id: 'home', route: '/', template: 'index', title: 'Find your way through the local plan process' },
     {
       id: 'process', route: '/process/', template: 'process', title: 'The 30-month local plan process',
-      phases, stages: resolvedStages, timelineSvg: timelineSvg(stagesData, { id: 'timeline' }),
+      phases, stages: resolvedStages, timelineSvg: timelineSvg(stagesData, { id: 'timeline', href: (id) => `${id}/` }),
       sequenceSvg: flowSvg(flows.sequence, { id: 'flow-sequence' }), sequenceMermaid: mermaidText(flows.sequence), sequenceFlow: flows.sequence,
     },
     { id: 'gateways', route: '/gateways/', template: 'gateways', title: 'The three gateways', gateways, stages: resolvedStages },

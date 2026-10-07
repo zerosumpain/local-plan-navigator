@@ -265,3 +265,100 @@
 
 // Code page
 .lpn-file { margin-bottom: govuk.govuk-spacing(8); scroll-margin-top: govuk.govuk-spacing(4); }
+
+// ---------------------------------------------------------------------------
+// Animated diagrams (scripts/lib/diagrams.mjs, src/lib/gantt.ts, src/client/viz.ts)
+//
+// The SVGs are complete as drawn. src/client/viz.ts adds .is-armed (parts held
+// back) and then .is-playing (they arrive in order: --i is each part's place,
+// --step and --lead set the pace per kind of diagram). Nothing here applies
+// without JavaScript, and viz.ts never arms a figure under reduced motion; the
+// media query below is a second lock.
+// ---------------------------------------------------------------------------
+.lpn-svg--timeline { --step: 75ms; --lead: 900ms; }
+.lpn-svg--flow { --step: 170ms; --lead: 150ms; }
+.lpn-gantt { --step: 40ms; --lead: 500ms; }
+
+.lpn-viz { position: relative; }
+.lpn-viz__replay {
+  @include govuk.govuk-font($size: 16, $weight: bold);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: govuk.govuk-spacing(2) 0 0;
+  padding: 4px 12px;
+  border: 2px solid govuk.$govuk-text-colour;
+  border-radius: 999px;
+  background: govuk.$govuk-body-background-colour;
+  color: govuk.$govuk-text-colour;
+  cursor: pointer;
+  &:hover { background: govuk.govuk-colour("black", $variant: "tint-95"); }
+  // Not a diagram: keep the figure's full-width SVG rules off the icon.
+  .lpn-figure & svg, & svg { display: inline-block; width: 14px; height: 14px; min-width: 0; max-width: none; }
+  &:focus { outline: 3px solid transparent; background: govuk.$govuk-focus-colour; box-shadow: 0 -2px govuk.$govuk-focus-colour, 0 4px govuk.$govuk-focus-text-colour; }
+}
+
+// Timeline stations are links: a halo on hover and on keyboard focus.
+.lpn-svg a.v-station { cursor: pointer; outline: none; }
+.lpn-svg a.v-station:hover .v-focus { opacity: 0.45; }
+.lpn-svg a.v-station:focus-visible .v-focus { opacity: 1; }
+.lpn-svg a.v-station:focus-visible .v-pop > :not(.v-focus):not(.v-ring) { stroke: govuk.$govuk-focus-text-colour; }
+
+.lpn-viz.is-armed:not(.is-playing) {
+  .v-pop, .v-card, .v-fade, .v-label, .v-grow, .v-counter { opacity: 0; }
+  .v-draw { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .v-wipe { clip-path: inset(0 100% 0 0); }
+}
+
+.lpn-viz.is-playing {
+  .v-wipe { animation: lpn-wipe 1.3s cubic-bezier(0.65, 0, 0.35, 1) both; }
+  .v-pop {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: lpn-pop 0.5s cubic-bezier(0.2, 1.45, 0.45, 1) both;
+    animation-delay: calc(var(--i, 0) * var(--step) + var(--lead));
+  }
+  .v-ring {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: lpn-ring 1.4s ease-out 2 both;
+    animation-delay: calc(var(--i, 0) * var(--step) + var(--lead) + 400ms);
+  }
+  .v-label, .v-fade {
+    animation: lpn-fade 0.5s ease-out both;
+    animation-delay: calc(var(--i, 0) * var(--step) + var(--lead) + 150ms);
+  }
+  .v-counter { animation: lpn-fade 0.4s ease-out both; animation-delay: var(--lead); }
+  .v-card {
+    animation: lpn-rise 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * var(--step) + var(--lead));
+  }
+  .v-draw {
+    animation: lpn-draw 0.45s ease-in-out both;
+    animation-delay: calc(var(--i, 0) * var(--step) + var(--lead) - 60ms);
+  }
+  .v-grow {
+    transform-box: fill-box;
+    transform-origin: 0 50%;
+    animation: lpn-grow 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * var(--step) + var(--lead));
+  }
+}
+
+@keyframes lpn-wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes lpn-pop { from { opacity: 0; transform: scale(0.2); } to { opacity: 1; transform: scale(1); } }
+@keyframes lpn-ring { from { opacity: 0.9; transform: scale(1); } to { opacity: 0; transform: scale(2.3); } }
+@keyframes lpn-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lpn-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes lpn-draw { from { stroke-dasharray: 1; stroke-dashoffset: 1; } to { stroke-dasharray: 1; stroke-dashoffset: 0; } }
+@keyframes lpn-grow { from { opacity: 0; transform: scaleX(0); } to { opacity: 1; transform: scaleX(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .lpn-viz.is-armed .v-pop, .lpn-viz.is-armed .v-card, .lpn-viz.is-armed .v-fade, .lpn-viz.is-armed .v-label,
+  .lpn-viz.is-armed .v-grow, .lpn-viz.is-armed .v-counter, .lpn-viz.is-armed .v-draw, .lpn-viz.is-armed .v-wipe { animation: none; opacity: 1; clip-path: none; stroke-dashoffset: 0; }
+  .lpn-viz__replay, .v-runner { display: none; }
+}
+
+@media print {
+  .lpn-viz__replay, .v-runner { display: none; }
+}

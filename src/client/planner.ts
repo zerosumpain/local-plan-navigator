@@ -8,6 +8,7 @@
 // (src/lib/plan-timetable.ts).
 import { buildSchedule, formatDate, iso, type Schedule, type PlannerInputs } from '../lib/schedule.ts';
 import { ganttSvg } from '../lib/gantt.ts';
+import { armViz } from './viz';
 import { planTimetableCsv, validPlanReference } from '../lib/plan-timetable.ts';
 import { escapeHtml } from './retrieval';
 
@@ -86,7 +87,8 @@ export function init(): void {
       <thead class="govuk-table__head"><tr class="govuk-table__row"><th scope="col" class="govuk-table__header">Milestone</th><th scope="col" class="govuk-table__header">Date</th><th scope="col" class="govuk-table__header">Rule</th></tr></thead>
       <tbody class="govuk-table__body">${s.milestones.map((m) => `<tr class="govuk-table__row"><th scope="row" class="govuk-table__header">${escapeHtml(m.label)}</th><td class="govuk-table__cell">${formatDate(m.start)}${m.end !== m.start ? ' to ' + formatDate(m.end) : ''}</td><td class="govuk-table__cell">${escapeHtml(m.rule)}${refLink(m.ref)}</td></tr>`).join('')}</tbody></table></div>
       <h3 class="govuk-heading-m">Chart</h3>
-      <figure class="lpn-figure lpn-figure--wide"><div class="lpn-figure__scroll">${ganttSvg(s, { id: 'gantt' })}</div><figcaption>The same milestones drawn against the calendar. Bars are consultations, gateways and the examination; diamonds are single dates; red diamonds are statutory deadlines.</figcaption></figure>`;
+      <figure class="lpn-figure lpn-figure--wide lpn-viz"><div class="lpn-figure__scroll">${ganttSvg(s, { id: 'gantt' })}</div><figcaption>The same milestones drawn against the calendar and grouped by phase. Bars are consultations, gateways and the examination; diamonds are single dates; red diamonds are statutory deadlines. The 30 months from Gateway 1 are shaded.</figcaption></figure>`;
+    armViz(out);
     out.querySelector('h2')?.setAttribute('tabindex', '-1');
     (out.querySelector('h2') as HTMLElement | null)?.focus();
   };
