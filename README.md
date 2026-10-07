@@ -26,6 +26,11 @@ with MHCLG or the Planning Inspectorate.
   endpoint on the server that sent the page — owner-only on strangeramblings.com, and
   `npm run preview:service` locally), or one running in the browser for a private, offline answer — the only option in a
   downloaded copy.
+- **Plan checker** — upload a draft local plan (Word, PowerPoint, Markdown or text) and get a
+  report against the 2026 Regulations, the NPPF and the guidance: what it covers, what is missing,
+  where it is thin, with every quote found word for word in the plan, plus a draft statement of
+  compliance and statement of soundness to download as Word. A fictional sample plan is built in.
+  See `docs/checker.md`.
 - **Reference library** — the sources in full with an anchor on every regulation and policy.
 - **Code** — every file of this repository, rendered and commented, plus a zip.
 
@@ -38,6 +43,8 @@ npm run serve        # http://localhost:5177/projects/local-plan-navigator/
 npm test             # data integrity, schedule maths, and every internal link
 npm run smoke        # Playwright + axe-core over every page and the tools (needs Playwright)
 npm run fetch-sources  # refresh content/sources/ from GOV.UK and legislation.gov.uk
+npm run check-plan -- dist/samples/northwold-draft-local-plan.docx --runs 2
+                     # check a plan on the local Codex bridge and compare two runs
 ```
 
 Node 22 or later. `dist/` is static and works at any mount point because its links
@@ -64,7 +71,9 @@ preview is serving.
 ## Production boundary
 
 The dedicated gateway owns `/projects/local-plan-navigator` and
-`/api/projects/local-plan-navigator/ask`. It validates the Main Auth.js session,
+`/api/projects/local-plan-navigator/ask` (and the plan checker's `/check` and
+`/check/export` under the same prefix, which take uploads of up to 15 MB and
+stream their answer). It validates the Main Auth.js session,
 then signs a request-bound identity for the web process. The web process checks
 that the signed email matches `OWNER_EMAIL` on every page, asset, and API call.
 Both processes bind to loopback; ingress is defined in SR-Infra. The gateway
