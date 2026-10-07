@@ -14,7 +14,7 @@
 //                   for the search and ask pages
 //
 // Section ids are stable and readable: reg-32, part-4, schedule-2, PM15,
-// HO3-1, and for guidance the heading's slug.
+// HO3-1, fn-8 for an NPPF footnote, and for guidance the heading's slug.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { markdownToHtml } from './lib/markdown.mjs';
@@ -141,6 +141,8 @@ function buildNppf(src, text, { pages, chunks, anchors }) {
       if (b.type === 'h3') anchors[slug(b.text)] = route;
       if (b.type === 'dl') anchors[slug(b.term)] = route;
     }
+    // Footnotes are numbered through the whole Framework, so fn-8 is unique.
+    for (const f of c.footnotes) anchors[`fn-${f.n}`] = route;
     // Paragraph anchors, e.g. PM2-1
     let policy = null;
     for (const b of c.blocks) { if (b.type === 'policy') policy = b.code; if (b.type === 'para' && b.n != null) anchors[policy ? `${policy}-${b.n}` : `${c.id}-${b.n}`] = route; }

@@ -15,6 +15,10 @@
 //     at column 0; a continuation line is indented by one space
 //   - sub-items start `a. `, `i. ` or `• `
 //   - page numbers sit alone on a line
+//   - footnotes sit at the foot of a page, between the page's last line of
+//     text and its page number, so a paragraph that runs over a page break
+//     resumes after the number, indented; and a footnote's marker is its
+//     number stuck to the word before it ("land allocations8 and")
 export function parseNppf(text) {
   const raw = text.replace(/\f/g, '\n').split('\n');
   // 1. The contents page tells us the chapter and annex titles.
@@ -37,7 +41,16 @@ export function parseNppf(text) {
   let policy = null; // current policy code
   let block = null;  // current open block (para / item / footnote / objective)
   let paraNo = 0;    // running paragraph number inside the current heading scope
-  const push = () => { if (block) { chapter.blocks.push(block); block = null; } };
+  let lastBody = null;     // the last block of text that is not a footnote
+  let pageTurned = false;  // a page number has passed since the open footnote began
+  let lastFootnote = 0;    // footnotes are numbered in sequence through the whole document
+  const push = () => {
+    if (!block) return;
+    // A block resumed after a page's footnotes is already in the list.
+    if (!chapter.blocks.includes(block)) chapter.blocks.push(block);
+    if (block.type !== 'footnote') lastBody = block;
+    block = null;
+  };
   const clean = (s) => s.replace(/\s+/g, ' ').trim();
   const append = (s) => {
     if (!block) return;
@@ -53,7 +66,7 @@ export function parseNppf(text) {
     const line = raw[i];
     const t = line.trimEnd();
     if (!t.trim()) { continue; }
-    if (/^\s*\d{1,3}\s*$/.test(t)) continue; // page number
+    if (/^\s*\d{1,3}\s*$/.test(t)) { if (block?.type === 'footnote') pageTurned = true; continue; } // page number
     const trimmed = t.trim();
 
     // Chapter / annex heading — sometimes wrapped over two lines in the PDF text
@@ -69,7 +82,7 @@ export function parseNppf(text) {
       push();
       chapter = { id: ch.annex ? `annex-${ch.annex.toLowerCase()}` : `ch-${ch.num}`, num: ch.num ?? null, annex: ch.annex ?? null, title: ch.title, heading: trimmed, blocks: [], footnotes: [] };
       out.push(chapter);
-      policy = null; paraNo = 0;
+      policy = null; paraNo = 0; lastBody = null;
       continue;
     }
     if (!chapter) continue;
@@ -82,12 +95,25 @@ export function parseNppf(text) {
       chapter.blocks.push({ type: 'policy', code: m[1], title: clean(m[2]) });
       continue;
     }
-    // Footnote: "12 Text" at column 0 (no dot after the number)
-    m = t.match(/^(\d{1,3}) (\S.*)$/);
-    if (m && !/^\d{1,3}\. /.test(t)) {
+    // Footnote: "12 Text" at column 0 (no dot after the number; the space is
+    // sometimes lost, "22In the context…"), and the next number in sequence —
+    // a wrapped line that happens to start with a number ("300 metres from…"
+    // in the glossary) is not a footnote.
+    m = t.match(/^(\d{1,3})(?: |(?=[A-Z‘“]))(\S.*)$/);
+    if (m && !/^\d{1,3}\. /.test(t) && Number(m[1]) > lastFootnote && Number(m[1]) <= lastFootnote + 20) {
       push();
       block = { type: 'footnote', n: Number(m[1]), text: clean(m[2]) };
+      lastFootnote = block.n;
+      pageTurned = false;
       continue;
+    }
+    // An indented line while a footnote is open. Before the page number it is
+    // the footnote's own text (its sub-list, or a wrapped line of it); after
+    // the page number it is the paragraph the footnotes interrupted, unless it
+    // starts a new item, which the rules below handle.
+    if (block?.type === 'footnote' && t !== trimmed) {
+      if (!pageTurned) { append(trimmed); continue; }
+      if (lastBody && !/^([a-z]|i|ii|iii|iv|v|vi|vii|viii|ix|x|xi|xii)\.\s|^•\s/.test(trimmed)) { push(); block = lastBody; append(trimmed); continue; }
     }
     // Numbered paragraph at column 0: "3. Text"
     m = t.match(/^(\d{1,3})\.\s+(.+)$/);
@@ -121,19 +147,58 @@ export function parseNppf(text) {
   }
   push();
 
-  // 4. Tidy: move footnotes out of the block stream, close hyphen joins.
+  // 4. Tidy: move footnotes out of the block stream, close hyphen joins,
+  //    and work out which policy paragraph each footnote belongs to.
   for (const c of out) {
     c.footnotes = c.blocks.filter((b) => b.type === 'footnote').sort((a, b) => a.n - b.n);
     c.blocks = c.blocks.filter((b) => b.type !== 'footnote');
     for (const b of c.blocks) if (b.text) b.text = b.text.replace(/(\w)- (\w)/g, '$1-$2');
     for (const f of c.footnotes) f.text = f.text.replace(/(\w)- (\w)/g, '$1-$2');
+    locateFootnotes(c);
   }
   return { chapters: out };
+}
+
+/**
+ * A footnote marker: the number stuck to the end of a word, a closing quote
+ * or bracket ("allocations8 and", "self-assessment9."). A number after an
+ * upper-case letter is a policy code (PM2), not a marker.
+ */
+function markerPattern(numbers, flags = '') {
+  const alt = [...numbers].sort((a, b) => b - a).join('|');
+  return new RegExp(`(?<=[a-z’”)])(${alt})(?=[\\s.,;:)’”]|$)`, flags);
+}
+
+/** Set f.at ("PM2(1)(b)") and f.target (the anchor of that paragraph) on each footnote of a chapter. */
+function locateFootnotes(c) {
+  if (!c.footnotes.length) return;
+  const waiting = new Map(c.footnotes.map((f) => [f.n, f]));
+  let policy = null, para = null, item1 = null, item2 = null;
+  for (const b of c.blocks) {
+    if (b.type === 'policy') { policy = b; para = item1 = item2 = null; continue; }
+    if (b.type === 'para' && b.n != null) { para = b.n; item1 = item2 = null; }
+    if (b.type === 'item') { if (b.level === 1) { item1 = b.marker; item2 = null; } else item2 = b.marker; }
+    if (!b.text || !waiting.size) continue;
+    for (const [n, f] of waiting) {
+      if (!markerPattern([n]).test(b.text)) continue;
+      f.policy = policy?.code ?? null;
+      f.policyTitle = policy?.title ?? null;
+      f.at = policy ? `${policy.code}${para != null ? `(${para})` : ''}${item1 ? `(${item1})` : ''}${item2 ? `(${item2})` : ''}` : null;
+      f.target = para != null ? (policy ? `${policy.code}-${para}` : `${c.id}-${para}`) : (policy?.code ?? c.id);
+      waiting.delete(n);
+    }
+  }
 }
 
 /** Render one parsed chapter to HTML with GOV.UK classes and stable anchors. */
 export function renderNppfChapter(c, esc) {
   const h = [];
+  // Footnote markers become superscript links to the footnote.
+  const markers = c.footnotes.length ? markerPattern(c.footnotes.map((f) => f.n), 'g') : null;
+  const body = (text) => {
+    const safe = esc(text);
+    return markers ? safe.replace(markers, (n) => `<sup class="lpn-fnref"><a class="govuk-link" href="#fn-${n}"><span class="govuk-visually-hidden">footnote </span>${n}</a></sup>`) : safe;
+  };
   let listOpen = 0; // nesting depth of open <ol>
   let policy = null;
   let inDl = false;
@@ -141,13 +206,13 @@ export function renderNppfChapter(c, esc) {
   const closeDl = () => { if (inDl) { h.push('</dl>'); inDl = false; } };
   h.push(`<h2 class="govuk-heading-l" id="${c.id}">${esc(c.heading)}</h2>`);
   for (const b of c.blocks) {
-    if (b.type === 'objective') { closeLists(); closeDl(); h.push(`<div class="govuk-inset-text">${esc(b.text)}</div>`); continue; }
+    if (b.type === 'objective') { closeLists(); closeDl(); h.push(`<div class="govuk-inset-text">${body(b.text)}</div>`); continue; }
     if (b.type === 'h3') { closeLists(); closeDl(); h.push(`<h3 class="govuk-heading-m" id="${slug(b.text)}">${esc(b.text)}</h3>`); continue; }
     if (b.type === 'policy') { closeLists(); closeDl(); policy = b.code; h.push(`<h3 class="govuk-heading-m lpn-policy" id="${b.code}"><span class="lpn-policy__code">${b.code}</span>: ${esc(b.title)}</h3>`); continue; }
     if (b.type === 'para') {
       closeLists(); closeDl();
       const id = b.n != null ? (policy ? `${policy}-${b.n}` : `${c.id}-${b.n}`) : '';
-      h.push(`<p class="govuk-body lpn-para"${id ? ` id="${id}"` : ''}>${b.n != null ? `<span class="lpn-para__n">${b.n}.</span> ` : ''}${esc(b.text)}</p>`);
+      h.push(`<p class="govuk-body lpn-para"${id ? ` id="${id}"` : ''}>${b.n != null ? `<span class="lpn-para__n">${b.n}.</span> ` : ''}${body(b.text)}</p>`);
       continue;
     }
     if (b.type === 'item') {
@@ -155,22 +220,27 @@ export function renderNppfChapter(c, esc) {
       if (listOpen === 0) { h.push('<ol class="govuk-list lpn-sublist"><li>'); listOpen = 1; }
       else if (b.level > listOpen) { h.push('<ol class="govuk-list lpn-sublist lpn-sublist--roman"><li>'); listOpen++; }
       else { closeLists(b.level); h.push('</li><li>'); }
-      h.push(`<span class="lpn-marker">${b.marker}.</span> ${esc(b.text)}`);
+      h.push(`<span class="lpn-marker">${b.marker}.</span> ${body(b.text)}`);
       continue;
     }
-    if (b.type === 'bullet') { closeLists(); closeDl(); h.push(`<ul class="govuk-list govuk-list--bullet"><li>${esc(b.text)}</li></ul>`); continue; }
-    if (b.type === 'dl') { closeLists(); if (!inDl) { h.push('<dl class="govuk-summary-list lpn-glossary">'); inDl = true; } h.push(`<div class="govuk-summary-list__row" id="${slug(b.term)}"><dt class="govuk-summary-list__key">${esc(b.term)}</dt><dd class="govuk-summary-list__value">${esc(b.text)}</dd></div>`); continue; }
+    if (b.type === 'bullet') { closeLists(); closeDl(); h.push(`<ul class="govuk-list govuk-list--bullet"><li>${body(b.text)}</li></ul>`); continue; }
+    if (b.type === 'dl') { closeLists(); if (!inDl) { h.push('<dl class="govuk-summary-list lpn-glossary">'); inDl = true; } h.push(`<div class="govuk-summary-list__row" id="${slug(b.term)}"><dt class="govuk-summary-list__key">${esc(b.term)}</dt><dd class="govuk-summary-list__value">${body(b.text)}</dd></div>`); continue; }
   }
   closeLists(); closeDl();
   if (c.footnotes.length) {
     h.push('<h3 class="govuk-heading-s">Footnotes</h3><ol class="govuk-list lpn-footnotes">');
-    for (const f of c.footnotes) h.push(`<li id="fn-${f.n}"><span class="lpn-marker">${f.n}</span> ${esc(f.text)}</li>`);
+    for (const f of c.footnotes) h.push(`<li id="fn-${f.n}"><span class="lpn-marker">${f.n}</span> ${esc(f.text)}${f.at ? ` <span class="lpn-fn-to">(footnote to <a class="govuk-link" href="#${f.target}">${esc(f.at)}</a>)</span>` : ''}</li>`);
     h.push('</ol>');
   }
   return h.join('\n');
 }
 
-/** Plain-text chunks of a chapter for the search index: one per policy or heading scope. */
+/**
+ * Plain-text chunks of a chapter for the search index: one per policy or
+ * heading scope, then one per footnote, headed with the policy it belongs to
+ * so that a footnote such as PM2's footnote 8 (what a site allocation should
+ * contain) can be found and cited on its own.
+ */
 export function chunkNppfChapter(c) {
   const chunks = [];
   let current = { anchor: c.id, heading: c.heading, parts: [] };
@@ -185,6 +255,13 @@ export function chunkNppfChapter(c) {
     else if (b.type === 'dl') current.parts.push(`${b.term}: ${b.text}`);
   }
   flush();
+  for (const f of c.footnotes) {
+    chunks.push({
+      anchor: `fn-${f.n}`,
+      heading: `${c.heading} › ${f.policy ? `${f.policy}: ${f.policyTitle} › ` : ''}footnote ${f.n}`,
+      text: `Footnote ${f.n}${f.at ? ` to policy ${f.at}` : ''}: ${f.text}`,
+    });
+  }
   return chunks;
 }
 
