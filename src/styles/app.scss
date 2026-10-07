@@ -231,8 +231,14 @@
   border-top: 1px solid govuk.$govuk-border-colour;
   padding-top: govuk.govuk-spacing(3);
 }
+// A footnote marker in the NPPF text, linked to its footnote; the footnote
+// links back to the paragraph it belongs to.
+.lpn-fnref { line-height: 0; }
+.lpn-fnref a { padding: 0 2px; }
+.lpn-fn-to { color: govuk.$govuk-secondary-text-colour; }
+.lpn-footnotes li { scroll-margin-top: govuk.govuk-spacing(4); }
 .lpn-section { scroll-margin-top: govuk.govuk-spacing(4); }
-.lpn-section:target, .lpn-para:target, .lpn-policy:target, .lpn-glossary .govuk-summary-list__row:target {
+.lpn-section:target, .lpn-para:target, .lpn-policy:target, .lpn-glossary .govuk-summary-list__row:target, .lpn-footnotes li:target {
   background: govuk.govuk-colour("yellow");
   outline: 3px solid govuk.govuk-colour("yellow");
 }

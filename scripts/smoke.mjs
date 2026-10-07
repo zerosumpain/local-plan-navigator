@@ -86,6 +86,21 @@ await tool('planner builds a timetable and flags a broken minimum', async (page)
   await page.waitForSelector('.govuk-error-summary');
 });
 
+await tool('planner downloads plan-timetable data in the approved format', async (page) => {
+  await page.goto(base + '/planner/', { waitUntil: 'networkidle' });
+  await page.fill('#plan-reference', 'LP 2027');
+  await page.click('[data-action="plan-timetable"]');
+  await page.waitForSelector('.govuk-error-summary a[href="#plan-reference"]');
+  await page.fill('#plan-reference', 'LP-TEST-2027');
+  const [download] = await Promise.all([page.waitForEvent('download'), page.click('[data-action="plan-timetable"]')]);
+  if (download.suggestedFilename() !== 'LP-TEST-2027-plan-timetable.csv') throw new Error('file name: ' + download.suggestedFilename());
+  const lines = (await readFile(await download.path(), 'utf8')).trim().split('\r\n');
+  if (lines[0] !== 'reference,plan,plan-event,event-date,entry-date,actual-date,notes') throw new Error('header: ' + lines[0]);
+  if (lines.length !== 16) throw new Error(`expected 15 events, got ${lines.length - 1}`);
+  if (!lines.some((l) => l.startsWith('LP-TEST-2027-gateway-1-self-assessment,LP-TEST-2027,gateway-1-self-assessment,2027-01-04,'))) throw new Error('no Gateway 1 row for the example date');
+  if (await page.locator('.govuk-error-summary').count()) throw new Error('error summary still showing');
+});
+
 await tool('checklist ticks persist across a reload', async (page) => {
   await page.goto(base + '/checklists/gateway-1-readiness/', { waitUntil: 'networkidle' });
   await page.check('#g1-tt-published'); await page.check('#g1-pass-summary');
@@ -157,6 +172,17 @@ await tool('ask page says the server has no model when the endpoint is missing',
   await page.waitForFunction(() => /No summary was written/.test(document.querySelector('#answer-text')?.textContent ?? ''), null, { timeout: 20000 });
   const status = await page.textContent('#ask-status');
   if (!/no model behind it/.test(status)) throw new Error('404 was not explained: ' + status);
+}, { allow: /status of 404/ });
+
+await tool('ask page runs a suggested site allocations question', async (page) => {
+  await page.route(`${new URL(base).origin}/api/projects/local-plan-navigator/ask`, (route) => route.fulfill({ status: 404, body: 'Not found' }));
+  await page.goto(base + '/ask/', { waitUntil: 'networkidle' });
+  await page.click('summary:has-text("Questions about site allocations")');
+  await page.click('a:has-text("What should each site allocation")');
+  await page.waitForFunction(() => document.querySelectorAll('#ask-passages .lpn-result').length > 0, null, { timeout: 20000 });
+  if (!(await page.inputValue('#question')).startsWith('What should each site allocation')) throw new Error('the question was not filled in');
+  const first = await page.locator('#ask-passages .lpn-result').first().textContent();
+  if (!/footnote 8/.test(first)) throw new Error('first passage is not NPPF footnote 8: ' + first.slice(0, 120));
 }, { allow: /status of 404/ });
 
 await tool('ask page retrieves passages and streams a mock local answer with citations', async (page) => {

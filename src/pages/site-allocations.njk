@@ -1,0 +1,177 @@
+{# src/pages/site-allocations.njk — what a local plan's site allocations need, from the law, the NPPF,
+   the four-stage site selection guidance and the procedural guide. Every statement ends with the
+   passage it comes from; c() resolves it through the corpus anchors, so a wrong anchor fails the build. #}
+{% extends "layouts/base.njk" %}
+{% from "partials/macros.njk" import cite %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% macro c(doc, anchor, label) %}{{ cite(ref({ doc: doc, anchor: anchor, label: label }), base) }}{% endmacro %}
+{% block pageContent %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+<h1 class="govuk-heading-xl">Site allocations</h1>
+<p class="govuk-body-l">A local plan allocates the sites that will deliver its development. This page sets out what the law and national policy ask of those allocations, the four-stage site selection process in the government's guidance, the evidence an Inspector will expect, where sites come up in the 30 months, and the mistakes the guidance warns against.</p>
+<p class="govuk-body">Every statement links to the passage it comes from. Work through the <a class="govuk-link" href="{{ rel('/checklists/site-allocations/') }}">site allocations checklist</a> as you go, or <a class="govuk-link" href="{{ rel('/ask/') }}">ask a question</a> about your own sites.</p>
+
+<nav aria-labelledby="contents-heading">
+  <h2 class="govuk-heading-s" id="contents-heading">Contents</h2>
+  <ol class="govuk-list govuk-list--number">
+    <li><a class="govuk-link" href="#what-the-law-requires">What the law and national policy require</a></li>
+    <li><a class="govuk-link" href="#what-each-allocation-contains">What each allocation should contain</a></li>
+    <li><a class="govuk-link" href="#four-stages">The four stages of site selection</a></li>
+    <li><a class="govuk-link" href="#evidence">The evidence you will need</a></li>
+    <li><a class="govuk-link" href="#in-the-30-months">Where sites come up in the 30 months</a></li>
+    <li><a class="govuk-link" href="#pitfalls">Common pitfalls</a></li>
+  </ol>
+</nav>
+
+<h2 class="govuk-heading-l" id="what-the-law-requires">What the law and national policy require</h2>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>A local plan <strong>must</strong> set out policies on the amount, type and location of, and timetable for, development in the authority's area ({{ c("pcpa-2004", "section-15C", "Planning and Compulsory Purchase Act 2004, section 15C(3)") }}). It may also include policies for one or more specific sites, the infrastructure and affordable housing requirements that development would give rise to, and design requirements for specific sites ({{ c("pcpa-2004", "section-15C", "section 15C(4)") }}).</li>
+  <li>The plan <strong>must</strong> take account of an assessment of the amount and type of housing needed, including affordable housing, and <strong>must not</strong> be inconsistent with or repeat a national development management policy ({{ c("pcpa-2004", "section-15C", "section 15C(8) and (9)") }}). The section of the 2023 Act that would make national development management policies prevail over the development plan in decisions is prospective: enacted, but not yet in force ({{ c("lura-2023", "section-93", "Levelling-up and Regeneration Act 2023, section 93") }}).</li>
+  <li>At Gateway 3 the assessor <strong>must</strong> be satisfied that the proposed plan sets out those policies on the amount, type, location and timetable of development ({{ c("regulations-2026", "reg-32", "regulation 32(a)") }}).</li>
+  <li>The NPPF says a local plan <strong>should</strong> set out a spatial strategy, policies for the minimum amount of development, land allocations, broad locations for growth and designations, for at least 10 years from adoption ({{ c("nppf", "PM2", "NPPF policy PM2(1)(b)") }}), and other policies only where they support the delivery of specific allocated sites, by setting clear expectations for layout, infrastructure and design, or address particular local issues ({{ c("nppf", "PM2", "PM2(1)(d)") }}).</li>
+  <li>To be found sound a plan <strong>should</strong> be effective: there should be a reasonable prospect that its site allocations are capable of being deliverable at the time envisioned ({{ c("nppf", "PM15", "NPPF policy PM15(1)(c)") }}).</li>
+</ul>
+{{ govukWarningText({ text: "The sources differ on the plan period. The NPPF (August 2026) asks for no less than 10 years from adoption; MHCLG's guidance on publishing housing requirement data (May 2026) says a plan must last at least 15 years from adoption. Check the current position before you fix your plan period.", iconFallbackText: "Warning" }) }}
+<p class="govuk-body">Sources for that warning: {{ c("nppf", "PM2", "NPPF PM2(1)(b)") }} and {{ c("housing-requirement-data", "plan-period", "Publishing your local plan housing requirement: plan period") }}.</p>
+
+<h2 class="govuk-heading-l" id="what-each-allocation-contains">What each allocation should contain</h2>
+<p class="govuk-body">Footnote 8 to NPPF policy PM2 lists what every allocation should include ({{ c("nppf", "fn-8", "NPPF footnote 8") }}). Field by field:</p>
+<div class="lpn-table-scroll">
+<table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--s">The fields of a site allocation and where the evidence for each comes from</caption>
+  <thead class="govuk-table__head"><tr class="govuk-table__row"><th scope="col" class="govuk-table__header">Field</th><th scope="col" class="govuk-table__header">What footnote 8 asks for</th><th scope="col" class="govuk-table__header">Where it comes from</th></tr></thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">Site reference</th><td class="govuk-table__cell">A site reference</td><td class="govuk-table__cell">The Stage 4 summary table identifies every site by name or reference ({{ c("site-selection-stage-4", "formatting-your-site-decisions", "Stage 4: formatting your site decisions") }})</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">Name</th><td class="govuk-table__cell">A site name</td><td class="govuk-table__cell">Recorded for every site at the end of Stage 2 ({{ c("site-selection-stage-2", "finishing-your-stage-2-assessment", "Stage 2: finishing your assessment") }})</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">Area</th><td class="govuk-table__cell">The site area</td><td class="govuk-table__cell">Site size is collected in the call for sites and recorded at Stage 2 ({{ c("site-selection-stage-1", "what-information-to-ask-for-in-a-call-for-sites", "Stage 1: call for sites information") }})</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">Existing use</th><td class="govuk-table__cell">A short description of the existing use or uses</td><td class="govuk-table__cell">Previous and current use come from the call for sites; existing and proposed land use are recorded at Stage 2 ({{ c("site-selection-stage-2", "finishing-your-stage-2-assessment", "Stage 2: finishing your assessment") }})</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">Allocated use</th><td class="govuk-table__cell">A short description of the allocated use or uses</td><td class="govuk-table__cell">The proposed land use and site category recorded at Stage 2 ({{ c("site-selection-stage-2", "finishing-your-stage-2-assessment", "Stage 2: finishing your assessment") }})</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">Site capacity</th><td class="govuk-table__cell">An indicative or specific capacity for the development proposed</td><td class="govuk-table__cell">The development potential estimated at Stage 2, from the net developable area and density assumptions ({{ c("site-selection-stage-2", "estimating-development-potential", "Stage 2: estimating development potential") }})</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">Delivery timeframe</th><td class="govuk-table__cell">The projected delivery timeframe</td><td class="govuk-table__cell">The five-year delivery band assigned at Stage 2 ({{ c("site-selection-stage-2", "availability", "Stage 2: availability") }}), and the plan's housing trajectory ({{ c("nppf", "HO3", "NPPF HO3(1)(c)") }})</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">Site-specific requirements</th><td class="govuk-table__cell">Any site-specific expectations and requirements, including for on- and off-site infrastructure</td><td class="govuk-table__cell">Contributions can be set in site-specific policies ({{ c("nppf", "PM12", "NPPF PM12(2)(b)") }}); the mitigations recorded against each site's constraints at Stage 2 ({{ c("site-selection-stage-2", "finishing-your-stage-2-assessment", "Stage 2") }})</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="govuk-body">An allocation also has to appear on the map. The map of proposed local plan policies <strong>must</strong> illustrate the geographical application of every policy that relates to part of the area ({{ c("regulations-2026", "reg-25", "regulation 25") }}), and Gateway 3 checks that it does so accurately ({{ c("regulations-2026", "reg-32", "regulation 32(k)") }}). After adoption the policies map does the same job ({{ c("regulations-2026", "reg-85", "regulation 85") }}).</p>
+<p class="govuk-body">Strategic sites need more: infrastructure and other site-specific requirements, design expectations set through masterplans or design codes, a realistic assessment of delivery rates, and expectations for the mix of tenures ({{ c("nppf", "HO4", "NPPF policy HO4(2)") }}).</p>
+
+<h2 class="govuk-heading-l" id="four-stages">The four stages of site selection</h2>
+<p class="govuk-body">The NPPF asks plans that allocate sites to assess land with reference to national guidance where applicable ({{ c("nppf", "PM9", "NPPF PM9(2)") }}), and points to the new-system collection for the tools and templates ({{ c("nppf", "fn-16", "footnote 16") }}). For sites, that guidance sets out a recommended process in four stages ({{ c("site-selection", "the-4-stages", "Introduction: the 4 stages") }}). It is meant to be thorough but proportionate and adapted to local circumstances, and you should record when and why you made decisions, especially where you departed from it ({{ c("site-selection", "how-to-use-this-guidance", "Introduction: how to use this guidance") }}).</p>
+
+<h3 class="govuk-heading-m">Stage 1: identifying sites</h3>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>Carry out a thorough audit of available land; the number of sites you identify should not be constrained by the need for development ({{ c("site-selection-stage-1", null, "Stage 1") }}).</li>
+  <li>Look first at existing sources: current allocations, the brownfield land register, planning applications, existing land availability assessments, public land, vacant and derelict land, and opportunities to intensify or extend settlements ({{ c("site-selection-stage-1", "finding-potential-sites", "Stage 1: finding potential sites") }}).</li>
+  <li>Identify a range of site sizes and types; a minimum size threshold is allowed, but you may need to lower it later if you run short ({{ c("site-selection-stage-1", "size-and-type-of-sites-you-need", "Stage 1: size and type of sites") }}).</li>
+  <li>Run a call for sites, issued as widely as possible, and collect a standard set of information on each site, preferably through an online form ({{ c("site-selection-stage-1", "who-to-target-with-a-call-for-sites", "Stage 1: who to target") }}; {{ c("site-selection-stage-1", "what-information-to-ask-for-in-a-call-for-sites", "what information to ask for") }}).</li>
+  <li>The output is a list of sites with potential for development, to be assessed at Stage 2 ({{ c("site-selection-stage-1", "output-of-this-section", "Stage 1: output") }}).</li>
+</ul>
+
+<h3 class="govuk-heading-m">Stage 2: assessing sites</h3>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>Sort the sites into categories, such as new settlements, urban extensions or small previously developed sites, with a clear rationale for the categories you choose ({{ c("site-selection-stage-2", "how-to-categorise-sites", "Stage 2: how to categorise sites") }}).</li>
+  <li>Sift out only the sites whose constraints would make development wholly inappropriate, such as Flood Zones 3a and 3b, and record a strong rationale for each ({{ c("site-selection-stage-2", "filter-out-any-obviously-unsuitable-sites", "Stage 2: filter out obviously unsuitable sites") }}).</li>
+  <li>Assess each remaining site's suitability, availability and achievability, including whether it is likely to be viable ({{ c("site-selection-stage-2", "assessing-suitability-availability-achievability", "Stage 2: suitability, availability, achievability") }}). Existing allocations and sites with planning permission can be assumed to pass unless circumstances have changed ({{ c("site-selection-stage-2", "assessing-your-sites-and-their-development-potential", "Stage 2: assessing your sites") }}).</li>
+  <li>Estimate each site's development potential, making the most efficient use of land ({{ c("site-selection-stage-2", "housing", "Stage 2: housing capacity") }}).</li>
+  <li>Score suitability, availability and achievability red, amber or green, then give each site an overall score ({{ c("site-selection-stage-2", "scoring-your-sites", "Stage 2: scoring") }}; {{ c("site-selection-stage-2", "overall-final-scoring", "overall scoring") }}).</li>
+  <li>For housing sites, decide whether each is deliverable (some development within five years of the likely adoption date) or developable (later in the plan period) ({{ c("site-selection-stage-2", "determining-if-sites-proposed-for-housing-use-are-deliverable-or-developable", "Stage 2: deliverable or developable") }}).</li>
+</ul>
+
+<h3 class="govuk-heading-m">Stage 3: determining your draft allocations</h3>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>Select the sites that best meet your proposed vision and spatial strategy, using planning judgement and seeking to meet development needs in full ({{ c("site-selection-stage-3", "applying-planning-judgement", "Stage 3: applying planning judgement") }}).</li>
+  <li>Factors include settlement hierarchy, connectivity, access to services, efficient use of land, delivery timescales across the plan period and your whole plan viability evidence ({{ c("site-selection-stage-3", "developing-your-selection-approach", "Stage 3: developing your selection approach") }}).</li>
+  <li>Keep up meaningful, ongoing engagement with landowners, developers and promoters, particularly for large or strategic sites, and record it ({{ c("site-selection-stage-3", "engaging-your-stakeholders", "Stage 3: engaging stakeholders") }}).</li>
+</ul>
+
+<h3 class="govuk-heading-m">Stage 4: confirming allocations and recording decisions</h3>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>The outputs are the list of draft allocations, the list of rejected sites, and your rationale and evidence for each ({{ c("site-selection-stage-4", "outputs-of-this-section", "Stage 4: outputs") }}).</li>
+  <li>Report on the sites you propose, the sites you did not select and your justification for each, including the scores you gave every site you considered ({{ c("site-selection-stage-4", "outputs-at-the-end-of-confirming-your-draft-allocations", "Stage 4: outputs at the end") }}).</li>
+  <li>Describe your methodology, how you applied it to each category, and where and why you departed from the guidance ({{ c("site-selection-stage-4", "describing-your-methodology", "Stage 4: describing your methodology") }}).</li>
+  <li>Set out your decisions in a summary table, cross-referenced to the detailed assessments ({{ c("site-selection-stage-4", "formatting-your-site-decisions", "Stage 4: formatting your site decisions") }}).</li>
+</ul>
+
+<h2 class="govuk-heading-l" id="evidence">The evidence you will need</h2>
+<p class="govuk-body">Evidence should be relevant, proportionate and up to date; use what exists before commissioning new work, and do not prepare new evidence after submission unless the Inspector asks for it ({{ c("nppf", "PM8", "NPPF policy PM8") }}).</p>
+
+<h3 class="govuk-heading-m">Land availability and housing supply</h3>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>The assessment of land should cover site identification, availability, suitability and achievability (including viability), capacity and timescales, and the choice of sites against the emerging vision and strategy ({{ c("nppf", "PM9", "NPPF PM9(2)") }}). Capacity and timescales should take account of infrastructure requirements and relevant environmental plans ({{ c("nppf", "fn-17", "footnote 17") }}).</li>
+  <li>Allocations should give five years of specific deliverable housing sites from the intended adoption date, with a buffer; developable sites or broad locations for years 6 to 10; and a trajectory. A windfall allowance needs compelling evidence ({{ c("nppf", "HO3", "NPPF policy HO3") }}).</li>
+  <li>Allocate land for at least 10% of the housing requirement on sites of one hectare or less, and a further 10% on sites of one to two and a half hectares, unless there are strong reasons why not ({{ c("nppf", "HO6", "NPPF policy HO6") }}); identify sites for specific types of accommodation where there is a need ({{ c("nppf", "HO5", "NPPF policy HO5(1)(c)") }}).</li>
+  <li>The land availability assessment Planning Practice Guidance is for legacy-system plans: it tells authorities preparing a plan under the new system to use the new-system guidance instead ({{ c("ppg-land-availability", "for-plans-under-the-new-plan-making-system", "land availability PPG") }}). An existing land availability assessment is still one of the places Stage 1 tells you to look for sites ({{ c("site-selection-stage-1", "finding-potential-sites", "Stage 1") }}).</li>
+</ul>
+
+<h3 class="govuk-heading-m">Viability</h3>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>Set policy requirements at a level that allows the planned sites to be deliverable, with affordable housing as a single figure ({{ c("nppf", "PM12", "NPPF policy PM12(3)") }}).</li>
+  <li>Plan viability does not need every site tested: site typologies can be used, with more detailed assessment for key sites the plan relies on ({{ c("ppg-viability", "should-every-site-be-assessed-for-viability-in-plan-making", "Viability PPG") }}; {{ c("ppg-viability", "what-is-meant-by-a-typology-approach-to-viability", "typology approach") }}), and site-specific assessment for strategic sites ({{ c("ppg-viability", "why-should-strategic-sites-be-assessed-for-viability-in-plan-making", "strategic sites") }}). This guidance still cites the December 2024 NPPF.</li>
+  <li>At Stage 2, a high-level review by typology can show which kinds of site are unviable; a whole plan viability study later checks specific sites ({{ c("site-selection-stage-2", "achievability", "Stage 2: achievability") }}).</li>
+</ul>
+
+<h3 class="govuk-heading-m">Flood risk: the sequential test</h3>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>Plans should be informed by an up-to-date strategic flood risk assessment and by advice from the Environment Agency and other flood risk management authorities ({{ c("nppf", "F1", "NPPF policy F1") }}), and should apply the sequential test when identifying locations for development ({{ c("nppf", "F2", "NPPF policy F2(1)(a)") }}).</li>
+  <li>Sites allocated in the plan that were subject to the sequential test during plan preparation do not need it again when a planning application comes in ({{ c("nppf", "F5", "NPPF policy F5(2)(a)") }}).</li>
+  <li>In plan preparation the sequential test is applied to the whole local planning authority area ({{ c("ppg-flood-risk", "how-can-the-sequential-test-be-applied-in-the-preparation-of-strategic-policies", "Flood risk PPG paragraph 025") }}). Where the exception test applies and wider sustainability benefits do not outweigh flood risk, the allocation should not be made ({{ c("ppg-flood-risk", "how-can-it-be-demonstrated-that-wider-sustainability-benefits-to-the-community-outweigh-flood-risk", "Flood risk PPG paragraph 036") }}). This guidance predates the new system and still refers to sustainability appraisal.</li>
+</ul>
+
+<h3 class="govuk-heading-m">Infrastructure</h3>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>Identify the contributions expected from development towards affordable housing and on- and off-site infrastructure ({{ c("nppf", "PM2", "NPPF PM2(1)(c)") }}).</li>
+  <li>Engage infrastructure providers and neighbouring authorities on where additional infrastructure is needed ({{ c("nppf", "PM10", "NPPF policy PM10") }}), and publish statements of common ground on cross-boundary matters ({{ c("nppf", "PM11", "NPPF policy PM11") }}).</li>
+  <li>If a prescribed public body will not provide information you need, a requirement to assist notice obliges it to do everything you reasonably require ({{ c("lura-2023", "section-39A", "PCPA 2004 section 39A, inserted by LURA 2023 section 100") }}). Use it only as a last resort, after a routine request ({{ c("requirement-to-assist", "when-to-issue-a-notice", "Requirement to assist guidance") }}).</li>
+</ul>
+
+<h3 class="govuk-heading-m">Green Belt and grey belt</h3>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>A local plan should be informed by a Green Belt assessment, following Annex E, that identifies grey belt and informs any boundary changes ({{ c("nppf", "GB2", "NPPF policy GB2(3)") }}; {{ c("nppf", "annex-e", "Annex E") }}).</li>
+  <li>Boundaries should only be altered through a local plan, where exceptional circumstances are fully evidenced: for example, being unable to meet identified need in full after using previously developed land, optimising density and looking for sites outside the Green Belt ({{ c("nppf", "GB3", "NPPF policy GB3") }}).</li>
+  <li>Major housing development on land released from the Green Belt should meet the Golden Rules on affordable housing, infrastructure and green space ({{ c("nppf", "GB8", "NPPF policy GB8") }}), and the plan should set a specific affordable housing requirement for it ({{ c("nppf", "HO5", "NPPF HO5(1)(a)(ii)") }}).</li>
+</ul>
+
+<h3 class="govuk-heading-m">Environmental assessment</h3>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>The environmental report <strong>must</strong> assess the likely significant effects of the plan and of reasonable alternatives ({{ c("sea-regulations-2004", "reg-12", "SEA Regulations, regulation 12") }}). For sites, keep records of the effects of your preferred sites, of the alternatives, and of how that information shaped your choice ({{ c("site-selection", "other-requirements-to-consider-as-you-go-through-the-process", "Introduction: other requirements") }}).</li>
+  <li>A habitats regulations assessment may be needed if the plan is likely to have a significant effect on a protected site ({{ c("site-selection", "other-requirements-to-consider-as-you-go-through-the-process", "Introduction: other requirements") }}).</li>
+</ul>
+
+<h2 class="govuk-heading-l" id="in-the-30-months">Where sites come up in the 30 months</h2>
+<div class="lpn-table-scroll">
+<table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--s">Site allocation work at each stage of the 30-month process</caption>
+  <thead class="govuk-table__head"><tr class="govuk-table__row"><th scope="col" class="govuk-table__header">Stage</th><th scope="col" class="govuk-table__header">What happens to sites</th><th scope="col" class="govuk-table__header">Source</th></tr></thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/baseline/') }}">Getting ready</a></th><td class="govuk-table__cell">Start to understand the availability of land, including running a call for sites: the first stage of the site assessment process. The sites process can begin early in plan-making.</td><td class="govuk-table__cell">{{ c("30-month-overview", "start-working-on-your-vision-land-availability-and-evidence", "30-month overview") }}; {{ c("site-selection", "getting-started", "Introduction: getting started") }}</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/content-consultation/') }}">Consultation on plan content and evidence</a></th><td class="govuk-table__cell">The consultation document <strong>must</strong> summarise your proposed approach to policies, in particular on the location of development, and the evidence gathered so far. It may include initial draft site allocation policies.</td><td class="govuk-table__cell">{{ c("regulations-2026", "reg-23", "regulation 23") }}; {{ c("engaging-the-public", "consult-on-the-proposed-plan-content-and-evidence", "Engaging the public") }}</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/collate/') }}">Draft plan</a></th><td class="govuk-table__cell">Decide the preferred spatial strategy using the evidence on site availability, decide the specific sites to allocate, and gather the evidence to support them.</td><td class="govuk-table__cell">{{ c("30-month-overview", "collate-elements-of-the-plan", "30-month overview") }}</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/gateway-2/') }}">Gateway 2</a></th><td class="govuk-table__cell">The assessor looks at progress towards a plan that could be found sound. Evidence on the site selection methodology and, where relevant, specific sites helps the assessment of the housing requirement. A draft plan or policies map is not required, but the gateway may be more valuable with them, or with more detail on broad locations or significant sites.</td><td class="govuk-table__cell">{{ c("regulations-2026", "reg-26", "regulation 26(2)") }}; {{ c("procedural-guide", "consultation-documents-to-be-provided-at-gateway-2", "procedural guide 3.6.11 and 3.6.15") }}</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/plan-consultation/') }}">Proposed plan consultation</a></th><td class="govuk-table__cell">Consult on the proposed plan and the map of proposed local plan policies, site allocations and designations, for at least 8 weeks, and publish your housing requirement data the same day. Representations may lead you to change sites, which can mean revisiting parts of the site selection process.</td><td class="govuk-table__cell">{{ c("regulations-2026", "reg-27", "regulation 27") }}; {{ c("30-month-overview", "consult-on-the-proposed-local-plan", "30-month overview") }}; {{ c("planning-data-regulations-2026", "reg-3-4", "Planning Data Regulations, Schedule 3, paragraph 3") }}; {{ c("site-selection-stage-4", "next-steps", "Stage 4: next steps") }}</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/gateway-3/') }}">Gateway 3</a></th><td class="govuk-table__cell">The assessor checks the plan sets out policies on the amount, type, location and timetable of development, and that the map accurately illustrates where policies apply.</td><td class="govuk-table__cell">{{ c("regulations-2026", "reg-32", "regulation 32(a) and (k)") }}</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/examination/') }}">Examination</a></th><td class="govuk-table__cell">Hearings usually discuss the soundness of the allocated sites and how they were selected, but not sites you did not allocate, except in circumstances such as housing land falling below need. The Inspector may ask for additional sites, which can mean a pause, and main modifications can delete allocations or insert new ones.</td><td class="govuk-table__cell">{{ c("procedural-guide", "7-4-procedure-at-the-hearing-sessions", "procedural guide 7.4.5") }}; {{ c("procedural-guide", "7-5-after-the-hearing-sessions", "7.5.3") }}; {{ c("procedural-guide", "8-main-modifications-to-the-plan", "8.2 and 8.9") }}</td></tr>
+    <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="{{ rel('/process/adoption/') }}">Adoption</a></th><td class="govuk-table__cell">Publish the policies map, showing where the plan's policies apply, immediately after adoption and no later than one month after.</td><td class="govuk-table__cell">{{ c("regulations-2026", "reg-85", "regulation 85") }}</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2 class="govuk-heading-l" id="pitfalls">Common pitfalls</h2>
+<p class="govuk-body">What the guidance warns against:</p>
+<ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+  <li>Limiting the search for sites to the amount of development needed, which leaves no choice later ({{ c("site-selection-stage-1", null, "Stage 1") }}).</li>
+  <li>Ruling a site out because a constraint or designation exists, rather than assessing what it means for development ({{ c("site-selection-stage-2", "suitability", "Stage 2: suitability") }}).</li>
+  <li>Sifting out sites without a strong, recorded rationale ({{ c("site-selection-stage-2", "filter-out-any-obviously-unsuitable-sites", "Stage 2: filtering") }}).</li>
+  <li>Counting the same site, or its capacity, twice when it sits in more than one category ({{ c("site-selection-stage-2", "sites-in-multiple-categories", "Stage 2: sites in multiple categories") }}).</li>
+  <li>Not recording when and why decisions were made, or not explaining departures from the guidance ({{ c("site-selection", "how-to-use-this-guidance", "Introduction") }}); leaving out the scores of the sites you rejected ({{ c("site-selection-stage-4", "outputs-at-the-end-of-confirming-your-draft-allocations", "Stage 4") }}).</li>
+  <li>Lead-in times and build-out rates that are not justified ({{ c("site-selection-stage-2", "availability", "Stage 2: availability") }}), or delivery rates on strategic sites that are not realistic ({{ c("nppf", "HO4", "NPPF HO4(2)(b)") }}).</li>
+  <li>A windfall allowance without compelling evidence ({{ c("nppf", "HO3", "NPPF HO3(2)") }}).</li>
+  <li>Site policies that repeat or contradict national decision-making policy ({{ c("nppf", "PM15", "NPPF PM15(1)(d)") }}).</li>
+  <li>Publishing a list of submitted sites without saying they have not been assessed, or with personal data in it ({{ c("site-selection-stage-1", "publishing-your-sites", "Stage 1: publishing your sites") }}).</li>
+  <li>Concluding there are not enough sites before reconsidering discounted sites, mitigations, density assumptions and new sources, and without documenting why ({{ c("site-selection-stage-2", "what-to-do-if-you-do-not-have-enough-sites", "Stage 2: not enough sites") }}; {{ c("site-selection-stage-3", "if-you-do-not-have-the-right-number-of-sites", "Stage 3") }}).</li>
+  <li>Expecting the hearings to compare your sites with sites you did not allocate ({{ c("procedural-guide", "7-4-procedure-at-the-hearing-sessions", "procedural guide 7.4.5") }}).</li>
+</ul>
+
+{{ govukInsetText({ html: 'The site selection guidance says MHCLG will review it as the new system is implemented and related policy is confirmed (' + c("site-selection", null, "Introduction") + '). Check the <a class="govuk-link" href="' + rel('/sources/') + '">sources page</a> for the version used here.' }) }}
+</div></div>
+{% endblock %}

@@ -28,6 +28,25 @@ const CASES = [
   ['When do we have to start preparing the next local plan?', ['regulations-2026#reg-18', '30-month-overview#when-to-start-preparing-your-new-plan']],
   ['Do we have to reconsult before Gateway 3 if we change the plan after the consultation?', ['30-month-overview#after-the-consultation', 'gateway-3#if-you-fail-to-pass-gateway-3', 'procedural-guide#3-10-preparation-for-gateway-3']],
   ['How long is the main modifications consultation?', ['procedural-guide#8-main-modifications-to-the-plan']],
+  // Site allocations (the beta's first priority).
+  ['What should each site allocation in a local plan include?', ['nppf#fn-8']],
+  ['What information should we ask for in a call for sites?', ['site-selection-stage-1#what-information-to-ask-for-in-a-call-for-sites', 'site-selection-stage-1#running-a-call-for-sites']],
+  ['Can we rule out sites in Flood Zone 3 at the start of the site assessment?', ['site-selection-stage-2#filter-out-any-obviously-unsuitable-sites']],
+  ['How do we score sites for suitability, availability and achievability?', ['site-selection-stage-2#scoring-your-sites', 'site-selection-stage-2#overall-final-scoring', 'site-selection-stage-2#suitability-example-scoring', 'site-selection-stage-2#assessing-suitability-availability-achievability']],
+  ['What is the difference between a deliverable and a developable housing site?', ['site-selection-stage-2#determining-if-sites-proposed-for-housing-use-are-deliverable-or-developable', 'nppf#annex-b', 'nppf#HO3']],
+  ['What should we do if we do not have enough sites to meet our housing need?', ['site-selection-stage-2#what-to-do-if-you-do-not-have-enough-sites', 'site-selection-stage-3#if-you-do-not-have-the-right-number-of-sites']],
+  ['How should we record why we rejected sites for the examination?', ['site-selection-stage-4#outputs-of-this-section', 'site-selection-stage-4#outputs-at-the-end-of-confirming-your-draft-allocations', 'site-selection-stage-4#formatting-your-site-decisions', 'site-selection-stage-4#describing-your-methodology']],
+  ['Do we have to test the viability of every site we allocate?', ['ppg-viability#should-every-site-be-assessed-for-viability-in-plan-making', 'ppg-viability#what-is-meant-by-a-typology-approach-to-viability']],
+  ['How is the flood risk sequential test applied when allocating sites in a local plan?', ['ppg-flood-risk#how-can-the-sequential-test-be-applied-in-the-preparation-of-strategic-policies', 'nppf#F2', 'nppf#F5', 'ppg-flood-risk#how-can-the-sequential-test-be-applied-to-the-location-of-development']],
+  ['Will the examination hearings discuss omission sites that were not allocated?', ['procedural-guide#7-4-procedure-at-the-hearing-sessions']],
+  ['Can the Inspector add new site allocations through main modifications?', ['procedural-guide#8-main-modifications-to-the-plan']],
+  ['How much of the housing requirement should be on small sites?', ['nppf#HO6']],
+  ['When can Green Belt boundaries be altered to allocate land for housing?', ['nppf#GB3', 'nppf#GB2', 'nppf#annex-e']],
+  ['Can we require an infrastructure provider to give us information for the plan?', ['requirement-to-assist#when-to-issue-a-notice', 'requirement-to-assist#top', 'requirement-to-assist#who-can-receive-a-notice', 'lura-2023#section-39A', 'lura-2023#section-100']],
+  ['What must a local plan contain under the Planning and Compulsory Purchase Act?', ['pcpa-2004#section-15C', 'regulations-2026#reg-11']],
+  ['Are national development management policies in force?', ['lura-2023#section-93', 'lura-2023#section-94', 'lura-2023#section-38ZA']],
+  ['What fields must the plan timetable dataset contain?', ['publish-plan-data#plan-timetable-dataset', 'publish-plan-data#mandatory-fields-2']],
+  ['When must we publish our housing requirement data?', ['planning-data-regulations-2026#reg-3-4', 'housing-requirement-data#what-to-publish', 'publish-plan-data#required-housing']],
 ];
 const index = new MiniSearch(INDEX_OPTIONS);
 index.addAll(corpus.chunks);

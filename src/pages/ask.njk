@@ -14,6 +14,25 @@
   {{ govukButton({ text: "Find the guidance", type: "submit" }) }}
 </form>
 <noscript><p class="govuk-body">This page needs JavaScript. Without it, use the <a class="govuk-link" href="{{ rel('/reference/') }}">reference library</a>.</p></noscript>
+<details class="govuk-details" id="suggested-questions">
+  <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Questions about site allocations</span></summary>
+  <div class="govuk-details__text">
+    <ul class="govuk-list govuk-list--spaced">
+      {% for q in [
+        "What should each site allocation in a local plan include?",
+        "What information should we ask for in a call for sites?",
+        "Can we rule out sites in Flood Zone 3 at the start of the site assessment?",
+        "What is the difference between a deliverable and a developable housing site?",
+        "Do we have to test the viability of every site we allocate?",
+        "How do we record why we rejected sites, ready for the examination?",
+        "Will the hearings discuss sites we decided not to allocate?",
+        "When can Green Belt boundaries be changed to allocate sites for housing?"
+      ] %}
+      <li><a class="govuk-link" href="?question={{ q | urlencode }}">{{ q }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</details>
 <div id="ask-status" class="govuk-body" aria-live="polite"></div>
 <div id="ask-answer"></div>
 <div id="ask-passages"></div>
