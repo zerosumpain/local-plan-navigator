@@ -62,7 +62,6 @@ Revision date: 22 07 2019
 
 ## Method – flowchart
 
-[](https://assets.publishing.service.gov.uk/media/5a807559ed915d74e33fa8ba/land-availability.pdf)
 
 ## [Methodology - flowchart](https://assets.publishing.service.gov.uk/media/5a807559ed915d74e33fa8ba/land-availability.pdf)
 
@@ -132,7 +131,6 @@ Revision date: 22 07 2019
 
 Plan makers should consider all available types of sites and sources of data that may be relevant in the assessment process but the following may be particularly relevant:
 
-[](https://assets.publishing.service.gov.uk/media/5d383d4bed915d0d0d56d135/190718_paragraph_012_table_PUBLICATION_FINAL.pdf)
 
 ## [Type of site and potential data source](https://assets.publishing.service.gov.uk/media/5d383d4bed915d0d0d56d135/190718_paragraph_012_table_PUBLICATION_FINAL.pdf)
 

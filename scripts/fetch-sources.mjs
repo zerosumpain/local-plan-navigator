@@ -119,7 +119,10 @@ async function govukToMarkdown(base, origin = {}) {
   const n = JSON.parse(await fetchText(`https://www.gov.uk/api/content${base}`));
   let md = td.turndown(n.details.body).replace(/ /g, ' ');
   if (origin.sections) md = selectSections(md, origin.sections, origin.dropQuestions);
-  md = absoluteLinks(md, `https://www.gov.uk${n.base_path}`);
+  md = absoluteLinks(md, `https://www.gov.uk${n.base_path}`)
+    // An attachment's thumbnail is a link round an image with no alt text: a
+    // link with nothing to read. The attachment's titled link follows it.
+    .replace(/^\[\s*\]\([^)\s]*\)\s*$/gm, '');
   return { text: `---\ntitle: ${n.title}\nurl: https://www.gov.uk${n.base_path}\npublished: ${n.first_published_at}\nupdated: ${n.public_updated_at}\npublisher: ${(n.links.organisations || []).map((o) => o.title).join('; ')}\n---\n\n${md}`, updated: (n.public_updated_at || '').slice(0, 10), attachments: n.details.attachments || [] };
 }
 
