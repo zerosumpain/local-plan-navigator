@@ -1,11 +1,17 @@
 import { createReadStream } from 'node:fs';
 import { realpath, stat } from 'node:fs/promises';
 import { extname, relative, resolve, sep } from 'node:path';
-import { verifyIdentity } from '../gateway/identity.mjs';
+import { verifyAssertion } from '../gateway/identity.mjs';
 import { answerPrompt, loadCorpus, parseAskBody, pickChunks, SYSTEM_PROMPT } from './ask.mjs';
 
 const MOUNT = '/projects/local-plan-navigator';
-const ASK = '/api/projects/local-plan-navigator/ask';
+const API = '/api/projects/local-plan-navigator';
+const ASK = `${API}/ask`;
+const PROJECT_KEY = 'local-plan-navigator';
+// SR-Main's per-project share cookie (`psh_<key>`, $lib/projects/shares there).
+// Main's session authority reads it from the cookie header the gateway forwards.
+const SHARE_COOKIE = `psh_${PROJECT_KEY}`;
+const SHARE_TOKEN = /^[A-Za-z0-9_-]{20,512}$/;
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8',
@@ -74,6 +80,43 @@ async function serveFile(req, res, root) {
   createReadStream(path).pipe(res);
 }
 
+/**
+ * Who this request is for, from the gateway's signed assertion, or null for a 404.
+ *
+ * SR-Main decides; this process holds none of the rows. The gateway forwards the
+ * request's `?t=` and cookies to Main's session authority, which applies the
+ * project's visibility row, the owner preview and the /projects share links, and
+ * the gateway signs that answer (`project`) into the assertion alongside the
+ * signed-in email, if any. A decision for another project, or `none`, is a 404,
+ * exactly as before: the page still does not admit it exists.
+ *
+ *   owner   the configured owner, or Main's owner previewing a private project
+ *   share   a recipient of a live share link from /projects (no sign-in needed)
+ *   public  the project has been made public on /projects
+ */
+export function accessFor(assertion, owner) {
+  if (!assertion) return null;
+  if (assertion.email && assertion.email === owner) return 'owner';
+  const project = assertion.project;
+  if (!project || project.key !== PROJECT_KEY) return null;
+  return ['owner', 'share', 'public'].includes(project.access) ? project.access : null;
+}
+
+/**
+ * Keep a share recipient in, once Main has accepted the link's `?t=`. The pages
+ * link to each other without the token, so it rides in Main's per-project cookie,
+ * set for the pages and, separately, for this project's API (a cookie's path is a
+ * prefix, and the two share none). Twelve hours, like Main's own projects;
+ * opening the link again starts a fresh twelve.
+ */
+function shareCookies(req) {
+  const token = new URL(req.url, 'http://localhost').searchParams.get('t');
+  if (!token || !SHARE_TOKEN.test(token)) return [];
+  const secure = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : '';
+  return [MOUNT, API].map((path) =>
+    `${SHARE_COOKIE}=${token}; Path=${path}; Max-Age=43200; HttpOnly; SameSite=Lax${secure}`);
+}
+
 /** Consume the OpenAI-compatible bridge stream without importing a second model stack. */
 async function streamCompletion(response, res) {
   const reader = response.body.getReader();
@@ -130,9 +173,14 @@ export function createApp({
     if (!(pathname === MOUNT || pathname.startsWith(`${MOUNT}/`) || pathname === ASK)) {
       send(res, 404, 'Not found'); return;
     }
-    const assertion = verifyIdentity(req.headers['x-local-plan-navigator-identity'], req.method, req.url,
+    const assertion = verifyAssertion(req.headers['x-local-plan-navigator-identity'], req.method, req.url,
       gatewayKey, 'sr-local-plan-navigator');
-    if (assertion?.email !== owner) { send(res, 404, 'Not found'); return; }
+    const access = accessFor(assertion, owner);
+    if (!access) { send(res, 404, 'Not found'); return; }
+    if (access === 'share') {
+      const cookies = shareCookies(req);
+      if (cookies.length) res.setHeader('Set-Cookie', cookies);
+    }
     if (pathname !== ASK) {
       if (req.method !== 'GET' && req.method !== 'HEAD') { send(res, 405, 'Method not allowed'); return; }
       try { await serveFile(req, res, distDir); }
@@ -145,15 +193,21 @@ export function createApp({
     try { input = parseAskBody(await readJson(req)); }
     catch { sendError(res, 400, 'The question could not be read.'); return; }
     if (!input.question || !input.ids.length) { sendError(res, 400, 'A question and at least one passage are needed.'); return; }
-    // Keyed on the signed identity, not the address: it cannot be chosen by the
-    // caller, and every request that reaches this line carries one.
+    // The owner is keyed on the signed identity, which the caller cannot choose.
+    // A share recipient has no identity, so they share a bucket per address: the
+    // gateway sets x-forwarded-for from Cloudflare's cf-connecting-ip, never from
+    // anything the caller wrote.
+    const who = access === 'owner' && assertion.email ? `owner:${assertion.email}`
+      : `guest:${String(req.headers['x-forwarded-for'] ?? 'unknown').slice(0, 64)}`;
     const now = Date.now();
-    const bucket = buckets.get(assertion.email) ?? { tokens: 20, at: now };
+    const bucket = buckets.get(who) ?? { tokens: 20, at: now };
     bucket.tokens = Math.min(20, bucket.tokens + (now - bucket.at) * (20 / 60_000));
     bucket.at = now;
     if (bucket.tokens < 1) { sendError(res, 429, 'Too many questions in a short time. Wait a minute and try again.'); return; }
     bucket.tokens -= 1;
-    buckets.set(assertion.email, bucket);
+    buckets.set(who, bucket);
+    // Guests are keyed per address, so forget the idle ones rather than grow forever.
+    if (buckets.size > 2000) for (const [id, b] of buckets) if (now - b.at > 600_000) buckets.delete(id);
     const today = new Date(now).toISOString().slice(0, 10);
     if (today !== day) { day = today; usedToday = 0; }
     if (usedToday >= dailyCap) { sendError(res, 503, "Today's allowance of model answers has been used."); return; }

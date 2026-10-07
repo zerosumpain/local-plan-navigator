@@ -6,8 +6,9 @@ gateways, the 2026 Regulations, the SEA Regulations and the National Planning Po
 Framework, in one place, with tools that say what to do next.
 
 The deployment path is <https://strangeramblings.com/projects/local-plan-navigator/>.
-It is currently owner-only. This is not a government service; it has no connection
-with MHCLG or the Planning Inspectorate.
+It is private by default: the owner sees it, and anyone else needs a share link minted
+with the Share button on its /projects card. This is not a government service; it has no
+connection with MHCLG or the Planning Inspectorate.
 
 ## What is on it
 
@@ -64,9 +65,16 @@ preview is serving.
 ## Production boundary
 
 The dedicated gateway owns `/projects/local-plan-navigator` and
-`/api/projects/local-plan-navigator/ask`. It validates the Main Auth.js session,
-then signs a request-bound identity for the web process. The web process checks
-that the signed email matches `OWNER_EMAIL` on every page, asset, and API call.
+`/api/projects/local-plan-navigator/ask`. On every request it asks Main's session
+authority who is calling and whether they may see this project — Main applies the
+project's visibility row on /projects, the owner preview and the /projects share
+links (`?t=`, then the `psh_local-plan-navigator` cookie) — and signs the answer
+into a request-bound assertion (`deploy/app.json` `sessionClaims: ["project"]`).
+The web process lets in the owner (`OWNER_EMAIL`, or Main's owner decision), a live
+share link, or a public project, and answers 404 to everyone else, on every page,
+asset and API call. A share recipient's token is kept in the per-project cookie,
+set for both the pages and the API, so links between pages keep working; their
+questions are rate-limited by address and count towards the daily cap.
 Both processes bind to loopback; ingress is defined in SR-Infra. The gateway
 server comes from SR-Infra's immutable `sr-gateway` image. This repository
 retains only the signed-identity contract required by its web process.
@@ -78,7 +86,7 @@ the gateway and app environment files, `AUTH_SECRET` in the gateway file, and
 from `http://127.0.0.1:5207`. The default model is `gpt-6-luna`; override it
 with `LOCAL_PLAN_NAVIGATOR_MODEL` if needed. Keep the repository's `PROBE_URL`
 variable unset while the project is private, because an anonymous public
-release probe cannot read an owner-only page. The release workflow remains
+release probe cannot read a private page. The release workflow remains
 gated by `RELEASE_ENABLED` until the production runner and service are ready.
 The shared gateway image is pinned separately in `APP_GATEWAY_IMAGE` and rolled
 per application with SR-Infra's `scripts/rollout-gateway.mjs`.

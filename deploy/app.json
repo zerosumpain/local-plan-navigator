@@ -10,14 +10,17 @@
   "excludePaths": [],
   "rootPaths": [],
   "assetPrefix": "/_local_plan_navigator",
-  "publicPatterns": [],
-  "passthroughPatterns": [
+  "publicPatterns": [
     "^/projects/local-plan-navigator(?:/.*)?$",
     "^/api/projects/local-plan-navigator(?:/.*)?$"
   ],
+  "passthroughPatterns": [],
   "identityHeader": "x-local-plan-navigator-identity",
   "headerStripPrefixes": [
     "x-local-plan-navigator-"
+  ],
+  "sessionClaims": [
+    "project"
   ],
   "slots": {
     "primary": 5372,
