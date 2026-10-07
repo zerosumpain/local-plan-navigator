@@ -3,9 +3,30 @@
 // Reads the date and the durations, builds the schedule with the same
 // function the build used for the worked example, and re-renders the checks,
 // the table and the chart. Invalid input gets the GOV.UK error summary.
-import { buildSchedule, formatDate, type Schedule, type PlannerInputs } from '../lib/schedule.ts';
+// The timetable downloads two ways: a readable CSV of every milestone, and
+// the plan-timetable dataset the Planning Data Regulations require
+// (src/lib/plan-timetable.ts).
+import { buildSchedule, formatDate, iso, type Schedule, type PlannerInputs } from '../lib/schedule.ts';
 import { ganttSvg } from '../lib/gantt.ts';
+import { planTimetableCsv, validPlanReference } from '../lib/plan-timetable.ts';
 import { escapeHtml } from './retrieval';
+
+/** A GOV.UK date input's three fields as an ISO date, or null if they do not make a real date. */
+function readDate(form: HTMLFormElement, prefix: string): string | null {
+  const num = (name: string) => Number((form.elements.namedItem(`${prefix}-${name}`) as HTMLInputElement)?.value);
+  const d = num('day'), mo = num('month'), y = num('year');
+  const date = new Date(Date.UTC(y, mo - 1, d));
+  const ok = Number.isInteger(d) && Number.isInteger(mo) && Number.isInteger(y) && y >= 2025 && y <= 2100 && date.getUTCMonth() === mo - 1 && date.getUTCDate() === d;
+  return ok ? iso(date) : null;
+}
+
+function download(name: string, text: string): void {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' }));
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
 
 export function init(): void {
   const form = document.querySelector<HTMLFormElement>('form.lpn-planner');
@@ -18,11 +39,9 @@ export function init(): void {
   const read = (): { inputs: Partial<PlannerInputs>; errors: { href: string; text: string }[] } => {
     const errors: { href: string; text: string }[] = [];
     const num = (name: string) => Number((form.elements.namedItem(name) as HTMLInputElement)?.value);
-    const d = num('g1-day'), mo = num('g1-month'), y = num('g1-year');
-    const date = new Date(Date.UTC(y, mo - 1, d));
-    const valid = Number.isInteger(d) && Number.isInteger(mo) && Number.isInteger(y) && y >= 2025 && y <= 2100 && date.getUTCMonth() === mo - 1 && date.getUTCDate() === d;
-    if (!valid) errors.push({ href: '#g1-day', text: 'Enter a real Gateway 1 date, for example 4 1 2027' });
-    const inputs: Partial<PlannerInputs> = { gateway1: valid ? date.toISOString().slice(0, 10) : '' };
+    const gateway1 = readDate(form, 'g1');
+    if (!gateway1) errors.push({ href: '#g1-day', text: 'Enter a real Gateway 1 date, for example 4 1 2027' });
+    const inputs: Partial<PlannerInputs> = { gateway1: gateway1 ?? '' };
     for (const f of ['noticeMonths', 'scopingWeeks', 'prepWeeks', 'contentWeeks', 'collateWeeks', 'gateway2Weeks', 'reviseWeeks', 'planWeeks', 'finaliseWeeks', 'gateway3Weeks', 'examinationMonths', 'pauseMonths', 'adoptionWeeks'] as const) {
       const v = num(f);
       if (!Number.isFinite(v) || v < 0 || v > 120) errors.push({ href: `#${f}`, text: `Enter a number of ${f.endsWith('Months') ? 'months' : 'weeks'} for ${(form.querySelector(`label[for="${f}"]`)?.textContent ?? f).trim().toLowerCase()}` });
@@ -83,11 +102,27 @@ export function init(): void {
   form.querySelector('[data-action="csv"]')?.addEventListener('click', () => {
     const s = current ?? buildSchedule(read().inputs.gateway1 ? read().inputs : { gateway1: '2027-01-04' });
     const rows = [['Milestone', 'Start', 'End', 'Rule', 'Source'], ...s.milestones.map((m) => [m.label, m.start, m.end, m.rule, m.ref?.label ?? ''])];
-    const csv = rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\r\n');
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-    a.download = `local-plan-timetable-${s.inputs.gateway1}.csv`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    download(`local-plan-timetable-${s.inputs.gateway1}.csv`, rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\r\n'));
+  });
+
+  // The plan-timetable dataset: today's date is the entry date unless one is given.
+  const today = new Date();
+  for (const [name, value] of [['day', today.getDate()], ['month', today.getMonth() + 1], ['year', today.getFullYear()]] as const) {
+    const field = form.elements.namedItem(`entry-${name}`) as HTMLInputElement | null;
+    if (field && !field.value) field.value = String(value);
+  }
+  form.querySelector('[data-action="plan-timetable"]')?.addEventListener('click', () => {
+    const { inputs, errors } = read();
+    const plan = (form.elements.namedItem('planReference') as HTMLInputElement).value.trim();
+    if (!plan) errors.push({ href: '#plan-reference', text: 'Enter the plan reference from your plan dataset' });
+    else if (!validPlanReference(plan)) errors.push({ href: '#plan-reference', text: 'Plan reference must only include letters, numbers, hyphens, underscores and full stops, and be 100 characters or fewer' });
+    const entryDate = readDate(form, 'entry');
+    if (!entryDate) errors.push({ href: '#entry-day', text: 'Enter a real entry date, for example 7 10 2026' });
+    showErrors(errors);
+    if (errors.length || !entryDate) return;
+    // The file follows the form as it is now; show that timetable too if it is not the one on screen.
+    const s = buildSchedule(inputs);
+    if (JSON.stringify(s.inputs) !== JSON.stringify(current?.inputs)) render(s);
+    download(`${plan}-plan-timetable.csv`, planTimetableCsv(s, { plan, entryDate }));
   });
 }

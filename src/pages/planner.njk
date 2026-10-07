@@ -6,6 +6,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "partials/macros.njk" import cite %}
 {% block pageContent %}
 <h1 class="govuk-heading-xl">Timeline planner</h1>
 <p class="govuk-body-l">Enter the date you will publish, or published, your Gateway 1 self-assessment summary. Every milestone follows from it, each with the rule it comes from, and the statutory minimums are checked.</p>
@@ -48,6 +49,18 @@
         {{ govukButton({ text: "Download as CSV", classes: "govuk-button--secondary", attributes: { "data-action": "csv" } }) }}
         {{ govukButton({ text: "Print", classes: "govuk-button--secondary", attributes: { "data-action": "print" } }) }}
       </div>
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-6">Publish your timetable as data</h2>
+      <p class="govuk-body">Your local plan timetable is planning data: you must publish it to the approved data standard ({{ cite(ref({ doc: "planning-data-regulations-2026", anchor: "reg-3-2", label: "Planning Data Regulations 2026, Schedule 1, paragraph 3" }), base) }}), as a plan-timetable CSV alongside your plan dataset, before or on the day you give notice of your plan-making ({{ cite(ref({ doc: "publish-plan-data", anchor: "plan-timetable-dataset", label: "Publish your plan data: plan timetable dataset" }), base) }}).</p>
+      <p class="govuk-body">This download gives the planned date of each of the twelve events every local plan timetable must include, and of the Gateway 2, Gateway 3 and examination reports, in the standard's fields and event codes. Check the dates, add an actual date to each row as the event happens, and check the file with the Planning Data Platform's check service before you publish it.</p>
+      {{ govukInput({ id: "plan-reference", name: "planReference", label: { text: "Plan reference", classes: "govuk-label--s" }, hint: { text: "The reference of the plan in your plan dataset. Every row's plan field must match it. For example, LP-BRX-2027" }, classes: "govuk-input--width-20", value: "local-plan", spellcheck: false, autocomplete: "off" }) }}
+      {{ govukDateInput({
+        id: "entry", namePrefix: "entry",
+        fieldset: { legend: { text: "Entry date", classes: "govuk-fieldset__legend--s" } },
+        hint: { text: "The date you created or changed this data. For example, 7 10 2026. Today's date is filled in for you." },
+        items: [ { name: "day", classes: "govuk-input--width-2" }, { name: "month", classes: "govuk-input--width-2" }, { name: "year", classes: "govuk-input--width-4" } ]
+      }) }}
+      {{ govukButton({ text: "Download as plan-timetable data (CSV)", type: "button", classes: "govuk-button--secondary", attributes: { "data-action": "plan-timetable" } }) }}
     </form>
     <noscript><p class="govuk-body">Building your own timetable needs JavaScript. The worked example below shows every rule with a Gateway 1 date of 4 January 2027.</p></noscript>
   </div>

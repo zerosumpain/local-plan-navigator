@@ -66,7 +66,7 @@ export async function siteMap({ root, corpus, code }) {
     { id: 'gateways', route: '/gateways/', template: 'gateways', title: 'The three gateways', gateways, stages: resolvedStages },
     { id: 'checklists', route: '/checklists/', template: 'checklists', title: 'Checklists', checklists: checklistsData.checklists },
     { id: 'glossary', route: '/glossary/', template: 'glossary', title: 'Glossary', terms: glossary.terms.map((t) => ({ ...t, ref: ref(t.ref) })), abbreviations: glossary.abbreviations },
-    { id: 'planner', route: '/planner/', template: 'planner', title: 'Timeline planner', example: exampleSchedule(), ganttSvg: ganttSvg(exampleSchedule(), { id: 'gantt-example' }), corpusAnchors: corpus.anchors, isExample: true, refRoutes: plannerRefRoutes(exampleSchedule(), corpus.anchors) },
+    { id: 'planner', route: '/planner/', template: 'planner', title: 'Timeline planner', example: exampleSchedule(), ganttSvg: ganttSvg(exampleSchedule(), { id: 'gantt-example' }), corpusAnchors: corpus.anchors, isExample: true, refRoutes: plannerRefRoutes(exampleSchedule(), corpus.anchors), ref },
     { id: 'search', route: '/search/', template: 'search', title: 'Search the guidance', sources: corpus.sources, corpusMeta: corpus.meta },
     { id: 'ask', route: '/ask/', template: 'ask', title: 'Describe a problem', sources: corpus.sources, corpusMeta: corpus.meta },
     { id: 'where-am-i', route: '/where-am-i/', template: 'where-am-i', title: 'Where is my plan?', navigator },
