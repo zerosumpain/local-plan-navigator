@@ -3,6 +3,8 @@ import { realpath, stat } from 'node:fs/promises';
 import { extname, relative, resolve, sep } from 'node:path';
 import { verifyIdentity } from '../gateway/identity.mjs';
 import { answerPrompt, loadCorpus, parseAskBody, pickChunks, SYSTEM_PROMPT } from './ask.mjs';
+import { CHECKER_PATHS, createCheckerRoutes } from './checker/http.mjs'; // plan checker
+import { codexComplete } from './codex-complete.mjs'; // plan checker: stand-in until server/llm.mjs supplies `complete`
 
 const MOUNT = '/projects/local-plan-navigator';
 const ASK = '/api/projects/local-plan-navigator/ask';
@@ -114,12 +116,14 @@ export function createApp({
   dailyCap = Number(process.env.LOCAL_PLAN_NAVIGATOR_DAILY_CAP ?? 400),
   release = process.env.APP_RELEASE_ID ?? 'local',
   retryDelayMs = 4000,
+  complete = codexComplete({ bridgeUrl, model }), // plan checker: the model it calls
 } = {}) {
   if (!ownerEmail || !gatewayKey || gatewayKey.length < 32) throw new Error('OWNER_EMAIL and a 32+ character gateway key are required');
   const owner = ownerEmail.trim().toLowerCase();
   const buckets = new Map();
   let day = '';
   let usedToday = 0;
+  const checker = createCheckerRoutes({ complete, distDir }); // plan checker
   return async (req, res) => {
     res.setHeader('x-local-plan-navigator-release', release);
     const pathname = new URL(req.url, 'http://localhost').pathname;
@@ -127,12 +131,13 @@ export function createApp({
       send(res, 200, JSON.stringify({ ready: true, release }), 'application/json');
       return;
     }
-    if (!(pathname === MOUNT || pathname.startsWith(`${MOUNT}/`) || pathname === ASK)) {
+    if (!(pathname === MOUNT || pathname.startsWith(`${MOUNT}/`) || pathname === ASK || CHECKER_PATHS.includes(pathname))) {
       send(res, 404, 'Not found'); return;
     }
     const assertion = verifyIdentity(req.headers['x-local-plan-navigator-identity'], req.method, req.url,
       gatewayKey, 'sr-local-plan-navigator');
     if (assertion?.email !== owner) { send(res, 404, 'Not found'); return; }
+    if (CHECKER_PATHS.includes(pathname)) { await checker(req, res, { user: assertion.email, siteOrigin }); return; } // plan checker
     if (pathname !== ASK) {
       if (req.method !== 'GET' && req.method !== 'HEAD') { send(res, 405, 'Method not allowed'); return; }
       try { await serveFile(req, res, distDir); }
