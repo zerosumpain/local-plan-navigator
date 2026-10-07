@@ -2,7 +2,9 @@
 //
 //   1. clean         dist/ is deleted and recreated
 //   2. corpus        the government texts are chunked into a search corpus and
-//                    rendered as reference pages with an anchor per chunk
+//                    rendered as reference pages with an anchor per chunk; the
+//                    plan checker's rubric is resolved against it and the
+//                    sample plan is written as .md, .docx and .pptx
 //   3. pages         every page in the site map is rendered from its Nunjucks
 //                    template with the GOV.UK Frontend macros
 //   4. styles        app.scss (GOV.UK Frontend + the prototype layer) -> app.css
@@ -21,6 +23,8 @@ import esbuild from 'esbuild';
 import { buildCorpus } from './scripts/build-corpus.mjs';
 import { renderPages } from './scripts/render-pages.mjs';
 import { buildCodePage } from './scripts/lib/code-page.mjs';
+import { resolveRubric } from './server/checker/rubric.mjs';
+import { makeSamplePlan } from './scripts/make-sample-plan.mjs';
 
 const root = path.dirname(new URL(import.meta.url).pathname);
 const dist = path.join(root, 'dist');
@@ -37,6 +41,14 @@ log('clean');
 //    dist/data/corpus.json for the search and ask pages.
 const corpus = await buildCorpus({ root, dist });
 log('corpus', `${corpus.chunks.length} chunks from ${corpus.sources.length} sources`);
+
+// 2b. checker — the plan checker's rubric with every citation resolved against
+//     the corpus (an unknown anchor fails the build), for the page and the
+//     server; and the fictional sample plan as .md, .docx and .pptx.
+const rubric = resolveRubric(JSON.parse(await readFile(path.join(root, 'content/checker-rubric.json'), 'utf8')), corpus);
+await writeFile(path.join(dist, 'data/checker-rubric.json'), JSON.stringify(rubric));
+const samples = await makeSamplePlan({ root, outDir: path.join(dist, 'samples') });
+log('checker', `${rubric.sections.reduce((n, s) => n + s.items.length, 0)} rubric items; sample plan ${samples.map((f) => `${path.extname(f.path)} ${(f.bytes / 1024).toFixed(0)}KB`).join(', ')}`);
 
 // 7a. code page data — gathered before the pages render because /code/ is a page.
 const code = await buildCodePage({ root, dist });

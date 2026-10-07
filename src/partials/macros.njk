@@ -36,7 +36,7 @@
 
 {# A diagram with its Mermaid source underneath. #}
 {% macro diagram(svg, mermaid, caption, wide) %}
-  <figure class="lpn-figure {% if wide %}lpn-figure--wide{% endif %}">
+  <figure class="lpn-figure lpn-viz {% if wide %}lpn-figure--wide{% endif %}">
     <div class="lpn-figure__scroll">{{ svg | safe }}</div>
     {% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
   </figure>

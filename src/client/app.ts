@@ -7,12 +7,15 @@
 // visitor reading the process map never downloads the search index or a
 // model engine.
 import { initAll } from 'govuk-frontend';
+import { armViz } from './viz';
 
 initAll();
+armViz();
 
 const loaders: Record<string, () => Promise<{ init: () => void }>> = {
   search: () => import('./search'),
   ask: () => import('./ask'),
+  checker: () => import('./checker'),
   planner: () => import('./planner'),
   checklist: () => import('./checklists'),
   question: () => import('./where-am-i'),

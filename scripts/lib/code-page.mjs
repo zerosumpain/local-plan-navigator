@@ -21,7 +21,7 @@ export const DEPENDENCIES = [
   { name: 'sass', version: '1.92.1', licence: 'MIT', purpose: 'Compiles GOV.UK Frontend with the settings this deployment needs.', dev: true },
   { name: 'esbuild', version: '0.28.2', licence: 'MIT', purpose: 'Bundles the client TypeScript, code-split so the model engines only load on demand.', dev: true },
   { name: 'marked', version: '18.0.11', licence: 'MIT', purpose: 'Renders the Markdown of the government texts with GOV.UK classes.', dev: true },
-  { name: 'fflate', version: '0.8.3', licence: 'MIT', purpose: 'Makes the zip on this page.', dev: true },
+  { name: 'fflate', version: '0.8.3', licence: 'MIT', purpose: 'Makes the zip on this page, and in the tests cross-checks the plan checker\'s own zip code (the server reads and writes Word files with node:zlib alone).', dev: true },
   { name: 'turndown', version: '7.2.4', licence: 'MIT', purpose: 'Converts GOV.UK content-API HTML to Markdown in the fetch-sources script.', dev: true },
   { name: 'axe-core', version: '4.13.0', licence: 'MPL-2.0', purpose: 'Accessibility checks in the smoke test.', dev: true },
   { name: 'playwright', version: '1.61.1', licence: 'Apache-2.0', purpose: 'Runs the browser smoke checks without relying on another repository.', dev: true },

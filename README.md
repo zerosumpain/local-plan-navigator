@@ -35,6 +35,11 @@ government service; it has no connection with MHCLG or the Planning Inspectorate
   endpoint on the server that sent the page — owner-only on strangeramblings.com, and
   `npm run preview:service` locally), or one running in the browser for a private, offline answer — the only option in a
   downloaded copy.
+- **Plan checker** — upload a draft local plan (Word, PowerPoint, Markdown or text) and get a
+  report against the 2026 Regulations, the NPPF and the guidance: what it covers, what is missing,
+  where it is thin, with every quote found word for word in the plan, plus a draft statement of
+  compliance and statement of soundness to download as Word. A fictional sample plan is built in.
+  See `docs/checker.md`.
 - **Reference library** — the sources with an anchor on every section, regulation, policy
   and NPPF footnote: the plan-making sections of the PCPA 2004 (as amended by LURA 2023)
   and of LURA 2023, the 2026 Regulations, the SEA and Planning Data Regulations, the NPPF,
@@ -59,6 +64,8 @@ npm run smoke        # Playwright + axe-core over every page and the tools (need
 npm run fetch-sources  # refresh content/sources/ from GOV.UK and legislation.gov.uk
 node scripts/eval-retrieval.mjs  # does search find the right passage? (after a build)
 npm run eval:answers   # are the Ask answers cited and grounded? (calls a model; see below)
+npm run check-plan -- dist/samples/northwold-draft-local-plan.docx --runs 2
+                     # check a plan on the local Codex bridge and compare two runs
 ```
 
 `npm run eval:answers` sends eight fixed questions through the page's retrieval and the
@@ -96,7 +103,9 @@ Three interchangeable access modes (`ACCESS_MODE`), all in `server/app.mjs`:
 | `standalone` | anywhere else | An administrator with the navigator's own passphrase; anyone with a share link made on its own admin page. |
 | `trusted-proxy` | behind your own sign-in (e.g. Azure App Service authentication) | Whoever the proxy lets through; `ADMIN_EMAILS` may also use the admin page. |
 
-Everyone else is sent to a page saying the prototype is private and how to get a link;
+The plan checker's `/check` takes uploads of up to 15 MB and streams progress (with a
+heartbeat every 15 seconds, so proxies keep the stream open); `/check/export` returns Word or
+Markdown. Everyone else is sent to a page saying the prototype is private and how to get a link;
 the APIs answer 401. Only an admin (the owner, on strangeramblings.com) may use `/admin/`.
 
 **On strangeramblings.com** the shared estate gateway (`sr-gateway`, the `gateway`
