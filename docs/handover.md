@@ -13,9 +13,9 @@ copyright texts under the Open Government Licence; see `LICENCE.md`.
 | Corpus | `content/sources/` → `dist/data/corpus.json` | The government texts, chunked with an anchor per passage. `npm run fetch-sources` refreshes them. |
 | Server | `server/` | Node 22, no runtime dependencies. Serves `dist/`, the Ask API, the plan checker and the admin API. |
 | Model client | `server/llm.mjs`, `server/settings.mjs` | One place every model call goes through. Connections are chosen on the admin page. |
-| Access | `server/access.mjs` | Its own administrator sign-in (a passphrase) and share links. Or, behind your own sign-in, `ACCESS_MODE=trusted-proxy`. |
+| Access | `server/access.mjs` | `ACCESS_MODE=standalone`: its own administrator sign-in (a passphrase) and share links. Or, behind your own sign-in, `ACCESS_MODE=trusted-proxy`. |
 | Front | `server/front.mjs` | Routes to the active one of two web slots, for zero-downtime releases. Optional. |
-| strangeramblings.com glue | `deploy/`, `.github/workflows/release.yml`, `scripts/release.mjs`, `scripts/verify-*.mjs` | The original host's release lanes. You can delete all of it — see below. |
+| strangeramblings.com layer | `server/sr-projects.mjs`, `gateway/`, the Dockerfile line copying `gateway/identity.mjs`, `deploy/`, `.github/workflows/release.yml`, `scripts/release.mjs`, `scripts/verify-*.mjs` | `ACCESS_MODE=sr-projects`: /projects sharing and the site's sign-in, through the site's gateway, plus the site's release lanes. Delete all of it — see below. |
 
 ## Run it locally
 
@@ -23,16 +23,17 @@ copyright texts under the Open Government Licence; see `LICENCE.md`.
 npm ci
 npm run build
 npm test
-npm run preview:service   # http://127.0.0.1:5382/projects/local-plan-navigator/ as the owner
+PREVIEW_ACCESS=standalone npm run preview:service   # http://127.0.0.1:5382/projects/local-plan-navigator/
 ```
 
 Sign in at `/sign-in/` with the passphrase the preview prints; the admin page is at
-`/admin/`. Set `LOCAL_PLAN_NAVIGATOR_STATE_DIR` to a writable folder if you want the
+`/admin/`. (Without `PREVIEW_ACCESS=standalone` the preview pretends to be
+strangeramblings.com's gateway, signed in as the owner.) Set `LOCAL_PLAN_NAVIGATOR_STATE_DIR` to a writable folder if you want the
 connections and share links you make there to persist.
 
 ## Run it with its own sign-in
 
-This is how it runs on strangeramblings.com (`ACCESS_MODE=standalone`, the default):
+Set `ACCESS_MODE=standalone` (the default, `sr-projects`, only works behind strangeramblings.com's gateway):
 
 | Variable | Meaning |
 |---|---|
@@ -110,11 +111,15 @@ cover. Retrieval does not involve the model and should not change.
 
 ## Removing the original host's parts
 
-If you are not deploying to strangeramblings.com you can delete `deploy/`,
-`.github/workflows/release.yml`, `scripts/release.mjs`, `scripts/verify-kit.mjs` and
-`scripts/verify-self-contained.mjs`, and remove `verify-kit` from the `check` script.
-Keep `server/front.mjs` only if you want two slots and zero-downtime releases; a
-single container running `node server/start.mjs` is enough otherwise.
+If you are not deploying to strangeramblings.com, delete `server/sr-projects.mjs`,
+`server/sr-projects.test.mjs`, `gateway/`, the Dockerfile line that copies
+`gateway/identity.mjs`, `deploy/`, `.github/workflows/release.yml`, `scripts/release.mjs`,
+`scripts/verify-kit.mjs` and `scripts/verify-self-contained.mjs`; remove `verify-kit` and
+`sr-projects.mjs` from the `check` script; and set `ACCESS_MODE` to `standalone` or
+`trusted-proxy`. Nothing else imports the deleted files (`sr-projects.mjs` is loaded only
+in its own mode), so the rest runs unchanged — the test suite proves it without them.
+Keep `server/front.mjs` only if you want two slots and zero-downtime releases; a single
+container running `node server/start.mjs` is enough otherwise.
 
 ## Before real users
 

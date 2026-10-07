@@ -13,8 +13,10 @@
 //                   source, heading and anchor — written to dist/data/corpus.json
 //                   for the search and ask pages
 //
-// Section ids are stable and readable: reg-32, part-4, schedule-2, PM15,
-// HO3-1, and for guidance the heading's slug.
+// Section ids are stable and readable: reg-32 in regulations, section-15C in
+// an Act (sources.json says `"sectionPrefix": "section"`), part-4,
+// schedule-2, PM15, HO3-1, fn-8 for an NPPF footnote, and for guidance the
+// heading's slug.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { markdownToHtml } from './lib/markdown.mjs';
@@ -58,7 +60,7 @@ function splitFrontmatter(text) {
 }
 
 /** Split Markdown into sections at headings; give each a stable id. */
-function sectionise(body, kind) {
+function sectionise(body, kind, prefix = 'reg') {
   const lines = body.split('\n');
   const sections = [];
   let cur = { level: 0, heading: '', id: 'top', lines: [] };
@@ -66,17 +68,21 @@ function sectionise(body, kind) {
     const m = line.match(/^(#{1,4})\s+(.+?)\s*$/);
     if (m) {
       sections.push(cur);
-      const heading = m[2].replace(/\\\./g, '.').replace(/\t/g, ' ').replace(/\s+/g, ' ').trim();
-      cur = { level: m[1].length, heading, id: sectionId(heading, kind), lines: [] };
+      // A heading that is a link ("## [Methodology - flowchart](…pdf)") keeps
+      // its words as the heading and its link as the section's first line.
+      const link = m[2].match(/^\[([^\]]+)\]\(([^)\s]+)\)$/);
+      const heading = (link ? link[1] : m[2]).replace(/\\\./g, '.').replace(/\t/g, ' ').replace(/\s+/g, ' ').trim();
+      cur = { level: m[1].length, heading, id: sectionId(heading, kind, prefix), lines: link ? [`[${heading}](${link[2]})`, ''] : [] };
     } else cur.lines.push(line);
   }
   sections.push(cur);
   return sections.filter((s) => s.heading || s.lines.some((l) => l.trim()));
 }
 
-function sectionId(heading, kind) {
+function sectionId(heading, kind, prefix) {
   if (kind === 'legislation') {
-    let m = heading.match(/^(\d+)\.\s/); if (m) return `reg-${m[1]}`;
+    // "32. Gateway 3: prescribed requirements" -> reg-32; "15CA. Local plans: …" -> section-15CA
+    let m = heading.match(/^(\d+[A-Z]{0,3})\.\s/); if (m) return `${prefix}-${m[1]}`;
     m = heading.match(/^Part (\d+)\b/i); if (m) return `part-${m[1]}`;
     m = heading.match(/^SCHEDULE (\d+)\b/i); if (m) return `schedule-${m[1]}`;
     if (/^Schedule\b/i.test(heading)) return 'schedule';
@@ -87,7 +93,7 @@ function sectionId(heading, kind) {
 }
 
 function buildMarkdown(src, body, { pages, chunks, anchors }) {
-  const sections = sectionise(body, src.kind);
+  const sections = sectionise(body, src.kind, src.sectionPrefix);
   // Where to split into pages: legislation by Part (level-2 headings), else one page.
   const units = [];
   if (src.split === 'part') {
@@ -141,6 +147,8 @@ function buildNppf(src, text, { pages, chunks, anchors }) {
       if (b.type === 'h3') anchors[slug(b.text)] = route;
       if (b.type === 'dl') anchors[slug(b.term)] = route;
     }
+    // Footnotes are numbered through the whole Framework, so fn-8 is unique.
+    for (const f of c.footnotes) anchors[`fn-${f.n}`] = route;
     // Paragraph anchors, e.g. PM2-1
     let policy = null;
     for (const b of c.blocks) { if (b.type === 'policy') policy = b.code; if (b.type === 'para' && b.n != null) anchors[policy ? `${policy}-${b.n}` : `${c.id}-${b.n}`] = route; }

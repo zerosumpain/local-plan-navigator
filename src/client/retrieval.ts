@@ -26,13 +26,18 @@ export interface SourceMeta { id: string; title: string; short: string; kind: st
 // Function words carry no meaning for matching and, under AND matching, make
 // a question like "what are the prescribed requirements" demand that every
 // passage contain "what" and "are". They are dropped at index and query time.
-const STOPWORDS = new Set('a an and are as at be been by can could do does for from has have how i if in into is it its may must of on or our shall should so than that the their them then there these they this to us was we were what when where which who whom why will with would you your'.split(' '));
+// ("What should each site allocation include?" failed on "each" until the
+// determiners joined the list.)
+const STOPWORDS = new Set('a an and any are as at be been by can could do does each every for from has have how i if in into is it its may must of on or our shall should so than that the their them then there these they this to us was we were what when where which who whom why will with would you your'.split(' '));
 
+// The source's short title is indexed too, lightly, so that a question naming
+// a document ("the Gateway 1 guidance", "the NPPF") leans towards it.
+// scripts/eval-retrieval.mjs measures every change here.
 export const INDEX_OPTIONS = {
-  fields: ['text', 'heading'],
+  fields: ['text', 'heading', 'docTitle'],
   storeFields: ['doc', 'docTitle', 'kind', 'anchor', 'route', 'heading', 'text'],
   processTerm: (term: string) => { const t = term.toLowerCase(); return STOPWORDS.has(t) || t.length < 2 ? null : t; },
-  searchOptions: { boost: { heading: 3 }, prefix: true, fuzzy: 0.15, combineWith: 'AND' as const, bm25: { k: 1.2, b: 0.4, d: 0.5 } },
+  searchOptions: { boost: { heading: 3, docTitle: 0.5 }, prefix: true, fuzzy: 0.15, combineWith: 'AND' as const, bm25: { k: 1.2, b: 0.4, d: 0.5 } },
 };
 export const SEARCH_OPTIONS = INDEX_OPTIONS.searchOptions;
 

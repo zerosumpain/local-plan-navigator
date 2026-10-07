@@ -3,7 +3,17 @@
 {% block pageContent %}
 <div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
 <h1 class="govuk-heading-xl">About this prototype</h1>
-<p class="govuk-body-l">I built this to see whether the new local plan-making system could be made navigable: one place where the process, the three gateways, the 2026 Regulations, the SEA Regulations and the NPPF sit together and tell you what to do next.</p>
+<p class="govuk-body-l">I built this to see whether the new local plan-making system could be made navigable: one place where the process, the three gateways, site allocations, the law, the NPPF and the government's guidance sit together and tell you what to do next.</p>
+<h2 class="govuk-heading-m">What it draws on</h2>
+<p class="govuk-body">{{ corpusMeta.sourceCount }} documents, split into {{ corpusMeta.chunkCount }} passages that the search and Ask pages work from:</p>
+<ul class="govuk-list govuk-list--bullet">
+  <li>the plan-making provisions of the Planning and Compulsory Purchase Act 2004 as amended by the Levelling-up and Regeneration Act 2023 (sections 15B to 15LH), and sections 92 to 100 of the 2023 Act, with the sections not yet in force marked as prospective</li>
+  <li>the Town and Country Planning (Local Planning) (England) Regulations 2026, the costs regulations that go with them, the Environmental Assessment of Plans and Programmes Regulations 2004 and the Planning Data (England) Regulations 2026</li>
+  <li>the National Planning Policy Framework (August 2026)</li>
+  <li>the Planning Inspectorate's procedural guide, and MHCLG's guidance for the new system, including the four-stage guidance on identifying, assessing and selecting sites and the plan data standard</li>
+  <li>the Planning Practice Guidance on land availability, viability and flood risk, as far as they concern plan-making, labelled where they are legacy-system guidance</li>
+</ul>
+<p class="govuk-body">It does not include the Town and Country Planning Act 1990, the rest of either Act, or the rest of the Planning Practice Guidance. The <a class="govuk-link" href="{{ rel('/sources/') }}">sources page</a> lists every document with its date.</p>
 <h2 class="govuk-heading-m">What it is</h2>
 <p class="govuk-body">A static website in the style of a GOV.UK service, built with GOV.UK Frontend and the same Nunjucks templating the GOV.UK Prototype Kit uses. Everything on it is generated from a small set of data files and the government's own published texts, so the process map, the stage pages, the planner and the diagrams cannot disagree with each other. The "describe a problem" page finds the passages first, then has them summarised either by the website's own model or, if you prefer, by a small model running inside your browser, in which case nothing you type leaves your device.</p>
 <h2 class="govuk-heading-m">What it is not</h2>

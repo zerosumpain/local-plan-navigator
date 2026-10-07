@@ -1,14 +1,19 @@
 // server/app.mjs — the navigator's web process: the built pages, the Ask API,
-// the plan checker, the admin API and its own sign-in.
+// the plan checker and the admin API.
 //
-// It depends on no other service to decide who may see it. Two access modes:
+// Who may see it is decided by one of three interchangeable access modes:
 //
-//   standalone      (default) the navigator's own admin sign-in and share links
-//                   (server/access.mjs) — how it runs on strangeramblings.com,
-//                   where the only other thing it touches is its card on /projects
+//   sr-projects     (default) strangeramblings.com: shared like the other /projects
+//                   apps — the owner through the site's sign-in, anyone else with a
+//                   share link from the Share button on its /projects card. The
+//                   estate gateway signs the site's decision; server/sr-projects.mjs
+//                   reads it. The only part of this repository that knows about the
+//                   site, and removable with gateway/ (docs/handover.md).
+//   standalone      spun up anywhere else: the navigator's own share links and
+//                   admin passphrase (server/access.mjs), behind server/front.mjs
 //   trusted-proxy   behind someone else's sign-in (Azure App Service
 //                   authentication, an Entra ID application proxy, …) that puts the
-//                   signed-in email in a header — see docs/handover.md
+//                   signed-in email in a header
 //
 // Whoever is let in may read, search, ask and run the plan checker; only an
 // admin may use the admin page. Anyone else sees a page saying the prototype is
@@ -18,6 +23,7 @@ import { realpath, stat } from 'node:fs/promises';
 import { extname, relative, resolve, sep } from 'node:path';
 import { answerPrompt, loadCorpus, parseAskBody, pickChunks, SYSTEM_PROMPT } from './ask.mjs';
 import { createAccess } from './access.mjs';
+// ./sr-projects.mjs is imported on demand, below.
 import { createAdmin } from './admin.mjs';
 import { createLlm } from './llm.mjs';
 import { createSettingsStore } from './settings.mjs';
@@ -31,6 +37,8 @@ const ADMIN_PAGE = `${MOUNT}/admin`;
 // Pages and files anyone may load: the sign-in page, the "this is private" page,
 // and the styles, scripts and icon they are drawn with (the code is public anyway).
 const OPEN = [`${MOUNT}/sign-in/`, `${MOUNT}/private/`, `${MOUNT}/assets/`];
+const SIGN_IN_PAGE = `${MOUNT}/sign-in`;
+const MODES = ['sr-projects', 'standalone', 'trusted-proxy'];
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8',
@@ -133,9 +141,11 @@ function attempts(limit, windowMs) {
 export function createApp({
   distDir = resolve('dist'),
   siteOrigin = process.env.ORIGIN ?? 'https://strangeramblings.com',
-  accessMode = process.env.ACCESS_MODE ?? 'standalone',
-  // One secret for the admin session (and, unless SETTINGS_KEY is set, saved keys).
-  // LOCAL_PLAN_NAVIGATOR_GATEWAY_KEY is read only so an older deployment keeps working.
+  accessMode = process.env.ACCESS_MODE ?? 'sr-projects',
+  ownerEmail = process.env.OWNER_EMAIL ?? '',
+  gatewayKey = process.env.LOCAL_PLAN_NAVIGATOR_GATEWAY_KEY ?? '',
+  // Signs standalone admin sessions and, unless SETTINGS_KEY is set, encrypts saved
+  // model keys. The gateway key stands in for it where only that is set.
   secret = process.env.LOCAL_PLAN_NAVIGATOR_SECRET ?? process.env.LOCAL_PLAN_NAVIGATOR_GATEWAY_KEY,
   adminPasswordHash = process.env.LOCAL_PLAN_NAVIGATOR_ADMIN_PASSWORD_HASH ?? '',
   proxyIdentityHeader = (process.env.PROXY_IDENTITY_HEADER ?? 'x-ms-client-principal-name').toLowerCase(),
@@ -150,13 +160,30 @@ export function createApp({
   checker = null,
   access = null,
 } = {}) {
-  if (!['standalone', 'trusted-proxy'].includes(accessMode)) throw new Error('ACCESS_MODE must be standalone or trusted-proxy');
+  if (!MODES.includes(accessMode)) throw new Error(`ACCESS_MODE must be one of ${MODES.join(', ')}`);
   if (!secret || secret.length < 32) throw new Error('LOCAL_PLAN_NAVIGATOR_SECRET must be 32 or more characters');
   const admins = new Set(String(adminEmails).split(',').map((e) => e.trim().toLowerCase()).filter(Boolean));
-  const doors = access ?? createAccess({ secret, adminPasswordHash, stateDir, mount: MOUNT, api: API });
   const store = settings ?? createSettingsStore({ dir: stateDir, secret: settingsKey });
   const model = llm ?? createLlm({ settings: store, stateDir, retryDelayMs });
-  const admin = createAdmin({ settings: store, llm: model, siteOrigin, shares: accessMode === 'standalone' ? doors : null });
+
+  // The access mode, behind one shape: decide(req) -> { access, email, setCookies }.
+  // sr-projects is imported only when it is used, so a copy with server/sr-projects.mjs
+  // and gateway/ deleted still runs the other two modes untouched.
+  const gate = (async () => {
+    if (access) return { mode: accessMode, ...access };
+    if (accessMode === 'standalone') return { mode: 'standalone', ...createAccess({ secret, adminPasswordHash, stateDir, mount: MOUNT, api: API }) };
+    if (accessMode === 'trusted-proxy') {
+      return {
+        mode: 'trusted-proxy',
+        decide: async (req) => ({ ...proxyAccessFor(req, proxyIdentityHeader, admins), setCookies: [] }),
+        signInRedirect: `${MOUNT}/admin/`,
+      };
+    }
+    const { createSrProjectsAccess } = await import('./sr-projects.mjs');
+    return createSrProjectsAccess({ gatewayKey, ownerEmail, mount: MOUNT, api: API });
+  })();
+  gate.catch(() => {});
+  const admin = createAdmin({ settings: store, llm: model, siteOrigin, gate });
   const check = checker?.({ complete: (req) => model.complete({ ...req, feature: req.feature ?? 'checker' }), distDir, siteOrigin }) ?? null;
   const signInPerAddress = attempts(5, 15 * 60_000);
   const signInOverall = attempts(30, 60 * 60_000);
@@ -201,22 +228,25 @@ export function createApp({
     const secure = req.headers['x-forwarded-proto'] === 'https';
     const address = String(req.headers['x-forwarded-for'] ?? 'unknown').slice(0, 64);
 
-    let who = null;
-    let access = null;
-    if (accessMode === 'trusted-proxy') {
-      const decided = proxyAccessFor(req, proxyIdentityHeader, admins);
-      access = decided.access;
-      who = decided.email ? `user:${decided.email}` : null;
-    } else {
-      const decided = await doors.decide(req);
-      access = decided.access;
-      who = access === 'owner' ? 'owner' : access === 'share' ? `guest:${address}` : null;
-      if (decided.setCookies.length) res.setHeader('Set-Cookie', decided.setCookies);
+    const doors = await gate;
+    const decided = await doors.decide(req);
+    const access = decided.access;
+    // Who a rate limit is for: a signed-in person by who they are, anyone with
+    // only a link by address (set by the front or gateway from cf-connecting-ip).
+    const who = decided.email ? `user:${decided.email}` : access === 'owner' ? 'owner' : access ? `guest:${address}` : null;
+    if (decided.setCookies?.length) res.setHeader('Set-Cookie', decided.setCookies);
+
+    // Signing in: the navigator's own page in standalone mode; elsewhere whoever
+    // signs people in (the site's login page, or the proxy) already has, so go on.
+    if ((pathname === SIGN_IN_PAGE || pathname === `${SIGN_IN_PAGE}/`) && doors.signInRedirect) {
+      res.writeHead(303, { ...COMMON, Location: doors.signInRedirect });
+      res.end();
+      return;
     }
 
     // The navigator's own sign-in.
     if (pathname === SESSION) {
-      if (accessMode !== 'standalone') { sendError(res, 404, 'Sign-in is handled by this site\'s own sign-in.'); return; }
+      if (doors.mode !== 'standalone') { sendError(res, 404, 'Sign-in is handled by this site\'s own sign-in.'); return; }
       if (!sameOrigin(req)) { sendError(res, 403, 'Sign-in is only taken from pages this server sent.'); return; }
       if (req.method === 'DELETE') {
         res.setHeader('Set-Cookie', doors.signOutCookies(secure));

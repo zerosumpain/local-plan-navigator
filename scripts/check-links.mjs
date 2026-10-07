@@ -32,7 +32,9 @@ for await (const file of walk(root)) {
   for (const m of html.matchAll(/\s(?:href|src)="([^"]+)"/g)) {
     const raw = m[1];
     if (/^(https?:|mailto:|data:|javascript:|#$)/.test(raw)) continue;
-    const [pathPart, frag] = raw.split('#');
+    // A query string (the Ask page's suggested questions) names the same file.
+    const [pathAndQuery, frag] = raw.split('#');
+    const pathPart = pathAndQuery.split('?')[0];
     let target = pathPart ? path.resolve(dir, pathPart) : file;
     if (pathPart) {
       const s = await stat(target).catch(() => null);

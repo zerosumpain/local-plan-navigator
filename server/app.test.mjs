@@ -1,3 +1,6 @@
+// ACCESS_MODE=standalone: the navigator spun up on its own, with its own share
+// links and admin passphrase (server/access.mjs). The strangeramblings.com mode
+// is in sr-projects.test.mjs.
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
@@ -63,7 +66,7 @@ before(async () => {
   const stateDir = join(root, 'state');
   const settings = createSettingsStore({ dir: stateDir, secret, env: { CODEX_BRIDGE_URL: bridgeUrl } });
   const access = createAccess({ secret, adminPasswordHash: hashPassword(passphrase), stateDir, mount: MOUNT, api: API, now: () => clock });
-  appServer = createServer(createApp({ distDir: root, secret, siteOrigin: origin, settings, stateDir, access, retryDelayMs: 10 }));
+  appServer = createServer(createApp({ distDir: root, accessMode: 'standalone', secret, siteOrigin: origin, settings, stateDir, access, retryDelayMs: 10 }));
   appServer.listen(0, '127.0.0.1');
   await new Promise((resolve) => appServer.once('listening', resolve));
   base = `http://127.0.0.1:${appServer.address().port}`;
